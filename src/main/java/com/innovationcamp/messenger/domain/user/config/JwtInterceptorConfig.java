@@ -2,7 +2,6 @@ package com.innovationcamp.messenger.domain.user.config;
 
 import com.innovationcamp.messenger.domain.user.interceptor.JwtInterceptor;
 import com.innovationcamp.messenger.domain.user.jwt.JwtUtil;
-import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,7 @@ public class JwtInterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtInterceptor(jwtUtil))
                 .order(1)
-                .addPathPatterns("/*")
+                .addPathPatterns("/**")
                 .excludePathPatterns("/user/signup","/user/login");
     }
 }
