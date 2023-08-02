@@ -18,7 +18,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String tokenValue = jwtUtil.getTokenFromRequest(request);
+        String tokenValue = jwtUtil.getTokenFromCookie(request);
         log.info("작동중 토큰 : " + tokenValue);
         if (StringUtils.hasText(tokenValue)){
             tokenValue = jwtUtil.substringToken(tokenValue);

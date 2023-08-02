@@ -54,7 +54,7 @@ public class JwtUtil {
             Cookie cookie = new Cookie(ACCESS_HEADER, token);
             cookie.setPath("/");
             cookie.setHttpOnly(true);
-            cookie.setMaxAge((int)ACCESS_TOKEN_TIME);
+            cookie.setMaxAge((int)ACCESS_TOKEN_TIME/1000);
             res.addCookie(cookie);
 
         } catch (UnsupportedEncodingException e) {
@@ -70,6 +70,25 @@ public class JwtUtil {
             } catch (UnsupportedEncodingException e) {
                 log.info(e.getMessage());
                 return null;
+            }
+        }
+        return null;
+    }
+
+    public String getTokenFromCookie(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(ACCESS_HEADER)) {
+                    if (cookie.getValue() != null) {
+                        try {
+                            return URLDecoder.decode(cookie.getValue(), "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            log.info(e.getMessage());
+                            return null;
+                        }
+                    }
+                }
             }
         }
         return null;
