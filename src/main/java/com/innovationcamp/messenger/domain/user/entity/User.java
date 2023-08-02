@@ -27,6 +27,12 @@ public class User {
         this.password = password;
     }
 
+    public void update(CreateUserRequestDto requestDto) {
+        this.email = requestDto.getEmail();
+        this.username = requestDto.getUsername();
+        this.password = requestDto.getPassword();
+    }
+
     /*
     @OneToOne
     @JoinColumn(name = "wallet_id")
