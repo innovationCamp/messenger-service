@@ -108,4 +108,12 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+
+    public void deleteJwtCookie(HttpServletResponse res) {
+        Cookie cookie = new Cookie(ACCESS_HEADER, null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        res.addCookie(cookie);
+    }
 }

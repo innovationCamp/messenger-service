@@ -5,7 +5,6 @@ import com.innovationcamp.messenger.domain.user.dto.LoginUserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
 import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import com.innovationcamp.messenger.domain.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class UserController {
     @PutMapping
     public UserResponseDto updateUser(@RequestBody CreateUserRequestDto requestDto,
                                       @ModelAttribute UserModel userModel){
-        System.out.println("userModel.getEmail() = " + userModel.getEmail());
         return userService.updateUser(requestDto, userModel);
     }
 
@@ -42,6 +40,11 @@ public class UserController {
     @GetMapping
     public UserResponseDto getUser(@ModelAttribute UserModel userModel){
         return userService.getUser(userModel);
+    }
+
+    @GetMapping("/logout")
+    public String logoutUser(HttpServletResponse res){
+        return userService.logoutUser(res);
     }
 
 }

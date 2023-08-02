@@ -71,6 +71,11 @@ public class UserService {
         return new UserResponseDto(findUserByEmail(userModel.getEmail()));
     }
 
+    public String logoutUser(HttpServletResponse res) {
+        jwtUtil.deleteJwtCookie(res);
+        return "로그아웃 성공";
+    }
+
     private User findUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
     }
