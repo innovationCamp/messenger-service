@@ -67,6 +67,10 @@ public class UserService {
         return "삭제완료";
     }
 
+    public UserResponseDto getUser(UserModel userModel) {
+        return new UserResponseDto(findUserByEmail(userModel.getEmail()));
+    }
+
     private User findUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
     }

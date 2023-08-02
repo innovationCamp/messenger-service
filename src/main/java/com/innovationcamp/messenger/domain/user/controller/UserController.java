@@ -39,4 +39,9 @@ public class UserController {
         return userService.deleteUser(userModel);
     }
 
+    @GetMapping
+    public UserResponseDto getUser(@ModelAttribute UserModel userModel){
+        return userService.getUser(userModel);
+    }
+
 }
