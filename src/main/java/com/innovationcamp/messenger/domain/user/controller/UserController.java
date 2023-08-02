@@ -32,4 +32,11 @@ public class UserController {
         UserModel userModel = (UserModel) req.getAttribute("userModel");
         return userService.updateUser(requestDto, userModel);
     }
+
+    @DeleteMapping
+    public String deleteUser(HttpServletRequest req){
+        UserModel userModel = (UserModel) req.getAttribute("userModel");
+        return userService.deleteUser(userModel);
+    }
+
 }

@@ -42,8 +42,7 @@ public class UserService {
     }
 
     public UserResponseDto loginUser(LoginUserRequestDto requestDto, HttpServletResponse res) {
-        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(()->
-                new IllegalArgumentException("없는 이메일 입니다."));
+        User user = findUserByEmail(requestDto.getEmail());
 
         if(!passwordEncoder.checkPassword(requestDto.getPassword(), user.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -56,10 +55,19 @@ public class UserService {
 
     @Transactional
     public UserResponseDto updateUser(CreateUserRequestDto requestDto, UserModel userModel) {
-        System.out.println("userModel.getEmail() = " + userModel.getEmail());
-        User user = userRepository.findByEmail(userModel.getEmail()).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
+        User user = findUserByEmail(userModel.getEmail());
         String password = passwordEncoder.encode(requestDto.getPassword());
         user.update(requestDto.getEmail(), requestDto.getUsername(), password);
         return new UserResponseDto(user);
+    }
+
+    public String deleteUser(UserModel userModel) {
+        User user = findUserByEmail(userModel.getEmail());
+        userRepository.delete(user);
+        return "삭제완료";
+    }
+
+    private User findUserByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
     }
 }
