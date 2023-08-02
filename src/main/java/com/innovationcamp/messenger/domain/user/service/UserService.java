@@ -54,11 +54,12 @@ public class UserService {
         return new UserResponseDto(user);
     }
 
-//    @Transactional
-//    public UserResponseDto updateUser(CreateUserRequestDto requestDto, UserModel userModel) {
-//        System.out.println("userModel.getEmail() = " + userModel.getEmail());
-//        User user = userRepository.findByEmail(userModel.getEmail()).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
-//        user.update(requestDto);
-//        return new UserResponseDto(user);
-//    }
+    @Transactional
+    public UserResponseDto updateUser(CreateUserRequestDto requestDto, UserModel userModel) {
+        System.out.println("userModel.getEmail() = " + userModel.getEmail());
+        User user = userRepository.findByEmail(userModel.getEmail()).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
+        String password = passwordEncoder.encode(requestDto.getPassword());
+        user.update(requestDto.getEmail(), requestDto.getUsername(), password);
+        return new UserResponseDto(user);
+    }
 }

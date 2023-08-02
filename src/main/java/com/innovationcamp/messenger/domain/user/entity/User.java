@@ -1,6 +1,5 @@
 package com.innovationcamp.messenger.domain.user.entity;
 
-import com.innovationcamp.messenger.domain.user.dto.CreateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,10 +26,10 @@ public class User {
         this.password = password;
     }
 
-    public void update(CreateUserRequestDto requestDto) {
-        this.email = requestDto.getEmail();
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+    public void update(String email, String username, String password) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
     }
 
     /*
