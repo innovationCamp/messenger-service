@@ -28,14 +28,14 @@ public class UserController {
     }
 
     @PutMapping
-    public UserResponseDto updateUser(@RequestBody CreateUserRequestDto requestDto, HttpServletRequest req){
-        UserModel userModel = (UserModel) req.getAttribute("userModel");
+    public UserResponseDto updateUser(@RequestBody CreateUserRequestDto requestDto,
+                                      @ModelAttribute UserModel userModel){
+        System.out.println("userModel.getEmail() = " + userModel.getEmail());
         return userService.updateUser(requestDto, userModel);
     }
 
     @DeleteMapping
-    public String deleteUser(HttpServletRequest req){
-        UserModel userModel = (UserModel) req.getAttribute("userModel");
+    public String deleteUser(@ModelAttribute UserModel userModel){
         return userService.deleteUser(userModel);
     }
 
