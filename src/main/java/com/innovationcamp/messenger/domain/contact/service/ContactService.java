@@ -5,6 +5,8 @@ import com.innovationcamp.messenger.domain.contact.entity.Contact;
 import com.innovationcamp.messenger.domain.contact.repository.ContactRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Slf4j()
+@RequiredArgsConstructor
 public class ContactService {
-//    @Autowired
+
+    @NonNull
     private ContactRepository contactRepository;
 
+    @NonNull
     private UserRepository userRepository;
 
-    /**
-     * 해당 사용자의 저장된 모든 연락처 조회
-     *
-     * @param userId 사용자 식별자
-     * @return 모든 연락처 정보
-     */
+
+    //해당 사용자의 저장된 모든 연락처 조회
     public List<ResponseDtoContact> getAllContact(Long userId) {
         // 사용자에게 연락처 정보 조회
         List<Contact> contacts = contactRepository.findByUserId(userId);
@@ -40,14 +40,11 @@ public class ContactService {
         return responseContacts;
     }
 
-    /**
-     * 새 연락처 추가
-     *
-     * @param userId 사용자 식별자
-     * @param contactId 새 연락처의 사용자 식별
-     * @return 추가된 연락처 정보
-     */
+    // 본인이 본인 id를 추가하는거 막아야됨
     public ResponseDtoContact createContact(Long userId, Long contactId) {
+        if (userId.equals(contactId)) {
+            throw new IllegalArgumentException("자신을 연락처에 추가할 수 없습니다.");
+        }
         // 이미 추가된 연락처인지 확인하기 위해 해당 사용자의 연락처 목록을 조회
         List<Contact> userContacts = contactRepository.findByUserId(userId);
         // 연락처 목록에서 이미 추가 되어있는 연락처인지 확인
@@ -63,13 +60,7 @@ public class ContactService {
 
         return new ResponseDtoContact(contactUser);
     }
-    /**
-     * 특정 연락처 삭제
-     *
-     * @param userId 사용자 식별자
-     * @param contactId 특정 연락처 사용자
-     * @return 추가된 연락처 정보
-     */
+    //특정 연락처 삭제
     public ResponseDtoContact removeContact(Long userId, Long contactId) {
         Contact contact = contactRepository.findByUserIdAndContactId(userId, contactId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 연락처를 찾을 수 없습니다."));
