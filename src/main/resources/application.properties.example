@@ -6,3 +6,4 @@ spring.jpa.hibernate.ddl-auto=
 spring.jpa.properties.hibernate.show_sql=
 spring.jpa.properties.hibernate.format_sql=
 spring.jpa.properties.hibernate.use_sql_comments=
+jwt.secret.key=
