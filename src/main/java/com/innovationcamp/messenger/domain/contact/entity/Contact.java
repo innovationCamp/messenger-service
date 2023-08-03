@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.contact.entity;
 
+import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,18 +9,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Contact {
-
+    // user - contact -user
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-    @Column(name = "contact_id", nullable = false)
-    private Long contactId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name = "contact_user_id")
+    private User contactUser;
 
-    public Contact(Long userId, Long addId) {
-        this.userId = userId;
-        this.contactId = addId;
+    public Contact(User user, User contactUser) {
+        this.user = user;
+        this.contactUser = contactUser;
     }
 }
 
