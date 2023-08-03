@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.wallet.service;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
+import com.innovationcamp.messenger.domain.wallet.config.PasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
@@ -12,7 +13,6 @@ import com.innovationcamp.messenger.domain.wallet.repository.PersonalWalletRepos
 import com.innovationcamp.messenger.domain.wallet.repository.TransactionRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
