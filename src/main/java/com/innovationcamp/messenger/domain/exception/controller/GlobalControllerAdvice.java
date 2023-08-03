@@ -1,4 +1,4 @@
-package com.innovationcamp.messenger.domain.user.config;
+package com.innovationcamp.messenger.domain.exception.controller;
 
 import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
