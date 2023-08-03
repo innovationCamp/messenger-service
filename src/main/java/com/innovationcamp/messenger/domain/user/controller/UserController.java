@@ -1,6 +1,6 @@
 package com.innovationcamp.messenger.domain.user.controller;
 
-import com.innovationcamp.messenger.domain.user.dto.CreateUserRequestDto;
+import com.innovationcamp.messenger.domain.user.dto.UserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.LoginUserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
 import com.innovationcamp.messenger.domain.user.jwt.UserModel;
@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public UserResponseDto signUpUser(@RequestBody CreateUserRequestDto requestDto){
+    public UserResponseDto signUpUser(@RequestBody UserRequestDto requestDto){
         return userService.signUpUser(requestDto);
     }
     @PostMapping("/login")
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PutMapping
-    public UserResponseDto updateUser(@RequestBody CreateUserRequestDto requestDto,
+    public UserResponseDto updateUser(@RequestBody UserRequestDto requestDto,
                                       @ModelAttribute UserModel userModel,
                                       HttpServletResponse res){
         return userService.updateUser(requestDto, userModel, res);

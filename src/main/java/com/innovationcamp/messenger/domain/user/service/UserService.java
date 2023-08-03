@@ -1,7 +1,7 @@
 package com.innovationcamp.messenger.domain.user.service;
 
 import com.innovationcamp.messenger.domain.user.config.PasswordEncoder;
-import com.innovationcamp.messenger.domain.user.dto.CreateUserRequestDto;
+import com.innovationcamp.messenger.domain.user.dto.UserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.LoginUserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
@@ -24,7 +24,7 @@ public class UserService {
     @NonNull
     private final JwtUtil jwtUtil;
 
-    public UserResponseDto signUpUser(CreateUserRequestDto requestDto) {
+    public UserResponseDto signUpUser(UserRequestDto requestDto) {
         checkUniqueEmail(requestDto.getEmail());
 
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -53,7 +53,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateUser(CreateUserRequestDto requestDto, UserModel userModel, HttpServletResponse res) {
+    public UserResponseDto updateUser(UserRequestDto requestDto, UserModel userModel, HttpServletResponse res) {
         User user = findUserByEmail(userModel.getEmail());
 
         if (!requestDto.getEmail().equals(userModel.getEmail()))

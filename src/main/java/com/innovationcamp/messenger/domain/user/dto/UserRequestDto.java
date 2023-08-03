@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 @Getter
-public class CreateUserRequestDto {
+public class UserRequestDto {
     @Email
     private String email;
     @Pattern(regexp = "^[a-zA-Z0-9가-힣]{3,10}$", message = "영문, 숫자, 한글로 이루어진 3~10자 이내로 작성해주세요")
