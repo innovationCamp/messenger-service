@@ -1,7 +1,7 @@
 package com.innovationcamp.messenger.domain.wallet.service;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
-import com.innovationcamp.messenger.domain.wallet.config.PasswordEncoder;
+import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class PersonalWalletService {
     @NonNull
-    private PasswordEncoder passwordEncoder;
+    private WalletPasswordEncoder walletPasswordEncoder;
     @NonNull
     private PersonalWalletRepository personalWalletRepository;
     @NonNull
@@ -42,7 +42,7 @@ public class PersonalWalletService {
     }
 
     public PersonalWallet createPersonalWallet(User user, PersonalWalletCreateDto requestDto) {
-        PersonalWallet personalWallet = new PersonalWallet(true, money, passwordEncoder.encode(requestDto.getPassword()), user);
+        PersonalWallet personalWallet = new PersonalWallet(true, money, walletPasswordEncoder.encode(requestDto.getPassword()), user);
         return personalWalletRepository.save(personalWallet);
     }
 
