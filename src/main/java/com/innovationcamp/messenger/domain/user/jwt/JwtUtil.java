@@ -27,6 +27,7 @@ import java.util.Date;
 public class JwtUtil {
     public static final String ACCESS_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
+    public static final String EMAIL_KEY = "email";
     public static final String NICKNAME_KEY = "nickname";
     private static final String BEARER_PREFIX = "Bearer ";
     public final long ACCESS_TOKEN_TIME = 24 * 60 * 60 * 1000L; // 24시간
@@ -99,7 +100,8 @@ public class JwtUtil {
         Date date = new Date();
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(user.getEmail())
+                        .setSubject(String.valueOf(user.getId()))
+                        .claim(EMAIL_KEY, user.getEmail())
                         .claim(NICKNAME_KEY, user.getUsername())
                         .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
                         .setIssuedAt(date)

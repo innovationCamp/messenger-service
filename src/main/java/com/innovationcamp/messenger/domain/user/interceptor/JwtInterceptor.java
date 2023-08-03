@@ -26,7 +26,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 throw new IllegalArgumentException("검증되지 않은 토큰");
             }
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-            UserModel userModel = new UserModel(info.getSubject(), info.get(JwtUtil.NICKNAME_KEY, String.class));
+            UserModel userModel = new UserModel(info);
             request.setAttribute("userModel", userModel);
             return true;
         }
