@@ -25,8 +25,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     public UserResponseDto signUpUser(CreateUserRequestDto requestDto) {
-        if(userRepository.existsByEmail(requestDto.getEmail()))
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+        checkUniqueEmail(requestDto.getEmail());
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -54,10 +53,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateUser(CreateUserRequestDto requestDto, UserModel userModel) {
+    public UserResponseDto updateUser(CreateUserRequestDto requestDto, UserModel userModel, HttpServletResponse res) {
         User user = findUserByEmail(userModel.getEmail());
+
+        if (!requestDto.getEmail().equals(userModel.getEmail()))
+            checkUniqueEmail(requestDto.getEmail());
+
         String password = passwordEncoder.encode(requestDto.getPassword());
         user.update(requestDto.getEmail(), requestDto.getUsername(), password);
+        jwtUtil.deleteJwtCookie(res);
         return new UserResponseDto(user);
     }
 
@@ -78,5 +82,10 @@ public class UserService {
 
     private User findUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
+    }
+
+    private void checkUniqueEmail(String email) {
+        if(userRepository.existsByEmail(email))
+            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
     }
 }
