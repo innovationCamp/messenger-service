@@ -1,4 +1,4 @@
-package com.innovationcamp.messenger.domain.exception.dto;
+package com.innovationcamp.messenger.global.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
