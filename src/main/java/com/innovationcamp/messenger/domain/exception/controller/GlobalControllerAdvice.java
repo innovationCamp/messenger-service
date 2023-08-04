@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @RestControllerAdvice
-@Slf4j(topic = "GlobalExceptionHandler")
+@Slf4j(topic = "GlobalControllerAdvice")
 public class GlobalControllerAdvice {
     @ModelAttribute
     public UserModel userModel(HttpServletRequest req) {
@@ -26,8 +26,9 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
+
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ExceptionResponseDto> nullPointerExceptionHandler(IllegalArgumentException e) {
+    public ResponseEntity<ExceptionResponseDto> nullPointerExceptionHandler(NullPointerException e) {
         ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
