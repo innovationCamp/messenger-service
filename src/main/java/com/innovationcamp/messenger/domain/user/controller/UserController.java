@@ -6,6 +6,7 @@ import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
 import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import com.innovationcamp.messenger.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public UserResponseDto signUpUser(@RequestBody UserRequestDto requestDto){
+    public UserResponseDto signUpUser(@RequestBody @Valid UserRequestDto requestDto){
         return userService.signUpUser(requestDto);
     }
     @PostMapping("/login")
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PutMapping
-    public UserResponseDto updateUser(@RequestBody UserRequestDto requestDto,
+    public UserResponseDto updateUser(@RequestBody @Valid UserRequestDto requestDto,
                                       @ModelAttribute UserModel userModel,
                                       HttpServletResponse res){
         return userService.updateUser(requestDto, userModel, res);
