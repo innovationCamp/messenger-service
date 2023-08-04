@@ -2,7 +2,7 @@ name: Build Gradle project
 
 on:
   push:
-    branches: [feature/channel]
+    branches: [develop]
 
 permissions:
   contents: read
