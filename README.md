@@ -1,6 +1,7 @@
 # Messenger-Service
 대용량 트래픽을 처리할 수 있는 MSA기반 회비 관리 메신저 서비스
 
+API 설계할 때 사용한 repo
 [__API__](https://github.com/innovationCamp/swagger/blob/master/swagger.yaml)
 
 localhost:8080 swagger URL 
