@@ -1,7 +1,7 @@
 name: Build Gradle project
 
 on:
-  push:
+  pull_request:
     branches: [develop]
 
 permissions:
