@@ -22,10 +22,17 @@ repositories {
 }
 
 dependencies {
+	//aws S3
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.112'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+	// openapi(swagger포함)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
+	// MySQL
 	implementation 'mysql:mysql-connector-java:8.0.28'
 
+	//JWT
 	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
@@ -37,14 +44,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-test'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 
 	implementation 'org.mindrot:jbcrypt:0.4'
+	testImplementation 'org.mockito:mockito-core:3.10.0'
+	testImplementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 }
 
 tasks.named('test') {

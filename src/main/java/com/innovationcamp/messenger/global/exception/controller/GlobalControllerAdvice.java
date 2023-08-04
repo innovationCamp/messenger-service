@@ -1,7 +1,7 @@
-package com.innovationcamp.messenger.domain.exception.controller;
+package com.innovationcamp.messenger.global.exception.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.innovationcamp.messenger.domain.exception.dto.ExceptionResponseDto;
+import com.innovationcamp.messenger.global.exception.dto.ExceptionResponseDto;
 import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import jakarta.validation.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
