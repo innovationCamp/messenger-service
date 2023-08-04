@@ -2,7 +2,12 @@ name: Build Gradle project
 
 on:
   pull_request:
-    branches: [develop]
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
 
 permissions:
   contents: read
