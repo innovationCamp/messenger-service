@@ -1,8 +1,13 @@
 name: Build Gradle project
 
 on:
+  pull_request:
+    branches:
+      - develop
   push:
-    branches: [feature/channel]
+    branches:
+      - develop
+
 
 permissions:
   contents: read
