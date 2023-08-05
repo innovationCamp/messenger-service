@@ -5,6 +5,7 @@ import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
+import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.WalletUserResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.AuthorityEnum;
@@ -97,5 +98,10 @@ public class GroupWalletService {
                 .build();
         groupWalletUserRepository.save(groupWalletUser);
         return groupWallet;
+    }
+
+    public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(Long channelId) {
+        Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
+        return groupWalletRepository.findAllByChannel(channel).stream().map(GroupWalletResponseDto::new).collect(Collectors.toList());
     }
 }

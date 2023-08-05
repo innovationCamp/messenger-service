@@ -2,6 +2,7 @@ package com.innovationcamp.messenger.domain.wallet.controller;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
+import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.WalletUserResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.GroupWallet;
@@ -47,5 +48,10 @@ public class GroupWalletController {
     @GetMapping("/{groupWalletId}/participant/all")
     public List<WalletUserResponseDto> getAllParticipantByGroupWallet(@PathVariable Long groupWalletId) {
         return groupWalletService.getAllParticipantByGroupWallet(groupWalletId);
+    }
+
+    @GetMapping("/all/channel/{channelId}")
+    public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(@PathVariable Long channelId){
+        return groupWalletService.getAllGroupWalletByChannelId(channelId);
     }
 }
