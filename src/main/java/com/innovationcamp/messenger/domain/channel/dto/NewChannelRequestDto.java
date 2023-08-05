@@ -6,5 +6,8 @@ import lombok.Getter;
 @Getter
 @Schema(description = "새 채널 생성 request Dto")
 public class NewChannelRequestDto {
+    private String channelName;
+    private String password;
+    private String channelDescription;
 
 }
