@@ -1,4 +1,4 @@
-package com.innovationcamp.messenger.domain.message.config;
+package com.innovationcamp.messenger.domain.testmessage.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
