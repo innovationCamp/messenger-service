@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/message/{channelId}")
+@RequestMapping("/api/message")
 public class MessageController {
     @NonNull
     private final MessageService messageService;
 
-    @PostMapping
+    @PostMapping("/{channelId}")
     public MessageResponseDto createMessage(@ModelAttribute User user,
                                             @PathVariable Long channelId,
                                             @RequestBody MessageRequestDto requestDto){
