@@ -1,7 +1,8 @@
 package com.innovationcamp.messenger.domain.user.interceptor;
 
+import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.jwt.JwtUtil;
-import com.innovationcamp.messenger.domain.user.jwt.UserModel;
+import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,9 +13,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Slf4j
 public class JwtInterceptor implements HandlerInterceptor {
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
-    public JwtInterceptor(JwtUtil jwtUtil){
+    public JwtInterceptor(JwtUtil jwtUtil, UserRepository userRepository){
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -26,8 +29,10 @@ public class JwtInterceptor implements HandlerInterceptor {
                 throw new IllegalArgumentException("검증되지 않은 토큰");
             }
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-            UserModel userModel = new UserModel(info);
-            request.setAttribute("userModel", userModel);
+            User user = userRepository.findById(Long.valueOf(info.getSubject())).orElseThrow(()->new IllegalArgumentException("없는 유저입니다."));
+            request.setAttribute("user", user);
+//            UserModel userModel = new UserModel(info);
+//            request.setAttribute("userModel", userModel);
             return true;
         }
         return false;
