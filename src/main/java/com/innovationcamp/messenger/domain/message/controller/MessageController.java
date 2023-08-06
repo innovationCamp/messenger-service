@@ -21,4 +21,10 @@ public class MessageController {
                                             @RequestBody MessageRequestDto requestDto){
         return messageService.createMessage(user, channelId, requestDto);
     }
+
+    @DeleteMapping("/{messageId}")
+    public String deleteMessage(@ModelAttribute User user,
+                                @PathVariable Long messageId){
+        return messageService.deleteMessage(user, messageId);
+    }
 }

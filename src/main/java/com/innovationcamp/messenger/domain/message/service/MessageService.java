@@ -30,4 +30,13 @@ public class MessageService {
         messageRepository.save(message);
         return new MessageResponseDto(message);
     }
+
+    public String deleteMessage(User user, Long messageId) {
+        Message message = messageRepository.findById(messageId).orElseThrow(() -> new IllegalArgumentException("없는 메세지 입니다."));
+        if (!message.getUser().equals(user)) {
+            throw new IllegalArgumentException("작성자가 아니면 삭제할 수 없습니다.");
+        }
+        messageRepository.delete(message);
+        return "삭제 완료";
+    }
 }
