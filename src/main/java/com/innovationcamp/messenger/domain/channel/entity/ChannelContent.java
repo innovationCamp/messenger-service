@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
+import com.innovationcamp.messenger.domain.channel.dto.ChannelContentDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -49,4 +50,6 @@ public class ChannelContent {
         this.notReadCount = notReadCount;
         this.contentType = contentType;
     }
+
+
 }

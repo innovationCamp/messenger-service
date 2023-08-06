@@ -2,6 +2,7 @@ package com.innovationcamp.messenger.domain.channel.entity;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -30,4 +31,12 @@ public class UserChannel{
     private LocalDateTime readTimestamp;
 
     private boolean isAdmin;
+
+    @Builder
+    public UserChannel(User user, Channel channel, LocalDateTime readTimestamp, boolean isAdmin) {
+        this.user = user;
+        this.channel = channel;
+        this.readTimestamp = readTimestamp;
+        this.isAdmin = isAdmin;
+    }
 }
