@@ -5,18 +5,14 @@ import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
 import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomDto;
+import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomUserDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,8 +28,9 @@ public class TestMessageService {
         return userChannelList.stream().map(userChannel -> new TestMessageRoomDto(userChannel.getChannel())).toList();
     }
 
-    public TestMessageRoomDto findRoomById(String roomId) {
-        return new TestMessageRoomDto(channelRepository.findById(Long.valueOf(roomId)).orElseThrow(() -> new IllegalArgumentException("없는 채팅")));
+    public TestMessageRoomUserDto findRoomById(Long roomId, String username) {
+        Channel channel = channelRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("없는 채팅"));
+        return new TestMessageRoomUserDto(channel, username);
     }
 
     public TestMessageRoomDto createTestMessageRoomDto(User user, String name) {

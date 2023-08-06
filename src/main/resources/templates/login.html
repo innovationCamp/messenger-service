@@ -28,8 +28,6 @@
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          var response = JSON.parse(xhr.responseText);
-          localStorage.setItem('wschat.sender', response.username);
           window.location.href = "/api/test/message/room"
         } else {
           // 로그인 실패 처리

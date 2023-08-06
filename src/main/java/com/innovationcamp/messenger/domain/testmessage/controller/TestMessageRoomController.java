@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.testmessage.controller;
 
 import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomDto;
+import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomUserDto;
 import com.innovationcamp.messenger.domain.testmessage.service.TestMessageService;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import lombok.NonNull;
@@ -45,8 +46,9 @@ public class TestMessageRoomController {
     // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public TestMessageRoomDto roomInfo(@PathVariable String roomId) {
-        return testMessageService.findRoomById(roomId);
+    public TestMessageRoomUserDto roomInfo(@ModelAttribute User user,
+                                           @PathVariable Long roomId) {
+        return testMessageService.findRoomById(roomId, user.getUsername());
     }
 }
 
