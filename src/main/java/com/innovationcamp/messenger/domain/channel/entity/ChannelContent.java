@@ -36,19 +36,14 @@ public class ChannelContent {
     @Column(name = "not_read_count")
     private Long notReadCount;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "content_type")
-    private ChannelContentType contentType;
-
     @Builder
     public ChannelContent(User user, Channel channel, ChannelContent calloutContent,
-                          LocalDateTime createdAt, Long notReadCount, ChannelContentType contentType) {
+                          LocalDateTime createdAt, Long notReadCount) {
         this.user = user;
         this.channel = channel;
         this.calloutContent = calloutContent;
         this.createdAt = createdAt;
         this.notReadCount = notReadCount;
-        this.contentType = contentType;
     }
 
     public ChannelContentResponseDto toResponseDto(){
@@ -58,8 +53,7 @@ public class ChannelContent {
                 this.channel.getId(),
                 this.calloutContent == null ? null : this.calloutContent.getId(),
                 this.createdAt,
-                this.notReadCount,
-                this.contentType
+                this.notReadCount
         );
     }
 

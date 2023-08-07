@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @RestControllerAdvice
 @Slf4j(topic = "GlobalControllerAdvice")
 public class GlobalControllerAdvice {
+
+
     @ModelAttribute
     public UserModel userModel(HttpServletRequest req) {
         return (UserModel) req.getAttribute("userModel");

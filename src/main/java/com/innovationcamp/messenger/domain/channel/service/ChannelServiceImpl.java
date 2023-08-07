@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
+import com.innovationcamp.messenger.domain.channel.config.ChannelPasswordEncoder;
 import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.dto.CreateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,17 +34,25 @@ public class ChannelServiceImpl implements ChannelService {
     private final UserChannelRepository userChannelRepository;
     @NonNull
     private final ChannelContentRepository channelContentRepository;
+    @NonNull
+    private final ChannelPasswordEncoder ChannelPasswordEncoder;
 
     @Override
     public Channel createChannel(CreateChannelRequestDto createChannelRequestDto) {
-        // Create new Channel entity based on the data in the NewChannelRequestDto
+        String password = null;
+
+        if(createChannelRequestDto.getChannelPassword() != null) {
+            password = ChannelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
+        }
+
         Channel channel = Channel.builder()
                 .channelName(createChannelRequestDto.getChannelName())
+                .channelPassword(password)
                 .channelDescription(createChannelRequestDto.getChannelDescription())
                 .build();
 
-        // Save new Channel entity in the database
-        return channelRepository.save(channel);
+        channelRepository.save(channel);
+        return channel;
     }
     @Override
     public Channel getChannel(Long id) {
@@ -56,7 +66,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         List<UserChannel> userChannels = userChannelRepository.findByUser(user);
 
-        List<UserChannelResponseDto> dtoList = userChannels.stream()
+        return userChannels.stream()
                 .map(userChannel -> {
                     Channel channel = userChannel.getChannel();
                     return new UserChannelResponseDto(
@@ -64,18 +74,18 @@ public class ChannelServiceImpl implements ChannelService {
                     );
                 })
                 .collect(Collectors.toList());
-
-        return dtoList;
     }
 
     @Transactional
     @Override
     public Channel updateChannel(Long id, UpdateChannelRequestDto updateChannelRequestDto) {
         Channel channel = getChannel(id);
+
+        channel.update(updateChannelRequestDto);
+
         return channelRepository.save(channel);
     }
 
-    @Transactional
     @Override
     public void deleteChannel(Long id) {
         channelRepository.deleteById(id);
@@ -96,8 +106,7 @@ public class ChannelServiceImpl implements ChannelService {
                             channelContent.getChannel().getId(),
                             channelContent.getCalloutContent().getId(),
                             channelContent.getCreatedAt(),
-                            channelContent.getNotReadCount(),
-                            channelContent.getContentType());
+                            channelContent.getNotReadCount());
                 })
                 .collect(Collectors.toList());
 
@@ -107,9 +116,13 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional
     @Override
     public void addUserToChannel(Long channelId, Long userId) {
+
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Channel channel = getChannel(channelId);
+
+        checkChannelAdmin(channel, user);
 
         UserChannel userChannel = UserChannel.builder()
                 .user(user)
@@ -125,9 +138,17 @@ public class ChannelServiceImpl implements ChannelService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Channel channel = getChannel(channelId);
-
+        checkChannelAdmin(channel, user);
         userChannelRepository.deleteByUserAndChannel(user, channel);
     }
 
+    // 수정, 삭제 시 권한 확인
+    private void checkChannelAdmin(Channel channel, User user) {
+        Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
+
+        if(userChannel.isEmpty() || !userChannel.get().isAdmin()) {
+            throw new IllegalArgumentException("You are not admin of this channel");
+        }
+    }
 
 }
