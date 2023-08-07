@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
+import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -39,4 +40,5 @@ public class UserChannel{
         this.readTimestamp = readTimestamp;
         this.isAdmin = isAdmin;
     }
+
 }

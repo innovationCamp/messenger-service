@@ -1,8 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
-import com.innovationcamp.messenger.domain.channel.dto.ChannelCreateDto;
-import com.innovationcamp.messenger.domain.channel.dto.ChannelCreateResponseDto;
-import com.innovationcamp.messenger.domain.channel.dto.ChannelDto;
+import com.innovationcamp.messenger.domain.channel.dto.*;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,18 +30,22 @@ public class Channel extends TimeStamped{
         this.channelDescription = channelDescription;
     }
 
-    public Channel(ChannelCreateDto createDto) {
+    public Channel(CreateChannelRequestDto createDto) {
         this.channelName = createDto.getChannelName();
         this.channelPassword = createDto.getChannelPassword();
         this.channelDescription = createDto.getChannelDescription();
     }
 
-    public ChannelCreateResponseDto toResponseDto() {
-        return new ChannelCreateResponseDto(id, channelName, channelDescription);
+    public CreateChannelResponseDto toResponseDto() {
+        return new CreateChannelResponseDto(id, channelName, channelDescription);
     }
 
-    public ChannelDto toChannelDto() {
-        return new ChannelDto(id, channelName, channelDescription);
+    public GetChannelResponseDto toInfoResponseDto() {
+        return new GetChannelResponseDto(id, channelName, channelDescription);
+    }
+
+    public UpdateChannelResponseDto toUpdateResponseDto() {
+        return new UpdateChannelResponseDto(id, channelName, channelDescription);
     }
 
 }

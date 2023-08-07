@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ChannelContentDto {
+public class ChannelContentResponseDto {
     private Long id;
     private ChannelContentType contentType;
     private LocalDateTime createdAt;

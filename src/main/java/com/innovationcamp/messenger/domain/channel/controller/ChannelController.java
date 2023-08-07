@@ -1,8 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.controller;
 
-import com.innovationcamp.messenger.domain.channel.dto.ChannelCreateDto;
-import com.innovationcamp.messenger.domain.channel.dto.ChannelCreateResponseDto;
-import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
+import com.innovationcamp.messenger.domain.channel.dto.*;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.service.ChannelService;
@@ -24,24 +22,26 @@ public class ChannelController {
 
     @Operation(summary = "채널 생성")
     @PostMapping
-    public ResponseEntity<ChannelCreateResponseDto> createChannel(@RequestBody ChannelCreateDto createDto) {
+    public ResponseEntity<CreateChannelResponseDto> createChannel(@RequestBody CreateChannelRequestDto createDto) {
         Channel createdChannel = channelService.createChannel(createDto);
-        ChannelCreateResponseDto responseDto = createdChannel.toResponseDto();
+        CreateChannelResponseDto responseDto = createdChannel.toResponseDto();
         return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "(채널 목록에서 확인 가능한)채널 id를 사용하여 특정 채널 조회")
     @GetMapping("/{id}")
-    public ResponseEntity<Channel> getChannel(@PathVariable Long id){
+    public ResponseEntity<GetChannelResponseDto> getChannel(@PathVariable Long id){
         Channel channel = channelService.getChannel(id);
-        return ResponseEntity.ok(channel);
+        GetChannelResponseDto responseDto = channel.toInfoResponseDto();
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "채널 id를 사용하여 특정 채널 수정")
     @PutMapping("/{id}")
-    public ResponseEntity<Channel> updateChannel(@PathVariable Long id, @RequestBody UpdateChannelRequestDto updateChannelRequestDto){
+    public ResponseEntity<UpdateChannelResponseDto> updateChannel(@PathVariable Long id, @RequestBody UpdateChannelRequestDto updateChannelRequestDto){
         Channel updatedChannel = channelService.updateChannel(id, updateChannelRequestDto);
-        return ResponseEntity.ok(updatedChannel);
+        UpdateChannelResponseDto responseDto = updatedChannel.toUpdateResponseDto();
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "채널 id를 사용하여 특정 채널 삭제")

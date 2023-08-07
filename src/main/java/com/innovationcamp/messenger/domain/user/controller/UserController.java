@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.user.controller;
 
+import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.service.ChannelService;
 import com.innovationcamp.messenger.domain.user.dto.UserRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +31,9 @@ public class UserController {
 
     @Operation(summary = "유저가 가입한 채널 목록을 조회합니다.")
     @GetMapping("/{userId}/channel")
-    public ResponseEntity<List<Channel>> getChannelsUserJoined(@PathVariable Long userId){
-        List<Channel> channels = channelService.getChannelsUserJoined(userId);
-        return ResponseEntity.ok(channels);
+    public ResponseEntity<List<UserChannelResponseDto>> getChannelsUserJoined(@PathVariable Long userId){
+        List<UserChannelResponseDto> responseDtoList = channelService.getChannelsUserJoined(userId);
+        return ResponseEntity.ok(responseDtoList);
     }
 
     @PostMapping("/signup")

@@ -1,7 +1,8 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
-import com.innovationcamp.messenger.domain.channel.dto.ChannelCreateDto;
+import com.innovationcamp.messenger.domain.channel.dto.CreateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
+import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
@@ -27,11 +28,11 @@ public class ChannelServiceImpl implements ChannelService {
     private final ChannelContentRepository channelContentRepository;
 
     @Override
-    public Channel createChannel(ChannelCreateDto channelCreateDto) {
+    public Channel createChannel(CreateChannelRequestDto createChannelRequestDto) {
         // Create new Channel entity based on the data in the NewChannelRequestDto
         Channel channel = Channel.builder()
-                .channelName(channelCreateDto.getChannelName())
-                .channelDescription(channelCreateDto.getChannelDescription())
+                .channelName(createChannelRequestDto.getChannelName())
+                .channelDescription(createChannelRequestDto.getChannelDescription())
                 .build();
 
         // Save new Channel entity in the database
@@ -43,19 +44,20 @@ public class ChannelServiceImpl implements ChannelService {
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
     }
     @Override
-    public List<Channel> getChannelsUserJoined(Long userId) {
+    public List<UserChannelResponseDto> getChannelsUserJoined(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Fetch UserChannels where user is present
         List<UserChannel> userChannels = userChannelRepository.findByUser(user);
 
-        // Extract Channels from UserChannels
-        List<Channel> channels = userChannels.stream()
-                .map(UserChannel::getChannel)
+        List<UserChannelResponseDto> dtoList = userChannels.stream()
+                .map(userChannel -> {
+                    Channel channel = userChannel.getChannel();
+                    return new UserChannelResponseDto(channel.getId(), userChannel.getReadTimestamp(), userChannel.isAdmin());
+                })
                 .collect(Collectors.toList());
 
-        return channels;
+        return dtoList;
     }
 
     @Transactional
