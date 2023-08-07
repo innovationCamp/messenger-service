@@ -2,7 +2,6 @@ package com.innovationcamp.messenger.domain.wallet.entity;
 
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.user.entity.User;
-import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,10 +24,10 @@ public class GroupWallet extends Wallet {
     private Channel channel;
 
     @Builder
-    public GroupWallet(Long money, User user, Channel channel, GroupWalletCreateDto requestDto) {
-        super(money, requestDto.getPassword(), user);
-        this.walletName = requestDto.getWalletName();
-        this.description = requestDto.getDescription();
+    public GroupWallet(Long money, User user, Channel channel, String password, String walletName, String description) {
+        super(money, password, user);
+        this.walletName = walletName;
+        this.description = description;
         this.channel = channel;
     }
 }

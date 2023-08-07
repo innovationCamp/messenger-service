@@ -1,7 +1,7 @@
 package com.innovationcamp.messenger.domain.wallet.dto;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
-import com.innovationcamp.messenger.domain.wallet.entity.AuthorityEnum;
+import com.innovationcamp.messenger.domain.wallet.entity.UserAuthorityEnum;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -10,10 +10,11 @@ import lombok.ToString;
 public class WalletUserResponseDto {
     private String email;
     private String username;
-    private AuthorityEnum authorityEnum;
-    public WalletUserResponseDto(User user, AuthorityEnum authorityEnum) {
+    private UserAuthorityEnum userAuthorityEnum;
+
+    public WalletUserResponseDto(User user, UserAuthorityEnum userAuthorityEnum) {
         this.email = user.getEmail();
         this.username = user.getUsername();
-        this.authorityEnum = authorityEnum;
+        this.userAuthorityEnum = userAuthorityEnum;
     }
 }

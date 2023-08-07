@@ -8,7 +8,7 @@ import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.WalletUserResponseDto;
-import com.innovationcamp.messenger.domain.wallet.entity.AuthorityEnum;
+import com.innovationcamp.messenger.domain.wallet.entity.UserAuthorityEnum;
 import com.innovationcamp.messenger.domain.wallet.entity.GroupWallet;
 import com.innovationcamp.messenger.domain.wallet.entity.GroupWalletUser;
 import com.innovationcamp.messenger.domain.wallet.entity.Transaction;
@@ -44,20 +44,17 @@ public class GroupWalletService {
     @Transactional
     public GroupWallet createGroupWallet(User user, GroupWalletCreateDto requestDto) {
         Channel channel = channelRepository.findById(requestDto.getChannelId()).orElseThrow(() -> new IllegalArgumentException("없는 채널입니다."));
-        requestDto.setPassword(walletPasswordEncoder.encode(requestDto.getPassword()));
         GroupWallet groupWallet = GroupWallet.builder()
                 .money(money)
-                .channel(channel)
                 .user(user)
-                .requestDto(requestDto)
+                .channel(channel)
+                .password(walletPasswordEncoder.encode(requestDto.getPassword()))
+                .walletName(requestDto.getWalletName())
+                .description(requestDto.getDescription())
                 .build();
         groupWallet = groupWalletRepository.save(groupWallet);
 
-        GroupWalletUser groupWalletUser = GroupWalletUser.builder()
-                .authority(AuthorityEnum.ADMIN)
-                .user(user)
-                .groupWallet(groupWallet)
-                .build();
+        GroupWalletUser groupWalletUser = new GroupWalletUser(UserAuthorityEnum.ADMIN, user, groupWallet);
         groupWalletUserRepository.save(groupWalletUser);
         return groupWallet;
     }
@@ -83,7 +80,7 @@ public class GroupWalletService {
     public List<WalletUserResponseDto> getAllParticipantByGroupWallet(Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
         List<GroupWalletUser> groupWalletUserList = groupWalletUserRepository.findAllByGroupWallet(groupWallet);
-        return groupWalletUserList.stream().map(w -> new WalletUserResponseDto(w.getUser(), w.getAuthority())).collect(Collectors.toList());
+        return groupWalletUserList.stream().map(w -> new WalletUserResponseDto(w.getUser(), w.getUserAuthority())).collect(Collectors.toList());
     }
 
     public GroupWallet participantGroupWalletById(User user, Long groupWalletId) {
@@ -91,11 +88,7 @@ public class GroupWalletService {
         GroupWalletUser groupWalletUser = groupWalletUserRepository.findByUserAndGroupWallet(user, groupWallet).orElse(null);
         if (groupWalletUser != null) throw new IllegalArgumentException("이미 참여한 Group 통장입니다.");
         //일단 권한 USER
-        groupWalletUser = GroupWalletUser.builder()
-                .user(user)
-                .groupWallet(groupWallet)
-                .authority(AuthorityEnum.USER)
-                .build();
+        groupWalletUser = new GroupWalletUser(UserAuthorityEnum.USER, user, groupWallet);
         groupWalletUserRepository.save(groupWalletUser);
         return groupWallet;
     }

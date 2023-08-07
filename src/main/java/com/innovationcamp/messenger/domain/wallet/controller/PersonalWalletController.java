@@ -34,7 +34,7 @@ public class PersonalWalletController {
         return walletPersonalService.deletePersonalWallet(user);
     }
 
-    @GetMapping("/transaction")
+    @GetMapping("/transaction/all")
     public List<TransactionResponseDto> getAllTransactionByPersonalWallet(@ModelAttribute User user) {
         return walletPersonalService.getAllTransactionByPersonalWallet(user);
     }
