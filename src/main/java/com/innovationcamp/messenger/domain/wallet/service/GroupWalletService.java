@@ -10,7 +10,7 @@ import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.WalletUserResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.UserAuthorityEnum;
 import com.innovationcamp.messenger.domain.wallet.entity.GroupWallet;
-import com.innovationcamp.messenger.domain.wallet.entity.GroupWalletUser;
+import com.innovationcamp.messenger.domain.wallet.entity.UserGroupWallet;
 import com.innovationcamp.messenger.domain.wallet.entity.Transaction;
 import com.innovationcamp.messenger.domain.wallet.repository.*;
 import lombok.NonNull;
@@ -29,7 +29,7 @@ public class GroupWalletService {
     @NonNull
     private GroupWalletRepository groupWalletRepository;
     @NonNull
-    private GroupWalletUserRepository groupWalletUserRepository;
+    private UserGroupWalletRepository userGroupWalletRepository;
     @NonNull
     private TransactionRepository transactionRepository;
     @NonNull
@@ -54,8 +54,8 @@ public class GroupWalletService {
                 .build();
         groupWallet = groupWalletRepository.save(groupWallet);
 
-        GroupWalletUser groupWalletUser = new GroupWalletUser(UserAuthorityEnum.ADMIN, user, groupWallet);
-        groupWalletUserRepository.save(groupWalletUser);
+        UserGroupWallet userGroupWallet = new UserGroupWallet(UserAuthorityEnum.ADMIN, user, groupWallet);
+        userGroupWalletRepository.save(userGroupWallet);
         return groupWallet;
     }
 
@@ -66,7 +66,7 @@ public class GroupWalletService {
     @Transactional
     public GroupWallet deleteGroupWalletById(Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
-        groupWalletUserRepository.deleteByGroupWallet(groupWallet);
+        userGroupWalletRepository.deleteByGroupWallet(groupWallet);
         groupWalletRepository.delete(groupWallet);
         return groupWallet;
     }
@@ -79,17 +79,17 @@ public class GroupWalletService {
 
     public List<WalletUserResponseDto> getAllParticipantByGroupWallet(Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
-        List<GroupWalletUser> groupWalletUserList = groupWalletUserRepository.findAllByGroupWallet(groupWallet);
-        return groupWalletUserList.stream().map(w -> new WalletUserResponseDto(w.getUser(), w.getUserAuthority())).collect(Collectors.toList());
+        List<UserGroupWallet> userGroupWalletList = userGroupWalletRepository.findAllByGroupWallet(groupWallet);
+        return userGroupWalletList.stream().map(w -> new WalletUserResponseDto(w.getUser(), w.getUserAuthority())).collect(Collectors.toList());
     }
 
     public GroupWallet participantGroupWalletById(User user, Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
-        GroupWalletUser groupWalletUser = groupWalletUserRepository.findByUserAndGroupWallet(user, groupWallet).orElse(null);
-        if (groupWalletUser != null) throw new IllegalArgumentException("이미 참여한 Group 통장입니다.");
+        UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet).orElse(null);
+        if (userGroupWallet != null) throw new IllegalArgumentException("이미 참여한 Group 통장입니다.");
         //일단 권한 USER
-        groupWalletUser = new GroupWalletUser(UserAuthorityEnum.USER, user, groupWallet);
-        groupWalletUserRepository.save(groupWalletUser);
+        userGroupWallet = new UserGroupWallet(UserAuthorityEnum.USER, user, groupWallet);
+        userGroupWalletRepository.save(userGroupWallet);
         return groupWallet;
     }
 

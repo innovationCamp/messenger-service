@@ -5,10 +5,10 @@ import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
-import com.innovationcamp.messenger.domain.wallet.entity.GroupWalletUser;
+import com.innovationcamp.messenger.domain.wallet.entity.UserGroupWallet;
 import com.innovationcamp.messenger.domain.wallet.entity.PersonalWallet;
 import com.innovationcamp.messenger.domain.wallet.entity.Transaction;
-import com.innovationcamp.messenger.domain.wallet.repository.GroupWalletUserRepository;
+import com.innovationcamp.messenger.domain.wallet.repository.UserGroupWalletRepository;
 import com.innovationcamp.messenger.domain.wallet.repository.PersonalWalletRepository;
 import com.innovationcamp.messenger.domain.wallet.repository.TransactionRepository;
 import lombok.NonNull;
@@ -28,7 +28,7 @@ public class PersonalWalletService {
     @NonNull
     private TransactionRepository transactionRepository;
     @NonNull
-    private GroupWalletUserRepository groupWalletUserRepository;
+    private UserGroupWalletRepository userGroupWalletRepository;
 
     //추천인 받고 들어오면 시작머니 있다던가
     private final Long money = 0L;
@@ -59,7 +59,7 @@ public class PersonalWalletService {
     }
 
     public List<GroupWalletResponseDto> getAllGroupWalletByUser(User user) {
-        List<GroupWalletUser> groupWalletUserList = groupWalletUserRepository.findAllByUser(user);
-        return groupWalletUserList.stream().map(w -> new GroupWalletResponseDto(w.getGroupWallet())).collect(Collectors.toList());
+        List<UserGroupWallet> userGroupWalletList = userGroupWalletRepository.findAllByUser(user);
+        return userGroupWalletList.stream().map(w -> new GroupWalletResponseDto(w.getGroupWallet())).collect(Collectors.toList());
     }
 }

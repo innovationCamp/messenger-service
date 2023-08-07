@@ -6,6 +6,7 @@ import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.*;
 import com.innovationcamp.messenger.domain.wallet.repository.*;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WalletService {
     @NonNull
     private WalletRepository<Wallet> walletRepository;
     @NonNull
     private TransactionRepository transactionRepository;
     @NonNull
-    private GroupWalletUserRepository groupWalletUserRepository;
+    private UserGroupWalletRepository userGroupWalletRepository;
     @NonNull
     private GroupSpendDetailRepository groupSpendDetailRepository;
 
@@ -28,8 +30,8 @@ public class WalletService {
             if (wallet.getMoney() < requestDto.getAmount()) throw new IllegalArgumentException("잔액이 부족합니다.");
             return;
         } else if (wallet instanceof GroupWallet groupWallet) {
-            GroupWalletUser groupWalletUser = groupWalletUserRepository.findByUserAndGroupWallet(user, groupWallet).orElseThrow(() -> new IllegalArgumentException("groupWallet 에 참여하지 않은 user 입니다."));
-            if (!groupWalletUser.getUserAuthority().equals(UserAuthorityEnum.ADMIN))
+            UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet).orElseThrow(() -> new IllegalArgumentException("groupWallet 에 참여하지 않은 user 입니다."));
+            if (!userGroupWallet.getUserAuthority().equals(UserAuthorityEnum.ADMIN))
                 throw new IllegalArgumentException("groupWallet 에 권한이 없는 user 입니다.");
             if (groupWallet.getMoney() < requestDto.getAmount()) throw new IllegalArgumentException("잔액이 부족합니다.");
             return;

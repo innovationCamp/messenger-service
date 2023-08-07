@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class GroupWalletUser {
+public class UserGroupWallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +25,7 @@ public class GroupWalletUser {
     @JoinColumn(name = "group_wallet_id")
     private GroupWallet groupWallet;
 
-    public GroupWalletUser(UserAuthorityEnum userAuthority, User user, GroupWallet groupWallet) {
+    public UserGroupWallet(UserAuthorityEnum userAuthority, User user, GroupWallet groupWallet) {
         this.userAuthority = userAuthority;
         this.user = user;
         this.groupWallet = groupWallet;
