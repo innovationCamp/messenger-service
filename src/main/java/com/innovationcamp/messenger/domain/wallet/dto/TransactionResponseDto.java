@@ -1,9 +1,6 @@
 package com.innovationcamp.messenger.domain.wallet.dto;
 
-import com.innovationcamp.messenger.domain.wallet.entity.GroupWallet;
-import com.innovationcamp.messenger.domain.wallet.entity.PersonalWallet;
-import com.innovationcamp.messenger.domain.wallet.entity.Wallet;
-import com.innovationcamp.messenger.domain.wallet.entity.Transaction;
+import com.innovationcamp.messenger.domain.wallet.entity.*;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -12,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class TransactionResponseDto {
-    private String transferType;
+    private TransferTypeEnum transferType;
     private Long amount;
     private Long balanceBefore;
     private Long balanceAfter;

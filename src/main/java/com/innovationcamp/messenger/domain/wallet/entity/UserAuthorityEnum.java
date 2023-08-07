@@ -1,12 +1,12 @@
 package com.innovationcamp.messenger.domain.wallet.entity;
 
-public enum AuthorityEnum {
+public enum UserAuthorityEnum {
     USER(Authority.user),
     ADMIN(Authority.master);
 
     private final String authority;
 
-    AuthorityEnum(String authority) {
+    UserAuthorityEnum(String authority) {
         this.authority = authority;
     }
 

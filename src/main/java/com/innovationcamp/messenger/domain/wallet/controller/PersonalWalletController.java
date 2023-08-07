@@ -14,35 +14,33 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/wallet/personal")
+@RequestMapping("/api/wallet/user")
 public class PersonalWalletController {
     @NonNull
     private PersonalWalletService walletPersonalService;
-    //임시 data
-    private User user = new User();
 
     @GetMapping("")
-    public PersonalWallet getPersonalWallet() {
+    public PersonalWallet getPersonalWallet(@ModelAttribute User user) {
         return walletPersonalService.getPersonalWallet(user);
     }
 
     @PostMapping("")
-    public PersonalWallet createPersonalWallet(@RequestBody PersonalWalletCreateDto requestDto) {
+    public PersonalWallet createPersonalWallet(@ModelAttribute User user, @RequestBody PersonalWalletCreateDto requestDto) {
         return walletPersonalService.createPersonalWallet(user, requestDto);
     }
 
     @DeleteMapping("")
-    public PersonalWallet deletePersonalWallet() {
+    public PersonalWallet deletePersonalWallet(@ModelAttribute User user) {
         return walletPersonalService.deletePersonalWallet(user);
     }
 
-    @GetMapping("/transaction")
-    public List<TransactionResponseDto> getPersonalWalletTransaction() {
-        return walletPersonalService.getPersonalWalletTransaction(user);
+    @GetMapping("/transaction/all")
+    public List<TransactionResponseDto> getAllTransactionByPersonalWallet(@ModelAttribute User user) {
+        return walletPersonalService.getAllTransactionByPersonalWallet(user);
     }
 
     @GetMapping("/group/all")
-    public List<GroupWalletResponseDto> getAllGroupWalletByUser() {
+    public List<GroupWalletResponseDto> getAllGroupWalletByUser(@ModelAttribute User user) {
         return walletPersonalService.getAllGroupWalletByUser(user);
     }
 }
