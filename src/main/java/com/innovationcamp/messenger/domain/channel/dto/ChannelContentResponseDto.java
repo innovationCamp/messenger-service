@@ -10,12 +10,27 @@ import java.time.LocalDateTime;
 @Setter
 public class ChannelContentResponseDto {
     private Long id;
-    private ChannelContentType contentType;
-    private LocalDateTime createdAt;
-    private Long channelId;
     private Long userId;
-    private String userName;
+    private Long channelId;
+    private Long callOutContentId;
+    private LocalDateTime createdAt;
+    private Long notReadCount;
+    private ChannelContentType contentType;
 
-
+    public ChannelContentResponseDto(Long id,
+                                     Long userId,
+                                     Long channelId,
+                                     Long callOutContentId,
+                                     LocalDateTime createdAt,
+                                     Long notReadCount,
+                                     ChannelContentType contentType) {
+        this.id = id;
+        this.userId = userId;
+        this.channelId = channelId;
+        this.callOutContentId = callOutContentId;
+        this.createdAt = createdAt;
+        this.notReadCount = notReadCount;
+        this.contentType = contentType;
+    }
 
 }

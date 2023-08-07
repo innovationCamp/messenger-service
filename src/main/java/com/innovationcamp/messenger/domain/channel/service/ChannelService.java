@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
+import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.dto.CreateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
@@ -14,7 +15,7 @@ public interface ChannelService {
     List<UserChannelResponseDto> getChannelsUserJoined(Long userId);
     Channel updateChannel(Long id, UpdateChannelRequestDto updateChannelRequestDto);
     void deleteChannel(Long id);
-    List<ChannelContent> getChannelContents(Long channelId);
+    List<ChannelContentResponseDto> getChannelContents(Long channelId);
     void addUserToChannel(Long channelId, Long userId);
     void kickUserFromChannel(Long channelId, Long userId);
     // other methods...

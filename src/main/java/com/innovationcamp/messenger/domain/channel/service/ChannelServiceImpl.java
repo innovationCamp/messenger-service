@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
+import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.dto.CreateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
@@ -75,9 +76,26 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public List<ChannelContent> getChannelContents(Long channelId) {
+    public List<ChannelContentResponseDto> getChannelContents(Long channelId) {
         Channel channel = getChannel(channelId);
-        return channelContentRepository.findByChannel(channel);
+
+        List<ChannelContent> channelContents = channelContentRepository.findByChannel(channel);
+
+        List<ChannelContentResponseDto> dtoList = channelContents.stream()
+                .map(channelContent -> {
+                    User user = channelContent.getUser();
+                    return new ChannelContentResponseDto(
+                            channelContent.getId(),
+                            user.getId(),
+                            channelContent.getId(),
+                            channelContent.getCalloutContent().getId(),
+                            channelContent.getCreatedAt(),
+                            channelContent.getNotReadCount(),
+                            channelContent.getContentType());
+                })
+                .collect(Collectors.toList());
+
+        return dtoList;
     }
 
     @Transactional

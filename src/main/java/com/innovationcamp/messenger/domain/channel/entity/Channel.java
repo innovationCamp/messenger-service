@@ -40,8 +40,8 @@ public class Channel extends TimeStamped{
         return new CreateChannelResponseDto(id, channelName, channelDescription);
     }
 
-    public GetChannelResponseDto toInfoResponseDto() {
-        return new GetChannelResponseDto(id, channelName, channelDescription);
+    public ChannelSingleResponseDto toInfoResponseDto() {
+        return new ChannelSingleResponseDto(id, channelName, channelDescription);
     }
 
     public UpdateChannelResponseDto toUpdateResponseDto() {
