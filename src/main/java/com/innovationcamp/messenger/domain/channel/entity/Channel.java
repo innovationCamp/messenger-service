@@ -14,7 +14,7 @@ public class Channel extends TimeStamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String channelName;
 
     @Column
@@ -28,6 +28,20 @@ public class Channel extends TimeStamped{
         this.channelName = channelName;
         this.channelPassword = channelPassword;
         this.channelDescription = channelDescription;
+    }
+
+    public void update(UpdateChannelRequestDto updateChannelRequestDto) {
+        if(updateChannelRequestDto.getChannelName() != null){
+            this.channelName = updateChannelRequestDto.getChannelName();
+        }
+
+        if(updateChannelRequestDto.getChannelPassword() != null){
+            this.channelPassword = updateChannelRequestDto.getChannelPassword();
+        }
+
+        if(updateChannelRequestDto.getChannelDescription() != null){
+            this.channelDescription = updateChannelRequestDto.getChannelDescription();
+        }
     }
 
     public Channel(CreateChannelRequestDto createDto) {

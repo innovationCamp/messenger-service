@@ -24,17 +24,6 @@ import java.util.stream.Collectors;
 public class UserController {
     @NonNull
     private final UserService userService;
-    @NonNull
-    private final ChannelService channelService;
-
-    // Existing methods...
-
-    @Operation(summary = "유저가 참여중인 채널 목록을 조회합니다.")
-    @GetMapping("/{userId}/channel")
-    public ResponseEntity<List<UserChannelResponseDto>> getChannelsUserJoined(@PathVariable Long userId){
-        List<UserChannelResponseDto> responseDtoList = channelService.getChannelsUserJoined(userId);
-        return ResponseEntity.ok(responseDtoList);
-    }
 
     @PostMapping("/signup")
     public UserResponseDto signUpUser(@RequestBody UserRequestDto requestDto){
