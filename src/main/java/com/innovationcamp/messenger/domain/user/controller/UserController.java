@@ -29,7 +29,7 @@ public class UserController {
 
     // Existing methods...
 
-    @Operation(summary = "유저가 가입한 채널 목록을 조회합니다.")
+    @Operation(summary = "유저가 참여중인 채널 목록을 조회합니다.")
     @GetMapping("/{userId}/channel")
     public ResponseEntity<List<UserChannelResponseDto>> getChannelsUserJoined(@PathVariable Long userId){
         List<UserChannelResponseDto> responseDtoList = channelService.getChannelsUserJoined(userId);

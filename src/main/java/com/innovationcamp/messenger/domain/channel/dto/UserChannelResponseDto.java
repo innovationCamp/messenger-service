@@ -12,13 +12,11 @@ import java.util.List;
 public class UserChannelResponseDto {
     private Long id;
     private Long userId;
-    private Long channelId;
+    private final Long channelId;
 
-    //read_timestamp
-    private LocalDateTime readTimestamp;
+    private final LocalDateTime readTimestamp;
 
-    // is_admin
-    private boolean isAdmin;
+    private final boolean isAdmin;
 
     public UserChannelResponseDto(Long channelId, LocalDateTime readTimestamp, boolean isAdmin) {
         this.channelId = channelId;

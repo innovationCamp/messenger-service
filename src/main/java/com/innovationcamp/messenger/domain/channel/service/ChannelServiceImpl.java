@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
+import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.dto.CreateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
 import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
@@ -13,6 +14,7 @@ import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ChannelServiceImpl implements ChannelService {
+    @NonNull
     private final ChannelRepository channelRepository;
+    @NonNull
     private final UserRepository userRepository;
+    @NonNull
     private final UserChannelRepository userChannelRepository;
+    @NonNull
     private final ChannelContentRepository channelContentRepository;
 
     @Override
@@ -53,7 +59,9 @@ public class ChannelServiceImpl implements ChannelService {
         List<UserChannelResponseDto> dtoList = userChannels.stream()
                 .map(userChannel -> {
                     Channel channel = userChannel.getChannel();
-                    return new UserChannelResponseDto(channel.getId(), userChannel.getReadTimestamp(), userChannel.isAdmin());
+                    return new UserChannelResponseDto(
+                            channel.getId(), userChannel.getReadTimestamp(), userChannel.isAdmin()
+                    );
                 })
                 .collect(Collectors.toList());
 
@@ -64,7 +72,6 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public Channel updateChannel(Long id, UpdateChannelRequestDto updateChannelRequestDto) {
         Channel channel = getChannel(id);
-        // Update properties of the channel based on the updateChannelRequestDto...
         return channelRepository.save(channel);
     }
 
@@ -75,9 +82,26 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public List<ChannelContent> getChannelContents(Long channelId) {
+    public List<ChannelContentResponseDto> getChannelContents(Long channelId) {
         Channel channel = getChannel(channelId);
-        return channelContentRepository.findByChannel(channel);
+
+        List<ChannelContent> channelContents = channelContentRepository.findByChannel(channel);
+
+        List<ChannelContentResponseDto> dtoList = channelContents.stream()
+                .map(channelContent -> {
+                    User user = channelContent.getUser();
+                    return new ChannelContentResponseDto(
+                            channelContent.getId(),
+                            user.getId(),
+                            channelContent.getChannel().getId(),
+                            channelContent.getCalloutContent().getId(),
+                            channelContent.getCreatedAt(),
+                            channelContent.getNotReadCount(),
+                            channelContent.getContentType());
+                })
+                .collect(Collectors.toList());
+
+        return dtoList;
     }
 
     @Transactional
@@ -105,5 +129,5 @@ public class ChannelServiceImpl implements ChannelService {
         userChannelRepository.deleteByUserAndChannel(user, channel);
     }
 
-    // Other methods...
+
 }

@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class UpdateChannelRequestDto {
-    private String channelName;
-    private String password;
-    private String channelDescription;
+    private final String channelName;
+    private final String password;
+    private final String channelDescription;
 
     public UpdateChannelRequestDto(String channelName, String password, String channelDescription) {
         this.channelName = channelName;

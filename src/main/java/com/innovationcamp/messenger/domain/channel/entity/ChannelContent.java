@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
+import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -33,7 +34,7 @@ public class ChannelContent {
     private LocalDateTime createdAt;
 
     @Column(name = "not_read_count")
-    private Integer notReadCount;
+    private Long notReadCount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "content_type")
@@ -41,7 +42,7 @@ public class ChannelContent {
 
     @Builder
     public ChannelContent(User user, Channel channel, ChannelContent calloutContent,
-                          LocalDateTime createdAt, Integer notReadCount, ChannelContentType contentType) {
+                          LocalDateTime createdAt, Long notReadCount, ChannelContentType contentType) {
         this.user = user;
         this.channel = channel;
         this.calloutContent = calloutContent;

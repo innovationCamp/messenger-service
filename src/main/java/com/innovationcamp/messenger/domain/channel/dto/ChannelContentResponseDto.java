@@ -7,15 +7,29 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 public class ChannelContentResponseDto {
-    private Long id;
-    private ChannelContentType contentType;
-    private LocalDateTime createdAt;
-    private Long channelId;
-    private Long userId;
-    private String userName;
+    private final Long id;
+    private final Long userId;
+    private final Long channelId;
+    private final Long callOutContentId;
+    private final LocalDateTime createdAt;
+    private final Long notReadCount;
+    private final ChannelContentType contentType;
 
-
+    public ChannelContentResponseDto(Long id,
+                                     Long userId,
+                                     Long channelId,
+                                     Long callOutContentId,
+                                     LocalDateTime createdAt,
+                                     Long notReadCount,
+                                     ChannelContentType contentType) {
+        this.id = id;
+        this.userId = userId;
+        this.channelId = channelId;
+        this.callOutContentId = callOutContentId;
+        this.createdAt = createdAt;
+        this.notReadCount = notReadCount;
+        this.contentType = contentType;
+    }
 
 }
