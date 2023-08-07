@@ -99,11 +99,14 @@ public class ChannelServiceImpl implements ChannelService {
         List<ChannelContentResponseDto> dtoList = channelContents.stream()
                 .map(channelContent -> {
                     User user = channelContent.getUser();
+                    ChannelContent calloutContent = channelContent.getCalloutContent();
+                    // NullPointException 방지
+                    Long calloutContentId = calloutContent != null ? calloutContent.getId() : null;
                     return new ChannelContentResponseDto(
                             channelContent.getId(),
                             user.getUsername(),
                             user.getEmail(),
-                            channelContent.getCalloutContent().getId() == null ? null : channelContent.getCalloutContent().getId(),
+                            calloutContentId,
                             channelContent.getCreatedAt(),
                             channelContent.getNotReadCount());
                 })
