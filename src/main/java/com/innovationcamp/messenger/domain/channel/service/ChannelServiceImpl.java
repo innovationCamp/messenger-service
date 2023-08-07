@@ -60,7 +60,7 @@ public class ChannelServiceImpl implements ChannelService {
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
     }
     @Override
-    public List<UserChannelResponseDto> getChannelsUserJoined(Long userId) {
+    public List<UserChannelResponseDto> getAllChannelUserIn(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
@@ -69,8 +69,8 @@ public class ChannelServiceImpl implements ChannelService {
         return userChannels.stream()
                 .map(userChannel -> {
                     Channel channel = userChannel.getChannel();
-                    return new UserChannelResponseDto(
-                            channel.getId(), userChannel.getReadTimestamp(), userChannel.isAdmin()
+                    return new UserChannelResponseDto( channel.getId(),
+                            userChannel.getReadTimestamp(), userChannel.isAdmin()
                     );
                 })
                 .collect(Collectors.toList());
@@ -82,8 +82,7 @@ public class ChannelServiceImpl implements ChannelService {
         Channel channel = getChannel(id);
 
         channel.update(updateChannelRequestDto);
-
-        return channelRepository.save(channel);
+        return channel;
     }
 
     @Override
@@ -102,9 +101,9 @@ public class ChannelServiceImpl implements ChannelService {
                     User user = channelContent.getUser();
                     return new ChannelContentResponseDto(
                             channelContent.getId(),
-                            user.getId(),
-                            channelContent.getChannel().getId(),
-                            channelContent.getCalloutContent().getId(),
+                            user.getUsername(),
+                            user.getEmail(),
+                            channelContent.getCalloutContent().getId() == null ? null : channelContent.getCalloutContent().getId(),
                             channelContent.getCreatedAt(),
                             channelContent.getNotReadCount());
                 })
@@ -113,7 +112,6 @@ public class ChannelServiceImpl implements ChannelService {
         return dtoList;
     }
 
-    @Transactional
     @Override
     public void addUserToChannel(Long channelId, Long userId) {
 
@@ -132,7 +130,6 @@ public class ChannelServiceImpl implements ChannelService {
         userChannelRepository.save(userChannel);
     }
 
-    @Transactional
     @Override
     public void kickUserFromChannel(Long channelId, Long userId) {
         User user = userRepository.findById(userId)

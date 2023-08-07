@@ -29,8 +29,10 @@ public class UserChannel{
     @JoinColumn(name="channel_id", nullable=false)
     private Channel channel;
 
+    @Column
     private LocalDateTime readTimestamp;
 
+    @Column
     private boolean isAdmin;
 
     @Builder

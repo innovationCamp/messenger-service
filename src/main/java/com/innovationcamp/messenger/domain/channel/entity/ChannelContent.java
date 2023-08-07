@@ -49,8 +49,8 @@ public class ChannelContent {
     public ChannelContentResponseDto toResponseDto(){
         return new ChannelContentResponseDto(
                 this.id,
-                this.user.getId(),
-                this.channel.getId(),
+                this.user.getEmail(),
+                this.user.getUsername(),
                 this.calloutContent == null ? null : this.calloutContent.getId(),
                 this.createdAt,
                 this.notReadCount

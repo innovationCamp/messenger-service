@@ -2,11 +2,10 @@ package com.innovationcamp.messenger.domain.channel.controller;
 
 import com.innovationcamp.messenger.domain.channel.dto.*;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
-import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.service.ChannelService;
+import com.innovationcamp.messenger.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +23,11 @@ public class ChannelController {
     private final ChannelService channelService;
     @Operation(summary = "유저가 참여중인 채널 목록을 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<UserChannelResponseDto>> getChannelsUserJoined(@PathVariable Long userId){
-        List<UserChannelResponseDto> responseDtoList = channelService.getChannelsUserJoined(userId);
+    public ResponseEntity<List<UserChannelResponseDto>> getAllChannelUserIn(@ModelAttribute User user){
+        List<UserChannelResponseDto> responseDtoList = channelService.getAllChannelUserIn(user.getId());
         return ResponseEntity.ok(responseDtoList);
     }
+
     @Operation(summary = "채널 생성")
     @PostMapping
     public ResponseEntity<CreateChannelResponseDto> createChannel(@RequestBody CreateChannelRequestDto createDto) {
