@@ -51,5 +51,16 @@ public class ChannelContent {
         this.contentType = contentType;
     }
 
+    public ChannelContentResponseDto toResponseDto(){
+        return new ChannelContentResponseDto(
+                this.id,
+                this.user.getId(),
+                this.channel.getId(),
+                this.calloutContent == null ? null : this.calloutContent.getId(),
+                this.createdAt,
+                this.notReadCount,
+                this.contentType
+        );
+    }
 
 }
