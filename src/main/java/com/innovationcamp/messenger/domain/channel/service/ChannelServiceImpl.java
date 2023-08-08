@@ -12,12 +12,14 @@ import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepo
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
+import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,21 +39,42 @@ public class ChannelServiceImpl implements ChannelService {
     @NonNull
     private final ChannelPasswordEncoder ChannelPasswordEncoder;
 
+    //TODO: 채널 생성한 유저는 관리자 권한으로 해당 채널에 등록
+    @Transactional
     @Override
-    public Channel createChannel(CreateChannelRequestDto createChannelRequestDto) {
-        String password = null;
+    public Channel createChannel(CreateChannelRequestDto createChannelRequestDto, @ModelAttribute UserModel usermodel) {
+        User user = userRepository.findById(usermodel.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
+        String channelName = usermodel.getUsername(); // 채널이름 기본값은 유저이름
+        String password = null;
+        String channelDescription = null;
+        if(createChannelRequestDto.getChannelName() != null) {
+            channelName = createChannelRequestDto.getChannelName();
+        }
         if(createChannelRequestDto.getChannelPassword() != null) {
             password = ChannelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
         }
+        if(createChannelRequestDto.getChannelDescription() != null) {
+            channelDescription = createChannelRequestDto.getChannelDescription();
+        }
 
         Channel channel = Channel.builder()
-                .channelName(createChannelRequestDto.getChannelName())
+                .channelName(channelName)
                 .channelPassword(password)
-                .channelDescription(createChannelRequestDto.getChannelDescription())
+                .channelDescription(channelDescription)
                 .build();
 
         channelRepository.save(channel);
+
+        UserChannel userChannel = UserChannel.builder()
+                .user(user)
+                .channel(channel)
+                .isAdmin(true)
+                .build();
+
+        userChannelRepository.save(userChannel);
+
         return channel;
     }
     @Override
@@ -117,7 +140,6 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public void addUserToChannel(Long channelId, Long userId) {
-
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));

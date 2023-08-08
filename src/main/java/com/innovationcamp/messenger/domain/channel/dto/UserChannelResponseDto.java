@@ -10,12 +10,9 @@ import java.util.List;
 @Getter
 @Schema(description = "유저가 가입한 채널 조회 response Dto")
 public class UserChannelResponseDto {
-    private Long id;
-    private Long userId;
+
     private final Long channelId;
-
     private final LocalDateTime readTimestamp;
-
     private final boolean isAdmin;
 
     public UserChannelResponseDto(Long channelId, LocalDateTime readTimestamp, boolean isAdmin) {
