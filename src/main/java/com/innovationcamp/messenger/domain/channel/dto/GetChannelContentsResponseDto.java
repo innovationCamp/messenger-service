@@ -1,13 +1,14 @@
 package com.innovationcamp.messenger.domain.channel.dto;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class ChannelContentResponseDto {
+@Schema(description = "ChannelContent 조회 response Dto")
+public class GetChannelContentsResponseDto {
     private final Long id;
     private final String userEmail;
     private final String userName;
@@ -16,12 +17,12 @@ public class ChannelContentResponseDto {
     private final Long notReadCount;
 
 
-    public ChannelContentResponseDto(Long id,
-                                     String userEmail,
-                                    String userName,
-                                     Long callOutContentId,
-                                     LocalDateTime createdAt,
-                                     Long notReadCount) {
+    public GetChannelContentsResponseDto(Long id,
+                                         String userEmail,
+                                         String userName,
+                                         Long callOutContentId,
+                                         LocalDateTime createdAt,
+                                         Long notReadCount) {
         this.id = id;
         this.userEmail = userEmail;
         this.userName = userName;

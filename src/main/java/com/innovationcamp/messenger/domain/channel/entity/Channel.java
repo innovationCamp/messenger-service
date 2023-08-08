@@ -15,6 +15,9 @@ public class Channel extends TimeStamped{
     private Long id;
 
     @Column
+    private String channelCreateUserName;
+
+    @Column
     private String channelName;
 
     @Column
@@ -23,43 +26,25 @@ public class Channel extends TimeStamped{
     @Column
     private String channelDescription;
 
+    @Column
+    private Boolean isPrivate = false;
+
     @Builder
-    public Channel(String channelName, String channelPassword, String channelDescription) {
+    public Channel(String channelName,
+                   String channelCreateUserName,
+                   String channelPassword,
+                   String channelDescription,
+                   Boolean isPrivate) {
         this.channelName = channelName;
+        this.channelCreateUserName = channelCreateUserName;
         this.channelPassword = channelPassword;
         this.channelDescription = channelDescription;
+        this.isPrivate = isPrivate;
     }
 
-    public void update(UpdateChannelRequestDto updateChannelRequestDto) {
-        if(updateChannelRequestDto.getChannelName() != null){
-            this.channelName = updateChannelRequestDto.getChannelName();
-        }
-
-        if(updateChannelRequestDto.getChannelPassword() != null){
-            this.channelPassword = updateChannelRequestDto.getChannelPassword();
-        }
-
-        if(updateChannelRequestDto.getChannelDescription() != null){
-            this.channelDescription = updateChannelRequestDto.getChannelDescription();
-        }
-    }
-
-    public Channel(CreateChannelRequestDto createDto) {
-        this.channelName = createDto.getChannelName();
-        this.channelPassword = createDto.getChannelPassword();
-        this.channelDescription = createDto.getChannelDescription();
-    }
-
-    public CreateChannelResponseDto toResponseDto() {
-        return new CreateChannelResponseDto(id, channelName, channelDescription);
-    }
-
-    public ChannelSingleResponseDto toInfoResponseDto() {
-        return new ChannelSingleResponseDto(id, channelName, channelDescription);
-    }
-
-    public UpdateChannelResponseDto toUpdateResponseDto() {
-        return new UpdateChannelResponseDto(id, channelName, channelDescription);
+    public void updateChannel(UpdateChannelRequestDto updateChannelDto){
+        this.channelName = updateChannelDto.getChannelName();
+        this.channelDescription = updateChannelDto.getChannelDescription();
     }
 
 }

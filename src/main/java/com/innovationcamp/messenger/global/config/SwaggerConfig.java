@@ -19,7 +19,7 @@ public class SwaggerConfig {
                 info(new Info()
                         .title("회비관리 메신저 API")
                         .version("0.1")
-                        .description("SwaggerConfig로 생성됨"))
+                        .description("SwaggerConfig로 생성한 문서입니다."))
                         .components(new Components()
                                 .addSecuritySchemes("JWT",
                                         new SecurityScheme()

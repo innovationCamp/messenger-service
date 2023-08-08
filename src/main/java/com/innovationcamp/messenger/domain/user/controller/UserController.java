@@ -1,22 +1,14 @@
 package com.innovationcamp.messenger.domain.user.controller;
 
-import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
-import com.innovationcamp.messenger.domain.channel.entity.Channel;
-import com.innovationcamp.messenger.domain.channel.service.ChannelService;
 import com.innovationcamp.messenger.domain.user.dto.UserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.LoginUserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
 import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import com.innovationcamp.messenger.domain.user.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
