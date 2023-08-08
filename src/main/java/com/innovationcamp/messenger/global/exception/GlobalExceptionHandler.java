@@ -17,26 +17,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponseDto> illegalArgumentExceptionHandler(IllegalArgumentException e) {
-        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getMessage());
+        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST,e.getClass().getSimpleName(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ExceptionResponseDto> nullPointerExceptionHandler(NullPointerException e) {
-        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getMessage());
+        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST,e.getClass().getSimpleName(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
     @ExceptionHandler(JsonProcessingException.class)
     public ResponseEntity<ExceptionResponseDto> jsonProcessingExceptionHandler(JsonProcessingException e) {
-        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getMessage());
+        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST,e.getClass().getSimpleName(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ExceptionResponseDto> validationExceptionHandler(ValidationException e) {
-        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getMessage());
+        ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST,e.getClass().getSimpleName(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 }

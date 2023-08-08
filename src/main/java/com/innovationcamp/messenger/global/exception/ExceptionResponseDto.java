@@ -8,5 +8,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ExceptionResponseDto {
     private HttpStatus httpStatus;
+    private String exceptionName;
     private String message;
 }
