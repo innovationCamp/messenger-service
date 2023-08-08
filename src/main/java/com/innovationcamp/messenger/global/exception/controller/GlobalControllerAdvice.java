@@ -3,25 +3,20 @@ package com.innovationcamp.messenger.global.exception.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.global.exception.dto.ExceptionResponseDto;
-import com.innovationcamp.messenger.domain.user.jwt.UserModel;
-import jakarta.validation.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j(topic = "GlobalControllerAdvice")
 public class GlobalControllerAdvice {
-//    @ModelAttribute
-//    public UserModel userModel(HttpServletRequest req) {
-//        return (UserModel) req.getAttribute("userModel");
-//    }
     @ModelAttribute
     public User user(HttpServletRequest req) {
         return (User) req.getAttribute("user");

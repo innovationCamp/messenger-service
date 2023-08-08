@@ -31,8 +31,6 @@ public class JwtInterceptor implements HandlerInterceptor {
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
             User user = userRepository.findById(Long.valueOf(info.getSubject())).orElseThrow(()->new IllegalArgumentException("없는 유저입니다."));
             request.setAttribute("user", user);
-//            UserModel userModel = new UserModel(info);
-//            request.setAttribute("userModel", userModel);
             return true;
         }
         return false;
