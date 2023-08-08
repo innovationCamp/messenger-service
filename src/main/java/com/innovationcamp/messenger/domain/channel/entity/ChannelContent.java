@@ -1,6 +1,5 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
-import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -44,17 +43,6 @@ public class ChannelContent {
         this.calloutContent = calloutContent;
         this.createdAt = createdAt;
         this.notReadCount = notReadCount;
-    }
-
-    public ChannelContentResponseDto toResponseDto(){
-        return new ChannelContentResponseDto(
-                this.id,
-                this.user.getEmail(),
-                this.user.getUsername(),
-                this.calloutContent == null ? null : this.calloutContent.getId(),
-                this.createdAt,
-                this.notReadCount
-        );
     }
 
 }

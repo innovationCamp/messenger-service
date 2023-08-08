@@ -1,10 +1,7 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
 import com.innovationcamp.messenger.domain.channel.config.ChannelPasswordEncoder;
-import com.innovationcamp.messenger.domain.channel.dto.ChannelContentResponseDto;
-import com.innovationcamp.messenger.domain.channel.dto.CreateChannelRequestDto;
-import com.innovationcamp.messenger.domain.channel.dto.UpdateChannelRequestDto;
-import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
+import com.innovationcamp.messenger.domain.channel.dto.*;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
@@ -12,14 +9,12 @@ import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepo
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
-import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,34 +32,38 @@ public class ChannelServiceImpl implements ChannelService {
     @NonNull
     private final ChannelContentRepository channelContentRepository;
     @NonNull
-    private final ChannelPasswordEncoder ChannelPasswordEncoder;
+    private final ChannelPasswordEncoder channelPasswordEncoder;
 
-    //TODO: 채널 생성한 유저는 관리자 권한으로 해당 채널에 등록
     @Transactional
     @Override
-    public Channel createChannel(CreateChannelRequestDto createChannelRequestDto, @ModelAttribute UserModel usermodel) {
-        User user = userRepository.findById(usermodel.getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto createChannelRequestDto) {
 
-        String channelName = usermodel.getUsername(); // 채널이름 기본값은 유저이름
-        String password = null;
-        String channelDescription = null;
-        if(createChannelRequestDto.getChannelName() != null) {
-            channelName = createChannelRequestDto.getChannelName();
+        if(createChannelRequestDto == null) {
+            createChannelRequestDto = new CreateChannelRequestDto(
+                    user.getUsername()+"의 채널",
+                    null,
+                    user.getUsername()+"의 채널입니다.",
+                    false);
         }
-        if(createChannelRequestDto.getChannelPassword() != null) {
-            password = ChannelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
+
+        Boolean isPrivate = createChannelRequestDto.getIsPrivate();
+        String password = createChannelRequestDto.getChannelPassword();
+        if(isPrivate){
+            if(password==null){
+                throw new IllegalArgumentException("비밀 채널을 생성하려면 비밀번호가 필요합니다.");
+            }
         }
-        if(createChannelRequestDto.getChannelDescription() != null) {
-            channelDescription = createChannelRequestDto.getChannelDescription();
+        if(password!=null) {
+            password = channelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
         }
 
         Channel channel = Channel.builder()
-                .channelName(channelName)
+                .channelName(createChannelRequestDto.getChannelName())
+                .channelCreateUserName(user.getUsername())
                 .channelPassword(password)
-                .channelDescription(channelDescription)
+                .channelDescription(createChannelRequestDto.getChannelDescription())
+                .isPrivate(isPrivate)
                 .build();
-
         channelRepository.save(channel);
 
         UserChannel userChannel = UserChannel.builder()
@@ -72,63 +71,82 @@ public class ChannelServiceImpl implements ChannelService {
                 .channel(channel)
                 .isAdmin(true)
                 .build();
-
         userChannelRepository.save(userChannel);
 
-        return channel;
+        return new CreateChannelResponseDto(channel.getId(),
+                userChannel.getUser().getUsername(),
+                channel.getChannelName(),
+                channel.getChannelDescription(),
+                channel.getIsPrivate());
     }
     @Override
-    public Channel getChannel(Long id) {
-        return channelRepository.findById(id)
+    public GetChannelResponseDto getChannel(Long id) {
+        Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
+
+        return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUserName(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
     }
     @Override
-    public List<UserChannelResponseDto> getAllChannelUserIn(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public List<GetAllChannelUserInResponseDto> getAllChannelUserIn(User user) {
 
         List<UserChannel> userChannels = userChannelRepository.findByUser(user);
 
-        return userChannels.stream()
+        List<GetAllChannelUserInResponseDto> dtoList = userChannels.stream()
                 .map(userChannel -> {
                     Channel channel = userChannel.getChannel();
-                    return new UserChannelResponseDto( channel.getId(),
-                            userChannel.getReadTimestamp(), userChannel.isAdmin()
-                    );
+                    return new GetAllChannelUserInResponseDto(
+                            channel.getId(),
+                            channel.getChannelName(),
+                            userChannel.getReadTimestamp(),
+                            userChannel.isAdmin());
                 })
                 .collect(Collectors.toList());
+        return dtoList;
     }
 
     @Transactional
     @Override
-    public Channel updateChannel(Long id, UpdateChannelRequestDto updateChannelRequestDto) {
-        Channel channel = getChannel(id);
+    // 비밀번호 수정 기능 없음
+    public UpdateChannelResponseDto updateChannel(Long channelId, UpdateChannelRequestDto dto, User user) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
+        checkChannelAdmin(channel, user);
+        channel.updateChannel(dto);
+        return new UpdateChannelResponseDto(channel.getId(), channel.getChannelName(), channel.getChannelDescription());
+    }
 
-        channel.update(updateChannelRequestDto);
-        return channel;
+    @Transactional
+    @Override
+    public void deleteChannel(Long channelId, User user) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
+        checkChannelAdmin(channel, user);
+
+        List<UserChannel> userChannels = userChannelRepository.findByChannel(channel);
+        userChannelRepository.deleteAll(userChannels);
+
+        channelRepository.deleteById(channelId);
     }
 
     @Override
-    public void deleteChannel(Long id) {
-        channelRepository.deleteById(id);
-    }
+    public List<GetChannelContentsResponseDto> getChannelContents(Long channelId, User user) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
 
-    @Override
-    public List<ChannelContentResponseDto> getChannelContents(Long channelId) {
-        Channel channel = getChannel(channelId);
+        checkUserInChannel(channel, user);
 
         List<ChannelContent> channelContents = channelContentRepository.findByChannel(channel);
 
-        List<ChannelContentResponseDto> dtoList = channelContents.stream()
+        List<GetChannelContentsResponseDto> dtoList = channelContents.stream()
                 .map(channelContent -> {
-                    User user = channelContent.getUser();
+                    User channelContentUser = channelContent.getUser();
                     ChannelContent calloutContent = channelContent.getCalloutContent();
                     // NullPointException 방지
                     Long calloutContentId = calloutContent != null ? calloutContent.getId() : null;
-                    return new ChannelContentResponseDto(
+                    return new GetChannelContentsResponseDto(
                             channelContent.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
+                            channelContentUser.getUsername(),
+                            channelContentUser.getEmail(),
                             calloutContentId,
                             channelContent.getCreatedAt(),
                             channelContent.getNotReadCount());
@@ -139,37 +157,52 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public void addUserToChannel(Long channelId, Long userId) {
+    public void addUserToChannel(Long channelId, Long otherUserId, User user) {
 
-        User user = userRepository.findById(userId)
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
+
+        checkUserInChannel(channel, user);
+
+        User otherUser = userRepository.findById(otherUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Channel channel = getChannel(channelId);
 
-        checkChannelAdmin(channel, user);
-
-        UserChannel userChannel = UserChannel.builder()
-                .user(user)
+        UserChannel otherUserAddedChannel = UserChannel.builder()
+                .user(otherUser)
                 .channel(channel)
+                .isAdmin(false)
                 .build();
 
-        userChannelRepository.save(userChannel);
+        userChannelRepository.save(otherUserAddedChannel);
     }
 
     @Override
-    public void kickUserFromChannel(Long channelId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Channel channel = getChannel(channelId);
+    public void kickUserFromChannel(Long channelId, Long otherUserId, User user) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
         checkChannelAdmin(channel, user);
-        userChannelRepository.deleteByUserAndChannel(user, channel);
+
+        User otherUser = userRepository.findById(otherUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        userChannelRepository.deleteByUserAndChannel(otherUser, channel);
     }
 
-    // 수정, 삭제 시 권한 확인
+    // 수정, 삭제 시 Admin 권한 확인
     private void checkChannelAdmin(Channel channel, User user) {
         Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
 
         if(userChannel.isEmpty() || !userChannel.get().isAdmin()) {
             throw new IllegalArgumentException("You are not admin of this channel");
+        }
+    }
+
+    // 사용자가 채널에 속해 있는지 확인
+    private void checkUserInChannel(Channel channel, User user) {
+        Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
+
+        if(userChannel.isEmpty()) {
+            throw new IllegalArgumentException("You are not in this channel");
         }
     }
 

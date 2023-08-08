@@ -1,13 +1,10 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
-import com.innovationcamp.messenger.domain.channel.dto.UserChannelResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
