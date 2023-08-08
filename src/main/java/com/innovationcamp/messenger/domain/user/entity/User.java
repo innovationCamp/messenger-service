@@ -32,6 +32,15 @@ public class User {
         this.password = password;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        return (obj instanceof User user) && this.id.equals(user.getId()) && this.email.equals(user.getEmail())
+                && this.username.equals(user.getUsername()) && this.password.equals(user.getPassword());
+    }
+
     /*
     @OneToOne
     @JoinColumn(name = "wallet_id")

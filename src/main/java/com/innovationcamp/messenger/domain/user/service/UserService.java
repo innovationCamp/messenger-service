@@ -41,7 +41,9 @@ public class UserService {
     }
 
     public UserResponseDto loginUser(LoginUserRequestDto requestDto, HttpServletResponse res) {
-        User user = findUserByEmail(requestDto.getEmail());
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
+                new IllegalArgumentException("없는 이메일 입니다.")
+        );
 
         if(!passwordEncoder.checkPassword(requestDto.getPassword(), user.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -54,7 +56,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDto updateUser(UserRequestDto requestDto, UserModel userModel, HttpServletResponse res) {
-        User user = findUserByEmail(userModel.getEmail());
+        User user = findUserById(userModel.getId());
 
         if (!requestDto.getEmail().equals(userModel.getEmail()))
             checkUniqueEmail(requestDto.getEmail());
@@ -66,13 +68,13 @@ public class UserService {
     }
 
     public String deleteUser(UserModel userModel) {
-        User user = findUserByEmail(userModel.getEmail());
+        User user = findUserById(userModel.getId());
         userRepository.delete(user);
         return "삭제완료";
     }
 
     public UserResponseDto getUser(UserModel userModel) {
-        return new UserResponseDto(findUserByEmail(userModel.getEmail()));
+        return new UserResponseDto(findUserById(userModel.getId()));
     }
 
     public String logoutUser(HttpServletResponse res) {
@@ -80,8 +82,9 @@ public class UserService {
         return "로그아웃 성공";
     }
 
-    private User findUserByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("없는 이메일 입니다."));
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 유저입니다."));
     }
 
     private void checkUniqueEmail(String email) {

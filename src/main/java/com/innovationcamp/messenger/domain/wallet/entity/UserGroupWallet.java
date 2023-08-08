@@ -4,32 +4,30 @@ import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
 @NoArgsConstructor
-@DiscriminatorColumn
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Wallet extends TimeStamped{
+public class UserGroupWallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long money;
-
-    @Column
-    private String password;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserAuthorityEnum userAuthority;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Wallet(Long money, String password, User user){
-        this.money = money;
-        this.password = password;
+    @ManyToOne
+    @JoinColumn(name = "group_wallet_id")
+    private GroupWallet groupWallet;
+
+    public UserGroupWallet(UserAuthorityEnum userAuthority, User user, GroupWallet groupWallet) {
+        this.userAuthority = userAuthority;
         this.user = user;
+        this.groupWallet = groupWallet;
     }
 }
