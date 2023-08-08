@@ -1,9 +1,9 @@
 package com.innovationcamp.messenger.domain.user.controller;
 
-import com.innovationcamp.messenger.domain.user.dto.UserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.LoginUserRequestDto;
+import com.innovationcamp.messenger.domain.user.dto.UserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
-import com.innovationcamp.messenger.domain.user.jwt.UserModel;
+import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,19 +29,19 @@ public class UserController {
 
     @PutMapping
     public UserResponseDto updateUser(@RequestBody @Valid UserRequestDto requestDto,
-                                      @ModelAttribute UserModel userModel,
+                                      @ModelAttribute User user,
                                       HttpServletResponse res){
-        return userService.updateUser(requestDto, userModel, res);
+        return userService.updateUser(requestDto, user, res);
     }
 
     @DeleteMapping
-    public String deleteUser(@ModelAttribute UserModel userModel){
-        return userService.deleteUser(userModel);
+    public String deleteUser(@ModelAttribute User user){
+        return userService.deleteUser(user);
     }
 
     @GetMapping
-    public UserResponseDto getUser(@ModelAttribute UserModel userModel){
-        return userService.getUser(userModel);
+    public UserResponseDto getUser(@ModelAttribute User user){
+        return new UserResponseDto(user);
     }
 
     @GetMapping("/logout")
