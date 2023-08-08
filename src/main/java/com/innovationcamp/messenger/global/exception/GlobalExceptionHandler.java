@@ -1,8 +1,7 @@
-package com.innovationcamp.messenger.global.exception.controller;
+package com.innovationcamp.messenger.global.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.innovationcamp.messenger.global.exception.dto.ExceptionResponseDto;
-import com.innovationcamp.messenger.domain.user.jwt.UserModel;
+import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.validation.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @RestControllerAdvice
-@Slf4j(topic = "GlobalControllerAdvice")
-public class GlobalControllerAdvice {
-
-
-    @ModelAttribute
-    public UserModel userModel(HttpServletRequest req) {
-        return (UserModel) req.getAttribute("userModel");
-    }
+@Slf4j(topic = "GlobalExceptionHandler")
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponseDto> illegalArgumentExceptionHandler(IllegalArgumentException e) {
