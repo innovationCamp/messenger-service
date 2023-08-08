@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.testmessage.dto;
 
+import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -9,10 +10,9 @@ public class TestMessageRoomDto {
     private String roomId;
     private String name;
 
-    public static TestMessageRoomDto create(String name){
-        TestMessageRoomDto testMessageRoomDto = new TestMessageRoomDto();
-        testMessageRoomDto.roomId = UUID.randomUUID().toString();
-        testMessageRoomDto.name = name;
-        return testMessageRoomDto;
+
+    public TestMessageRoomDto(Channel channel){
+        this.roomId = channel.getId().toString();
+        this.name = channel.getChannelName();
     }
 }

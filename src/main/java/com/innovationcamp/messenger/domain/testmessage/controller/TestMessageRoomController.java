@@ -1,7 +1,9 @@
 package com.innovationcamp.messenger.domain.testmessage.controller;
 
 import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomDto;
-import com.innovationcamp.messenger.domain.testmessage.repository.TestMessageRepository;
+import com.innovationcamp.messenger.domain.testmessage.service.TestMessageService;
+import com.innovationcamp.messenger.domain.user.entity.User;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +15,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/test/message")
 public class TestMessageRoomController {
-    private final TestMessageRepository testMessageRepository;
+    @NonNull
+    private final TestMessageService testMessageService;
 
     // 채팅 리스트 화면
     @GetMapping("/room")
@@ -23,14 +26,15 @@ public class TestMessageRoomController {
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
     @ResponseBody
-    public List<TestMessageRoomDto> room() {
-        return testMessageRepository.findAllRoom();
+    public List<TestMessageRoomDto> findAllRoom(@ModelAttribute User user) {
+        return testMessageService.findAllRoom(user);
     }
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public TestMessageRoomDto createRoom(@RequestParam String name) {
-        return testMessageRepository.createTestMessageRoomDto(name);
+    public TestMessageRoomDto createRoom(@ModelAttribute User user,
+                                         @RequestParam String name) {
+        return testMessageService.createTestMessageRoomDto(user, name);
     }
     // 채팅방 입장 화면
     @GetMapping("/room/enter/{roomId}")
@@ -42,7 +46,7 @@ public class TestMessageRoomController {
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public TestMessageRoomDto roomInfo(@PathVariable String roomId) {
-        return testMessageRepository.findRoomById(roomId);
+        return testMessageService.findRoomById(roomId);
     }
 }
 

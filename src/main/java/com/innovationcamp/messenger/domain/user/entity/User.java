@@ -1,9 +1,12 @@
 package com.innovationcamp.messenger.domain.user.entity;
 
+import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,6 +21,8 @@ public class User {
     private String username;
     @Column
     private String password;
+    @OneToMany(mappedBy = "user")
+    private List<UserChannel> userChannelList;
 
     @Builder
     public User(String email, String username, String password) {

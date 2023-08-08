@@ -1,53 +1,46 @@
-//package com.innovationcamp.messenger.domain.testmessage.service;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomDto;
-//import jakarta.annotation.PostConstruct;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.stereotype.Service;
-//import org.springframework.web.socket.TextMessage;
-//import org.springframework.web.socket.WebSocketSession;
-//
-//import java.io.IOException;
-//import java.util.*;
-//
-//@Slf4j
-//@RequiredArgsConstructor
-//@Service
-//public class TestMessageService {
-//
-//    private final ObjectMapper objectMapper;
-//    private Map<String, TestMessageRoomDto> chatRooms;
-//
-//    @PostConstruct
-//    private void init() {
-//        chatRooms = new LinkedHashMap<>();
-//    }
-//
-//    public List<TestMessageRoomDto> findAllRoom() {
-//        return new ArrayList<>(chatRooms.values());
-//    }
-//
-//    public TestMessageRoomDto findRoomById(String roomId) {
-//        return chatRooms.get(roomId);
-//    }
-//
-//    public TestMessageRoomDto createRoom(String name) {
-//        String randomId = UUID.randomUUID().toString();
-//        TestMessageRoomDto chatRoom = TestMessageRoomDto.builder()
-//                .roomId(randomId)
-//                .name(name)
-//                .build();
-//        chatRooms.put(randomId, chatRoom);
-//        return chatRoom;
-//    }
-//
-//    public <T> void sendMessage(WebSocketSession session, T message) {
-//        try {
-//            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-//        } catch (IOException e) {
-//            log.error(e.getMessage(), e);
-//        }
-//    }
-//}
+package com.innovationcamp.messenger.domain.testmessage.service;
+
+import com.innovationcamp.messenger.domain.channel.entity.Channel;
+import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
+import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
+import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
+import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageRoomDto;
+import com.innovationcamp.messenger.domain.user.entity.User;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Slf4j
+@RequiredArgsConstructor
+@Service
+public class TestMessageService {
+    @NonNull
+    private final UserChannelRepository userChannelRepository;
+    @NonNull
+    private final ChannelRepository channelRepository;
+
+    public List<TestMessageRoomDto> findAllRoom(User user) {
+        List<UserChannel> userChannelList = user.getUserChannelList();
+        return userChannelList.stream().map(userChannel -> new TestMessageRoomDto(userChannel.getChannel())).toList();
+    }
+
+    public TestMessageRoomDto findRoomById(String roomId) {
+        return new TestMessageRoomDto(channelRepository.findById(Long.valueOf(roomId)).orElseThrow(() -> new IllegalArgumentException("없는 채팅")));
+    }
+
+    public TestMessageRoomDto createTestMessageRoomDto(User user, String name) {
+        Channel channel = new Channel(name);
+        channelRepository.save(channel);
+        UserChannel userChannel = new UserChannel(user, channel);
+        userChannelRepository.save(userChannel);
+        return new TestMessageRoomDto(channel);
+    }
+}
