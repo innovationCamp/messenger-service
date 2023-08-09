@@ -37,32 +37,14 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional
     @Override
     public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto createChannelRequestDto) {
-
-        if(createChannelRequestDto == null) {
-            createChannelRequestDto = new CreateChannelRequestDto(
-                    user.getUsername()+"의 채널",
-                    null,
-                    user.getUsername()+"의 채널입니다.",
-                    false);
-        }
-
-        Boolean isPrivate = createChannelRequestDto.getIsPrivate();
-        String password = createChannelRequestDto.getChannelPassword();
-        if(isPrivate){
-            if(password==null){
-                throw new IllegalArgumentException("비밀 채널을 생성하려면 비밀번호가 필요합니다.");
-            }
-        }
-        if(password!=null) {
-            password = channelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
-        }
+        String password = channelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
 
         Channel channel = Channel.builder()
                 .channelName(createChannelRequestDto.getChannelName())
-                .channelCreateUserName(user.getUsername())
+                .channelCreateUser(user)
                 .channelPassword(password)
                 .channelDescription(createChannelRequestDto.getChannelDescription())
-                .isPrivate(isPrivate)
+                .isPrivate(createChannelRequestDto.getIsPrivate())
                 .build();
         channelRepository.save(channel);
 
@@ -74,7 +56,7 @@ public class ChannelServiceImpl implements ChannelService {
         userChannelRepository.save(userChannel);
 
         return new CreateChannelResponseDto(channel.getId(),
-                userChannel.getUser().getUsername(),
+                channel.getChannelCreateUser().getId(),
                 channel.getChannelName(),
                 channel.getChannelDescription(),
                 channel.getIsPrivate());
@@ -84,7 +66,7 @@ public class ChannelServiceImpl implements ChannelService {
         Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
 
-        return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUserName(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
+        return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUser().getUsername(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
     }
     @Override
     public List<GetAllChannelUserInResponseDto> getAllChannelUserIn(User user) {

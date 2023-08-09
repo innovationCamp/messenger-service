@@ -7,17 +7,17 @@ import lombok.Getter;
 @Getter
 public class CreateChannelResponseDto {
     private final Long channelId;
-    private final String channelCreateUserName;
+    private final Long channelCreateUserId;
     private final String channelName;
     private final String channelDescription;
     private final Boolean isPrivate;
     public CreateChannelResponseDto(Long channelId,
-                                    String channelCreatedUserName,
+                                    Long channelCreatedUserId,
                                     String channelName,
                                     String channelDescription,
                                     Boolean isPrivate) {
         this.channelId = channelId;
-        this.channelCreateUserName = channelCreatedUserName;
+        this.channelCreateUserId = channelCreatedUserId;
         this.channelName = channelName;
         this.channelDescription = channelDescription;
         this.isPrivate = isPrivate;
