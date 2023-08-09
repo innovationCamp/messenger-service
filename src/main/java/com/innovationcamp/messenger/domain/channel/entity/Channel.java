@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.channel.entity;
 
 import com.innovationcamp.messenger.domain.channel.dto.*;
+import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +16,11 @@ public class Channel extends TimeStamped{
     private Long id;
 
     @Column
-    private String channelCreateUserName;
-
-    @Column
     private String channelName;
+
+    @ManyToOne
+    @JoinColumn(name = "channel_create_user_id", referencedColumnName = "id")
+    private User channelCreateUser;
 
     @Column
     private String channelPassword;
@@ -27,16 +29,16 @@ public class Channel extends TimeStamped{
     private String channelDescription;
 
     @Column
-    private Boolean isPrivate = false;
+    private Boolean isPrivate;
 
     @Builder
     public Channel(String channelName,
-                   String channelCreateUserName,
+                   User channelCreateUser,
                    String channelPassword,
                    String channelDescription,
                    Boolean isPrivate) {
         this.channelName = channelName;
-        this.channelCreateUserName = channelCreateUserName;
+        this.channelCreateUser = channelCreateUser;
         this.channelPassword = channelPassword;
         this.channelDescription = channelDescription;
         this.isPrivate = isPrivate;
