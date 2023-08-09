@@ -25,11 +25,10 @@ public class ChannelController {
     @Operation(summary = "채널 생성", description = """
             채널 생성 후 사용자를 관리자 권한으로 채널에 등록합니다.
 
-            RequestBody가 null인 경우에도 생성할 수 있으며( 기본값: '{username}의 채널' ),
 
             생성 성공시 채널 정보와 생성한 사용자의 username을 리턴합니다.""")
     @PostMapping
-    public ResponseEntity<CreateChannelResponseDto> createChannel(@RequestAttribute User user, @RequestBody(required = false) CreateChannelRequestDto createDto) {
+    public ResponseEntity<CreateChannelResponseDto> createChannel(@RequestAttribute User user, @RequestBody CreateChannelRequestDto createDto) {
         CreateChannelResponseDto dto = channelService.createChannel(user, createDto);
         return ResponseEntity.ok(dto);
     }
