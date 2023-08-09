@@ -19,7 +19,7 @@ public class Channel extends TimeStamped{
     private String channelName;
 
     @ManyToOne
-    @JoinColumn(name = "channel_create_user_id", referencedColumnName = "id")
+    @JoinColumn(name = "channel_create_user_id")
     private User channelCreateUser;
 
     @Column
