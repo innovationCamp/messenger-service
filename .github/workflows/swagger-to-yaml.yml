@@ -1,0 +1,76 @@
+name: Build Gradle project
+
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: write
+
+jobs:
+  build-gradle-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.ACTIONS_BUILD_SECRETS }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build
+
+      - name: Start the application
+        run: ./gradlew bootRun &
+        continue-on-error: true
+
+      - name: Sleep for a while to allow the app to start
+        run: sleep 60  # You can adjust the sleep duration as needed
+
+      - name: Fetch Swagger JSON
+        run: curl http://localhost:8080/v3/api-docs -o swagger.json
+
+      # Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # or another version you prefer
+
+      # Install and use swagger-cli to convert JSON to YAML
+      - name: Convert Swagger JSON to YAML
+        run: |
+          npm install -g swagger-cli
+          swagger-cli bundle swagger.json -o swagger.yaml -t yaml
+
+      - name: Set up Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git remote set-url origin https://x-access-token:${{ secrets.KH_PERSONAL_TOKEN }}@github.com/innovationCamp/messenger-service.git
+
+      - name: Commit and Push
+        run: |
+          git add .
+          git commit -m "Update Swagger YAML"
+          git push
+
+      - name: Stop the application
+        run: pkill -f 'org.springframework.boot.loader.JarLauncher'
+        continue-on-error: true
