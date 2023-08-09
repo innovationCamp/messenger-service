@@ -22,4 +22,9 @@ public class Message extends ChannelContent{
         super(user, channel);
         this.text = requestDto.getText();
     }
+
+    public Message(User user, Channel channel, String message) {
+        super(user, channel);
+        this.text = message;
+    }
 }

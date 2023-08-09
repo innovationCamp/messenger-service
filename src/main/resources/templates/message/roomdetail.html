@@ -57,13 +57,16 @@
             messages: []
         },
         created() {
-            this.roomId = localStorage.getItem('wschat.roomId');
-            this.sender = localStorage.getItem('wschat.sender');
+            this.roomId = localStorage.getItem('wschat.roomId')
             this.findRoom();
         },
         methods: {
             findRoom: function() {
-                axios.get('/api/test/message/room/'+this.roomId).then(response => { this.room = response.data; });
+                axios.get('/api/test/message/room/'+this.roomId).then(response => {
+                    this.room = response.data;
+                    // this.roomId = response.data.roomId;
+                    this.sender = response.data.sender;
+                });
             },
             sendMessage: function() {
                 ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
@@ -82,7 +85,7 @@
                 var recv = JSON.parse(message.body);
                 vm.recvMessage(recv);
             });
-            ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender}));
+            // ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender}));
         }, function(error) {
             if(reconnect++ <= 5) {
                 setTimeout(function() {

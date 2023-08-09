@@ -7,7 +7,10 @@ import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import com.innovationcamp.messenger.domain.message.dto.MessageResponseDto;
 import com.innovationcamp.messenger.domain.message.entity.Message;
 import com.innovationcamp.messenger.domain.message.repository.MessageRepository;
+import com.innovationcamp.messenger.domain.testmessage.dto.TestMessageDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
+import com.innovationcamp.messenger.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,8 @@ public class MessageService {
     private final ChannelRepository channelRepository;
     @NonNull
     private final ChannelContentRepository channelContentRepository;
+    @NonNull
+    private final UserRepository userRepository;
 
     public MessageResponseDto createMessage(User user, Long channelId, MessageRequestDto requestDto) {
         Channel channel = channelRepository.findById(channelId).orElseThrow(()-> new IllegalArgumentException("없는 채널 입니다."));
@@ -38,5 +43,12 @@ public class MessageService {
         }
         messageRepository.delete(message);
         return "삭제 완료";
+    }
+
+    public void testCreateMessage(TestMessageDto messageDto) {
+        User user = userRepository.findByUsername(messageDto.getSender()).orElseThrow(() -> new EntityNotFoundException("없는 유저 입니다."));
+        Channel channel = channelRepository.findById(messageDto.getRoomId()).orElseThrow(() -> new EntityNotFoundException("없는 채널 입니다."));
+        Message message = new Message(user, channel, messageDto.getMessage());
+        messageRepository.save(message);
     }
 }
