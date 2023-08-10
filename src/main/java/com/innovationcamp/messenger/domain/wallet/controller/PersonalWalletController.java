@@ -20,27 +20,27 @@ public class PersonalWalletController {
     private PersonalWalletService walletPersonalService;
 
     @GetMapping("")
-    public PersonalWallet getPersonalWallet(@ModelAttribute User user) {
+    public PersonalWallet getPersonalWallet(@RequestAttribute User user) {
         return walletPersonalService.getPersonalWallet(user);
     }
 
     @PostMapping("")
-    public PersonalWallet createPersonalWallet(@ModelAttribute User user, @RequestBody PersonalWalletCreateDto requestDto) {
+    public PersonalWallet createPersonalWallet(@RequestAttribute User user, @RequestBody PersonalWalletCreateDto requestDto) {
         return walletPersonalService.createPersonalWallet(user, requestDto);
     }
 
     @DeleteMapping("")
-    public PersonalWallet deletePersonalWallet(@ModelAttribute User user) {
+    public PersonalWallet deletePersonalWallet(@RequestAttribute User user) {
         return walletPersonalService.deletePersonalWallet(user);
     }
 
     @GetMapping("/transaction/all")
-    public List<TransactionResponseDto> getAllTransactionByPersonalWallet(@ModelAttribute User user) {
+    public List<TransactionResponseDto> getAllTransactionByPersonalWallet(@RequestAttribute User user) {
         return walletPersonalService.getAllTransactionByPersonalWallet(user);
     }
 
     @GetMapping("/group/all")
-    public List<GroupWalletResponseDto> getAllGroupWalletByUser(@ModelAttribute User user) {
+    public List<GroupWalletResponseDto> getAllGroupWalletByUser(@RequestAttribute User user) {
         return walletPersonalService.getAllGroupWalletByUser(user);
     }
 }

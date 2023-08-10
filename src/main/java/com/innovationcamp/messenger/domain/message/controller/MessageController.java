@@ -16,14 +16,14 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping("/{channelId}")
-    public MessageResponseDto createMessage(@ModelAttribute User user,
+    public MessageResponseDto createMessage(@RequestAttribute User user,
                                             @PathVariable Long channelId,
                                             @RequestBody MessageRequestDto requestDto){
         return messageService.createMessage(user, channelId, requestDto);
     }
 
     @DeleteMapping("/{messageId}")
-    public String deleteMessage(@ModelAttribute User user,
+    public String deleteMessage(@RequestAttribute User user,
                                 @PathVariable Long messageId){
         return messageService.deleteMessage(user, messageId);
     }

@@ -16,7 +16,7 @@ public class WalletController {
     private WalletService walletService;
 
     @PostMapping("/transaction")
-    public TransactionResponseDto createTransaction(@ModelAttribute User user, @RequestBody TransactionCreateDto requestDto) {
+    public TransactionResponseDto createTransaction(@RequestAttribute User user, @RequestBody TransactionCreateDto requestDto) {
         return walletService.createTransaction(user, requestDto);
     }
 }

@@ -21,7 +21,7 @@ public class GroupWalletController {
     private GroupWalletService groupWalletService;
 
     @PostMapping("")
-    public GroupWallet createGroupWallet(@ModelAttribute User user, @RequestBody GroupWalletCreateDto requestDto) {
+    public GroupWallet createGroupWallet(@RequestAttribute User user, @RequestBody GroupWalletCreateDto requestDto) {
         return groupWalletService.createGroupWallet(user, requestDto);
     }
 
@@ -31,7 +31,7 @@ public class GroupWalletController {
     }
 
     @PostMapping("/{groupWalletId}")
-    public GroupWallet participantGroupWalletById(@ModelAttribute User user, @PathVariable Long groupWalletId){
+    public GroupWallet participantGroupWalletById(@RequestAttribute User user, @PathVariable Long groupWalletId){
         return groupWalletService.participantGroupWalletById(user, groupWalletId);
     }
 

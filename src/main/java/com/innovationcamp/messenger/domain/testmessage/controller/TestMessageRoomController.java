@@ -29,13 +29,13 @@ public class TestMessageRoomController {
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
     @ResponseBody
-    public List<TestMessageRoomDto> findAllRoom(@ModelAttribute User user) {
+    public List<TestMessageRoomDto> findAllRoom(@RequestAttribute User user) {
         return testMessageService.findAllRoom(user);
     }
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public TestMessageRoomDto createRoom(@ModelAttribute User user,
+    public TestMessageRoomDto createRoom(@RequestAttribute User user,
                                          @RequestParam String name) {
         return testMessageService.createTestMessageRoomDto(user, name);
     }
@@ -48,7 +48,7 @@ public class TestMessageRoomController {
     // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public TestMessageRoomUserDto roomInfo(@ModelAttribute User user,
+    public TestMessageRoomUserDto roomInfo(@RequestAttribute User user,
                                            @PathVariable Long roomId) {
         return testMessageService.findRoomById(roomId, user);
     }

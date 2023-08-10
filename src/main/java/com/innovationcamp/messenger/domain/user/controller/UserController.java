@@ -29,18 +29,18 @@ public class UserController {
 
     @PutMapping
     public UserResponseDto updateUser(@RequestBody @Valid UserRequestDto requestDto,
-                                      @ModelAttribute User user,
+                                      @RequestAttribute User user,
                                       HttpServletResponse res){
         return userService.updateUser(requestDto, user, res);
     }
 
     @DeleteMapping
-    public String deleteUser(@ModelAttribute User user){
+    public String deleteUser(@RequestAttribute User user){
         return userService.deleteUser(user);
     }
 
     @GetMapping
-    public UserResponseDto getUser(@ModelAttribute User user){
+    public UserResponseDto getUser(@RequestAttribute User user){
         return new UserResponseDto(user);
     }
 
