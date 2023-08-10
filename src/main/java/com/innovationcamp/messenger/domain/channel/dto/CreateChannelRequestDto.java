@@ -11,5 +11,5 @@ public class CreateChannelRequestDto {
     private String channelName;
     private String channelPassword;
     private String channelDescription;
-    private Boolean isPrivate = true;
+    private Boolean isPrivate = false;
 }
