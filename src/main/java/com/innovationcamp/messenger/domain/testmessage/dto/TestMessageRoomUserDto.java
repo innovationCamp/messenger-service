@@ -8,11 +8,13 @@ public class TestMessageRoomUserDto {
     private String roomId;
     private String name;
     private String sender;
+    private boolean firstEntry;
 
 
-    public TestMessageRoomUserDto(Channel channel, String username){
+    public TestMessageRoomUserDto(Channel channel, String username, boolean firstEntry){
         this.roomId = channel.getId().toString();
         this.name = channel.getChannelName();
         this.sender = username;
+        this.firstEntry = firstEntry;
     }
 }

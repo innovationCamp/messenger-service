@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface UserChannelRepository extends JpaRepository<UserChannel, Long> {
     List<Channel> findAllByUser(User user);
+
+    boolean existsByChannelIdAndUserId(Long channelId, Long userId);
 }
