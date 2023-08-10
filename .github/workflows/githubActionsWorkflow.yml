@@ -3,14 +3,14 @@ name: Build Gradle project
 on:
   pull_request:
     branches:
-      - develop
+      - kh-test
   push:
     branches:
-      - develop
+      - kh-test
 
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-gradle-project:
@@ -26,7 +26,6 @@ jobs:
 
       - run: touch ./src/main/resources/application.properties
       - run: echo "${{ secrets.ACTIONS_BUILD_SECRETS }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
@@ -34,3 +33,22 @@ jobs:
         run: chmod +x gradlew
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
+
+      - name: Start App
+        run: |
+          nohup ./gradlew bootRun &
+          sleep 60  # give some time for the app to start
+
+      - name: Fetch Swagger Documentation (OAS 3)
+        run: curl http://localhost:8080/v3/api-docs.yaml > api-docs.yaml
+
+      - name: Commit OpenAPI YAML to Repo
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/innovationCamp/messenger-service.git
+          git add api-docs.yaml
+          git commit -m "Updated api-docs.yaml" || echo "No changes to commit"
+          git push origin HEAD:documentation --force
+
+          
