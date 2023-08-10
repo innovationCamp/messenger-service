@@ -1,7 +1,6 @@
 package com.innovationcamp.messenger.domain.channel.controller;
 
 import com.innovationcamp.messenger.domain.channel.dto.*;
-import com.innovationcamp.messenger.domain.channel.service.ChannelService;
 import com.innovationcamp.messenger.domain.channel.service.ChannelServiceImpl;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
