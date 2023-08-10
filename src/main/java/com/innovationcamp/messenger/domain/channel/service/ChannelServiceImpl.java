@@ -36,15 +36,14 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Transactional
     @Override
-    public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto createChannelRequestDto) {
-        String password = channelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
-
+    public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto requestDto
+    ) {
         Channel channel = Channel.builder()
-                .channelName(createChannelRequestDto.getChannelName())
+                .channelName(requestDto.getChannelName())
                 .channelCreateUser(user)
-                .channelPassword(password)
-                .channelDescription(createChannelRequestDto.getChannelDescription())
-                .isPrivate(createChannelRequestDto.getIsPrivate())
+                .channelPassword(channelPasswordEncoder.encode(requestDto.getChannelPassword()))
+                .channelDescription(requestDto.getChannelDescription())
+                .isPrivate(requestDto.getIsPrivate())
                 .build();
         channelRepository.save(channel);
 
@@ -55,12 +54,9 @@ public class ChannelServiceImpl implements ChannelService {
                 .build();
         userChannelRepository.save(userChannel);
 
-        return new CreateChannelResponseDto(channel.getId(),
-                channel.getChannelCreateUser().getId(),
-                channel.getChannelName(),
-                channel.getChannelDescription(),
-                channel.getIsPrivate());
+        return new CreateChannelResponseDto(channel);
     }
+
     @Override
     public GetChannelResponseDto getChannel(Long id) {
         Channel channel = channelRepository.findById(id)
@@ -68,6 +64,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUser().getUsername(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
     }
+
     @Override
     public List<GetAllChannelUserInResponseDto> getAllChannelUserIn(User user) {
 
@@ -174,7 +171,7 @@ public class ChannelServiceImpl implements ChannelService {
     private void checkChannelAdmin(Channel channel, User user) {
         Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
 
-        if(userChannel.isEmpty() || !userChannel.get().isAdmin()) {
+        if (userChannel.isEmpty() || !userChannel.get().isAdmin()) {
             throw new IllegalArgumentException("You are not admin of this channel");
         }
     }
@@ -183,7 +180,7 @@ public class ChannelServiceImpl implements ChannelService {
     private void checkUserInChannel(Channel channel, User user) {
         Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
 
-        if(userChannel.isEmpty()) {
+        if (userChannel.isEmpty()) {
             throw new IllegalArgumentException("You are not in this channel");
         }
     }
