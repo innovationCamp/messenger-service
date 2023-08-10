@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString(callSuper = true)
 public class PersonalWallet extends Wallet {
-    public PersonalWallet(boolean admin, Long money, String password, User user) {
-        super(admin, money, password, user);
+    public PersonalWallet(Long money, String password, User user) {
+        super(money, password, user);
     }
 }
