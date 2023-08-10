@@ -3,10 +3,10 @@ name: Build Gradle project
 on:
   pull_request:
     branches:
-      - kh-test
+      - develop
   push:
     branches:
-      - kh-test
+      - develop
 
 
 permissions:
