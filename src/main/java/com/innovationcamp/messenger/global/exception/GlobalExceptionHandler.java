@@ -54,6 +54,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining(", "));
+        log.error("Exception handled: ", e);  // Logging the entire exception stack trace
         ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(), message, detailedErrorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
