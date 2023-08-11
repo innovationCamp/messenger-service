@@ -69,7 +69,12 @@ public class ChannelServiceImpl implements ChannelService {
     public List<GetChannelResponseDto> searchChannel(String channelName) {
         List<Channel> channels = channelRepository.findAllByChannelNameContainingIgnoreCase(channelName);
         List<GetChannelResponseDto> dtoList = channels.stream()
-                .map(channel -> new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUser().getUsername(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt()))
+                .map(channel -> new GetChannelResponseDto(
+                        channel.getId()
+                        , channel.getChannelCreateUser().getUsername()
+                        , channel.getChannelName()
+                        , channel.getChannelDescription()
+                        , channel.getCreatedAt()))
                 .collect(Collectors.toList());
         return dtoList;
     }

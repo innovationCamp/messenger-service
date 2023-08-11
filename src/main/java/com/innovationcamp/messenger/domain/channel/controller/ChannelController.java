@@ -31,6 +31,11 @@ public class ChannelController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(summary = "채널 검색", description = """
+            채널 이름을 통해 채널을 검색합니다. 채널 이름은 중복될 수 있습니다.
+            
+            
+            검색 결과가 없을 경우 204 No Content를 반환합니다.""")
     @GetMapping("/search")
     public ResponseEntity<List<GetChannelResponseDto>> searchChannel(@RequestParam String channelName) {
         List<GetChannelResponseDto> dtoList = channelService.searchChannel(channelName);
