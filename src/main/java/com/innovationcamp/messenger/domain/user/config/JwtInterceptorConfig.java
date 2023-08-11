@@ -24,6 +24,6 @@ public class JwtInterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/api/user/signup","/api/user/login",
                         "/swagger-ui/**", "/webjars/**",
-                        "/v3/api-docs/**", "/swagger-resources/**");
+                        "/v3/api-docs/**", "/swagger-resources/**", "/v3/api-docs.yaml");
     }
 }
