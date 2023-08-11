@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface ChannelContentRepository extends JpaRepository<ChannelContent, Long> {
     List<ChannelContent> findByChannel(Channel channel);
+
+    // 테스트용
+    List<ChannelContent> findAllByChannelId(Long roomId);
 }

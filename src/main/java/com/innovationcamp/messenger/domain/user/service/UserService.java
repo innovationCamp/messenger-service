@@ -6,7 +6,6 @@ import com.innovationcamp.messenger.domain.user.dto.LoginUserRequestDto;
 import com.innovationcamp.messenger.domain.user.dto.UserResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.jwt.JwtUtil;
-import com.innovationcamp.messenger.domain.user.jwt.UserModel;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -55,10 +54,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateUser(UserRequestDto requestDto, UserModel userModel, HttpServletResponse res) {
-        User user = findUserById(userModel.getId());
+    public UserResponseDto updateUser(UserRequestDto requestDto, User user, HttpServletResponse res) {
 
-        if (!requestDto.getEmail().equals(userModel.getEmail()))
+        if (!requestDto.getEmail().equals(user.getEmail()))
             checkUniqueEmail(requestDto.getEmail());
 
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -67,24 +65,14 @@ public class UserService {
         return new UserResponseDto(user);
     }
 
-    public String deleteUser(UserModel userModel) {
-        User user = findUserById(userModel.getId());
+    public String deleteUser(User user) {
         userRepository.delete(user);
         return "삭제완료";
-    }
-
-    public UserResponseDto getUser(UserModel userModel) {
-        return new UserResponseDto(findUserById(userModel.getId()));
     }
 
     public String logoutUser(HttpServletResponse res) {
         jwtUtil.deleteJwtCookie(res);
         return "로그아웃 성공";
-    }
-
-    public User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 유저입니다."));
     }
 
     private void checkUniqueEmail(String email) {

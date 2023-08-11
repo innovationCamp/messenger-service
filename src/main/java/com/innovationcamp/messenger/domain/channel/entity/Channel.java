@@ -4,8 +4,11 @@ import com.innovationcamp.messenger.domain.channel.dto.*;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -48,5 +51,11 @@ public class Channel extends TimeStamped{
         this.channelName = updateChannelDto.getChannelName();
         this.channelDescription = updateChannelDto.getChannelDescription();
     }
+    // 테스스 용
+    @OneToMany(mappedBy = "channel")
+    private List<UserChannel> userChannelList;
 
+    public Channel(String name) {
+        this.channelName = name;
+    }
 }

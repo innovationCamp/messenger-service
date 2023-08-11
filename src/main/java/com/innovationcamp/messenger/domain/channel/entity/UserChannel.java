@@ -20,7 +20,7 @@ public class UserChannel{
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
-    
+
     // UserChannel이 주인인 단방향관계
     @ManyToOne
     @JoinColumn(name="channel_id", nullable=false)
@@ -38,6 +38,12 @@ public class UserChannel{
         this.channel = channel;
         this.readTimestamp = readTimestamp;
         this.isAdmin = isAdmin;
+    }
+
+    // 테스트용
+    public UserChannel(User user, Channel channel) {
+        this.user = user;
+        this.channel = channel;
     }
 
 }
