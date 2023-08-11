@@ -62,15 +62,11 @@
         },
         methods: {
             findRoom: function() {
-                axios.get('/api/test/message/room/'+this.roomId).then(response => {
+                axios.get('/api/test/'+this.roomId).then(response => {
                     this.room = response.data;
                     // this.roomId = response.data.roomId;
                     this.sender = response.data.sender;
-                    if(response.data.firstEntry){
-                        ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:response.data.roomId, sender:response.data.sender}));
-                    }else {
-                        this.loadMessage(response.data.roomId)
-                    }
+                    this.loadMessage(response.data.roomId)
                 });
             },
             sendMessage: function() {
@@ -81,12 +77,12 @@
                 this.messages.unshift({"type":recv.type,"sender":recv.type=='ENTER'?'[알림]':recv.sender,"message":recv.message})
             },
             loadMessage: function (roomId){
-                axios.get("/api/test/message/"+ roomId).then(response => {
+                axios.get("/api/test/"+ roomId+"/content").then(response => {
                     console.log(response.data);
                     response.data.forEach(messageDto => {
                         this.messages.unshift({
-                            "sender":messageDto.sender,
-                            "message":messageDto.message
+                            "sender":messageDto.username,
+                            "message":messageDto.text
                         });
                     });
                 });

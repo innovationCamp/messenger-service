@@ -1,4 +1,4 @@
-package com.innovationcamp.messenger.domain.testmessage.config;
+package com.innovationcamp.messenger.domain.message.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

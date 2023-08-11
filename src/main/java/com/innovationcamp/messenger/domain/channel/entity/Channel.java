@@ -52,8 +52,6 @@ public class Channel extends TimeStamped{
         this.channelDescription = updateChannelDto.getChannelDescription();
     }
     // 테스스 용
-    @Column
-    private String channelName;
     @OneToMany(mappedBy = "channel")
     private List<UserChannel> userChannelList;
 

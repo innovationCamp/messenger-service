@@ -1,4 +1,4 @@
-package com.innovationcamp.messenger.domain.testmessage.dto;
+package com.innovationcamp.messenger.domain.message.dto;
 
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import lombok.Getter;

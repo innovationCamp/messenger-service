@@ -16,6 +16,5 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
     List<UserChannel> findByChannel(Channel channel);
 
     // 테스트용
-    List<Channel> findAllByUser(User user);
     boolean existsByChannelIdAndUserId(Long channelId, Long userId);
 }
