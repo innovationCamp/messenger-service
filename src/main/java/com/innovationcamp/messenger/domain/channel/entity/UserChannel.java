@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class UserChannel{
+public class UserChannel extends TimeStamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
