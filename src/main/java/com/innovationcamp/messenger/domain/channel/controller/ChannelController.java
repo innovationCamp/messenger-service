@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//TODO: 채널 검색, notReadCount 로직,  채널 탈퇴
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/channel")
@@ -19,8 +19,6 @@ import java.util.List;
 public class ChannelController {
     @NonNull
     private final ChannelServiceImpl channelService;
-
-    //TODO: 채널 입장, ChannelContent 생성, notReadCount 로직, 채널 검색, 채널 가입, 채널 탈퇴
 
     @Operation(summary = "채널 생성", description = """
             채널 생성 후 사용자를 관리자 권한으로 채널에 등록합니다.
@@ -31,6 +29,17 @@ public class ChannelController {
     public ResponseEntity<CreateChannelResponseDto> createChannel(@RequestAttribute User user, @RequestBody CreateChannelRequestDto createDto) {
         CreateChannelResponseDto dto = channelService.createChannel(user, createDto);
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<GetChannelResponseDto>> searchChannel(@RequestParam String channelName) {
+        List<GetChannelResponseDto> dtoList = channelService.searchChannel(channelName);
+
+        if (dtoList.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 204 No Content
+        }
+
+        return ResponseEntity.ok(dtoList);
     }
 
     @Operation(summary = "채널 id를 사용하여 특정 채널의 정보 조회", description = """
