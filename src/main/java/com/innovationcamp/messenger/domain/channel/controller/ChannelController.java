@@ -100,5 +100,10 @@ public class ChannelController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @Operation(summary = "채널 참가")
+    @PostMapping("/{channelId}/user")
+    public ResponseEntity<ParticipantChannelDto> participantByChannelId(@PathVariable Long channelId, @RequestAttribute User user) {
+        ParticipantChannelDto dto = channelService.participantByChannelId(channelId, user);
+        return ResponseEntity.ok(dto);
+    }
 }
