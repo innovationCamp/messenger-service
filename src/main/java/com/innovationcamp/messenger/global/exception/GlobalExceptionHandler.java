@@ -1,23 +1,30 @@
 package com.innovationcamp.messenger.global.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.validation.ValidationException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j(topic = "GlobalExceptionHandler")
 public class GlobalExceptionHandler {
+    // user/singup에서 다음과 같이 입력하면( , 을 일부러 남김) 콘솔에서 "아직 정의하지 않은 예외 발생" 확인가능합니다
+    /*
+    {
+      "email": "string",
+    }
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponseDto> generalExceptionHandler(Exception e) {
+        log.error("아직 정의하지 못한 예외 발생: ", e);
+        return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
 
     // General handler for exceptions to reduce code duplication
     private ResponseEntity<ExceptionResponseDto> createResponse(HttpStatus status, Exception e) {
