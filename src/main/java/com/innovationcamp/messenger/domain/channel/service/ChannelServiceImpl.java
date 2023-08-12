@@ -208,6 +208,6 @@ public class ChannelServiceImpl implements ChannelService {
                 .user(user)
                 .isAdmin(false)
                 .build();
-        return new ParticipantChannelDto(userChannel);
+        return new ParticipantChannelDto(userChannelRepository.save(userChannel));
     }
 }
