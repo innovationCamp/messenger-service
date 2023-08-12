@@ -200,4 +200,14 @@ public class ChannelServiceImpl implements ChannelService {
         }
     }
 
+    public ParticipantChannelDto participantByChannelId(Long channelId, User user) {
+        Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
+        if (userChannelRepository.findByUserAndChannel(user, channel).isPresent()) throw new IllegalArgumentException("이미 참여 중인 채널입니다.");
+        UserChannel userChannel = UserChannel.builder()
+                .channel(channel)
+                .user(user)
+                .isAdmin(false)
+                .build();
+        return new ParticipantChannelDto(userChannel);
+    }
 }

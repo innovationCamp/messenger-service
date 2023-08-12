@@ -14,5 +14,5 @@ public interface ChannelService {
     List<GetChannelContentsResponseDto> getChannelContents(Long channelId, User user);
     void addUserToChannel(Long channelId, Long otherUserId, User user);
     void kickUserFromChannel(Long channelId, Long otherUserId, User user);
-
+    ParticipantChannelDto participantByChannelId(Long channelId, User user);
 }
