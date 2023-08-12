@@ -1,23 +1,27 @@
 package com.innovationcamp.messenger.domain.message.dto;
 
 import com.innovationcamp.messenger.domain.message.entity.Message;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class MessageResponseDto {
-    private Long id;
-    private String username;
+public class MessageResponseDto extends ChannelContentsResponseDto {
     private String text;
-    private Long channelId;
-    private LocalDateTime createdAt;
+    private MessageRequestDto.MessageType type;
 
-    public MessageResponseDto(Message message) {
-        this.id = message.getId();
-        this.username = message.getUser().getUsername();
-        this.text = message.getText();
-        this.channelId = message.getChannel().getId();
-        this.createdAt = message.getCreatedAt();
+    @Builder
+    public MessageResponseDto(Long id,
+                              String username,
+                              Long channelId,
+                              Long callOutId,
+                              LocalDateTime createdAt,
+                              Long notReadCount,
+                              String text,
+                              MessageRequestDto.MessageType type) {
+        super(id, username, channelId, callOutId, createdAt, notReadCount);
+        this.text = text;
+        this.type = type;
     }
 }

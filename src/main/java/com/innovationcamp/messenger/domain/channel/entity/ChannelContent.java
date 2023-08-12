@@ -2,6 +2,7 @@ package com.innovationcamp.messenger.domain.channel.entity;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -34,19 +35,11 @@ public abstract class ChannelContent extends TimeStamped {
     @Column(name = "not_read_count")
     private Long notReadCount;
 
-//    @Builder
-//    public ChannelContent(User user, Channel channel, ChannelContent calloutContent,
-//                          LocalDateTime createdAt, Long notReadCount) {
-//        this.user = user;
-//        this.channel = channel;
-//        this.calloutContent = calloutContent;
-//        this.createdAt = createdAt;
-//        this.notReadCount = notReadCount;
-//    }
 
-    // 테스트용
-    public ChannelContent(User user, Channel channel) {
+    public ChannelContent(User user, Channel channel, Long notReadCount, ChannelContent calloutContent) {
         this.user = user;
         this.channel = channel;
+        this.notReadCount = notReadCount;
+        this.calloutContent = calloutContent;
     }
 }

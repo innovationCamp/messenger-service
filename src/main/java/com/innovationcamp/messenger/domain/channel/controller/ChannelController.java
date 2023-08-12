@@ -2,6 +2,7 @@ package com.innovationcamp.messenger.domain.channel.controller;
 
 import com.innovationcamp.messenger.domain.channel.dto.*;
 import com.innovationcamp.messenger.domain.channel.service.ChannelServiceImpl;
+import com.innovationcamp.messenger.domain.message.dto.ChannelContentsResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -73,8 +74,8 @@ public class ChannelController {
 
     @Operation(summary = "사용자가 속한 특정 채널의 content 전체 조회", description = "getChannelContents(@PathVariable Long, @RequestAttribute User)")
     @GetMapping("/{channelId}/content")
-    public ResponseEntity<List<GetChannelContentsResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
-        List<GetChannelContentsResponseDto> responseDtoList = channelService.getChannelContents(channelId, user);
+    public ResponseEntity<List<ChannelContentsResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
+        List<ChannelContentsResponseDto> responseDtoList = channelService.getChannelContents(channelId, user);
         return ResponseEntity.ok(responseDtoList);
     }
 
