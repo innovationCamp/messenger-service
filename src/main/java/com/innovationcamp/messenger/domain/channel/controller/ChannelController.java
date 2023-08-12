@@ -34,17 +34,11 @@ public class ChannelController {
 
     @Operation(summary = "채널 검색", description = """
             채널 이름을 통해 채널을 검색합니다. 채널 이름은 중복될 수 있습니다.
-            
-            
-            검색 결과가 없을 경우 204 No Content를 반환합니다.""")
+            """)
     @GetMapping("/search")
-    public ResponseEntity<List<GetChannelResponseDto>> searchChannel(@RequestParam String channelName) {
-        List<GetChannelResponseDto> dtoList = channelService.searchChannel(channelName);
-
-        if (dtoList.isEmpty()) {
-            return ResponseEntity.noContent().build();  // 204 No Content
-        }
-
+    public ResponseEntity<List<GetChannelResponseDto>> searchChannel(@RequestParam String keyword) {
+        if (keyword.isEmpty()) throw new IllegalArgumentException("검색할 키워드를 입력하세요.");
+        List<GetChannelResponseDto> dtoList = channelService.searchChannel(keyword);
         return ResponseEntity.ok(dtoList);
     }
 
@@ -107,5 +101,10 @@ public class ChannelController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @Operation(summary = "채널 참가")
+    @PostMapping("/{channelId}/user")
+    public ResponseEntity<ParticipantChannelDto> participantByChannelId(@PathVariable Long channelId, @RequestAttribute User user) {
+        ParticipantChannelDto dto = channelService.participantByChannelId(channelId, user);
+        return ResponseEntity.ok(dto);
+    }
 }
