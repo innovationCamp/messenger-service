@@ -21,8 +21,6 @@ public class User {
     private String username;
     @Column
     private String password;
-    @OneToMany(mappedBy = "user")
-    private List<UserChannel> userChannelList;
 
     @Builder
     public User(String email, String username, String password) {
@@ -45,10 +43,4 @@ public class User {
         return (obj instanceof User user) && this.id.equals(user.getId()) && this.email.equals(user.getEmail())
                 && this.username.equals(user.getUsername()) && this.password.equals(user.getPassword());
     }
-
-    /*
-    @OneToOne
-    @JoinColumn(name = "wallet_id")
-    private Wallet wallet;
-     */
 }
