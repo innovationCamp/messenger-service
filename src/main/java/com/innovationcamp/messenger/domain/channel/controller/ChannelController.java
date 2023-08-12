@@ -1,8 +1,7 @@
 package com.innovationcamp.messenger.domain.channel.controller;
 
 import com.innovationcamp.messenger.domain.channel.dto.*;
-import com.innovationcamp.messenger.domain.channel.service.ChannelServiceImpl;
-import com.innovationcamp.messenger.domain.message.dto.ChannelContentsResponseDto;
+import com.innovationcamp.messenger.domain.channel.service.ChannelService;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,11 +18,10 @@ import java.util.List;
 @Tag(name = "ChannelController", description = "@RequestAttribute User에서 현재 사용자 정보를 얻습니다.")
 public class ChannelController {
     @NonNull
-    private final ChannelServiceImpl channelService;
+    private final ChannelService channelService;
 
-    @Operation(summary = "채널 생성", description = """
+    @Operation(summary = "사용자가 관리자인 채널 생성", description = """
             채널 생성 후 사용자를 관리자 권한으로 채널에 등록합니다.
-
 
             생성 성공시 채널 정보와 생성한 사용자의 username을 리턴합니다.""")
     @PostMapping
@@ -32,8 +30,8 @@ public class ChannelController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "채널 검색", description = """
-            채널 이름을 통해 채널을 검색합니다. 채널 이름은 중복될 수 있습니다.
+    @Operation(summary = "키워드로 채널 검색", description = """
+            채널 이름에 대소문자 구분 없이 키워드가 포함되어 있는 채널들을 검색합니다. (채널 이름은 중복될 수 있습니다.)
             """)
     @GetMapping("/search")
     public ResponseEntity<List<GetChannelResponseDto>> searchChannel(@RequestParam String keyword) {
@@ -52,11 +50,24 @@ public class ChannelController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "사용자가 참여중인 채널 목록(UserChannel)을 조회합니다.", description = "getAllChannelUserIn(@RequestAttribute User user)")
+    @Operation(summary = "사용자가 속한 채널 목록(UserChannel)을 조회합니다.", description = "getAllChannelUserIn(@RequestAttribute User user)")
     @GetMapping
     public ResponseEntity<List<GetAllChannelUserInResponseDto>> getAllChannelUserIn(@RequestAttribute User user) {
         List<GetAllChannelUserInResponseDto> responseDtoList = channelService.getAllChannelUserIn(user);
         return ResponseEntity.ok(responseDtoList);
+    }
+
+    @Operation(summary = "채널 id를 사용하여 특정 채널에 가입", description = """
+            사용자가 해당 채널에 가입합니다. 가입 성공 시 사용자는 해당 채널에 속하게 됩니다.
+            
+            관리자 권한으로는 가입할 수 없습니다. (아직 채널에 관리자를 추가하는 기능은 없고 채널 생성한 사람만 관리자입니다.)
+            """)
+    @PostMapping("/{channelId}/signup")
+    public ResponseEntity<SignUpChannelResponseDto> singUpChannel(@PathVariable Long channelId,
+                                                                 @RequestBody SignUpChannelRequestDto body,
+                                                                 @RequestAttribute User user) {
+        SignUpChannelResponseDto dto = channelService.signUpChannel(channelId, body, user);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "채널 id를 사용하여 특정 채널 수정", description = """
@@ -80,12 +91,7 @@ public class ChannelController {
         return ResponseEntity.ok("채널 사용자들을 모두 추방하고 채널을 삭제했습니다.");
     }
 
-    @Operation(summary = "사용자가 속한 특정 채널의 content 전체 조회", description = "getChannelContents(@PathVariable Long, @RequestAttribute User)")
-    @GetMapping("/{channelId}/content")
-    public ResponseEntity<List<GetChannelContentsResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
-        List<GetChannelContentsResponseDto> responseDtoList = channelService.getChannelContents(channelId, user);
-        return ResponseEntity.ok(responseDtoList);
-    }
+
 
     @Operation(summary = "사용자가 속한 특정 채널에 다른 유저 추가", description = "추가는 관리자가 아니어도 할 수 있습니다.")
     @PostMapping("/{channelId}/user/{otherUserId}")
@@ -101,10 +107,4 @@ public class ChannelController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "채널 참가")
-    @PostMapping("/{channelId}/user")
-    public ResponseEntity<ParticipantChannelDto> participantByChannelId(@PathVariable Long channelId, @RequestAttribute User user) {
-        ParticipantChannelDto dto = channelService.participantByChannelId(channelId, user);
-        return ResponseEntity.ok(dto);
-    }
 }
