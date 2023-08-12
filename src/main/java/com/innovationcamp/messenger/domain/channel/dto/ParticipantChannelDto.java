@@ -9,13 +9,15 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ParticipantChannelDto {
-    Channel channel;
-    User user;
+    Long channelId;
+    String userName;
+    String userEmail;
     boolean admin;
 
     public ParticipantChannelDto(UserChannel userChannel){
-        this.channel = userChannel.getChannel();
-        this.user = userChannel.getUser();
+        this.channelId = userChannel.getChannel().getId();
+        this.userName = userChannel.getUser().getUsername();
+        this.userEmail = userChannel.getUser().getEmail();
         this.admin = userChannel.isAdmin();
     }
 }
