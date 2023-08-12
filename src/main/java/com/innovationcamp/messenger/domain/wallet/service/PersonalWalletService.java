@@ -42,6 +42,9 @@ public class PersonalWalletService {
     }
 
     public PersonalWallet createPersonalWallet(User user, PersonalWalletCreateDto requestDto) {
+        if (personalWalletRepository.existsByUser(user)){
+            throw new IllegalArgumentException("이미 Wallet 을 개설한 유저입니다.");
+        }
         PersonalWallet personalWallet = new PersonalWallet(money, walletPasswordEncoder.encode(requestDto.getPassword()), user);
         return personalWalletRepository.save(personalWallet);
     }

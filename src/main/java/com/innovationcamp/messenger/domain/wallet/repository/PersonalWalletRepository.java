@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface PersonalWalletRepository extends JpaRepository<PersonalWallet, Long> {
     Optional<PersonalWallet> findByUser(User user);
+
+    boolean existsByUser(User user);
 }
