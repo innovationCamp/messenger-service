@@ -20,7 +20,7 @@ public class CorsConfig {
         config.addExposedHeader("*");
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(0);
+        //bean.setOrder 기본값이 Ordered.LOWEST_PRECEDENCE; 라서 0으로 안 해도 될 것 같습니다.
         return bean;
     }
 }
