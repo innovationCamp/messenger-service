@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.wallet.service;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
+import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.*;
@@ -24,8 +25,11 @@ public class WalletService {
     private UserGroupWalletRepository userGroupWalletRepository;
     @NonNull
     private GroupSpendDetailRepository groupSpendDetailRepository;
+    @NonNull
+    private WalletPasswordEncoder walletPasswordEncoder;
 
     private void validateBeforeTransaction(User user, Wallet wallet, TransactionCreateDto requestDto) {
+        if (!walletPasswordEncoder.checkPassword(requestDto.getPassword(), wallet.getPassword())) throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         if (user.equals(wallet.getUser())) {
             if (wallet.getMoney() < requestDto.getAmount()) throw new IllegalArgumentException("잔액이 부족합니다.");
             return;
@@ -73,11 +77,14 @@ public class WalletService {
         Transaction transactionReceive = Transaction.builder()
                 .transferType(TransferTypeEnum.RECEIVE)
                 .amount(requestDto.getAmount())
-                .balanceBefore(wallet.getMoney())
+                .balanceBefore(targetWallet.getMoney())
                 .balanceAfter(balanceAfterReceive)
                 .wallet(targetWallet)
                 .targetWallet(wallet)
                 .build();
+
+        wallet.update(balanceAfterSend);
+        targetWallet.update(balanceAfterReceive);
 
         List<Transaction> transactionList = Arrays.asList(transactionSend, transactionReceive);
         transactionRepository.saveAll(transactionList);

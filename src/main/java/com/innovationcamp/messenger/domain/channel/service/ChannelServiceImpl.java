@@ -8,6 +8,7 @@ import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepository;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
+import com.innovationcamp.messenger.domain.message.dto.ChannelContentsResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;

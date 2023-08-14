@@ -6,6 +6,7 @@ import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -17,14 +18,12 @@ import lombok.ToString;
 public class Message extends ChannelContent{
     @Column
     private String text;
-
-    public Message(User user, Channel channel, MessageRequestDto requestDto) {
-        super(user, channel);
-        this.text = requestDto.getText();
-    }
-
-    public Message(User user, Channel channel, String message) {
-        super(user, channel);
+    @Column
+    private MessageRequestDto.MessageType type;
+    @Builder
+    public Message(User user, Channel channel, Long notReadCount, ChannelContent callOutContent, String message, MessageRequestDto.MessageType type){
+        super(user, channel, notReadCount, callOutContent);
         this.text = message;
+        this.type = type;
     }
 }

@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
 import com.innovationcamp.messenger.domain.channel.dto.*;
+import com.innovationcamp.messenger.domain.message.dto.ChannelContentsResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 
 import java.util.List;

@@ -13,4 +13,5 @@ public interface UserGroupWalletRepository extends JpaRepository<UserGroupWallet
     List<UserGroupWallet> findAllByGroupWallet(GroupWallet groupWallet);
     List<UserGroupWallet> findAllByUser(User user);
     Optional<UserGroupWallet> findByUserAndGroupWallet(User user, GroupWallet groupWallet);
+    boolean existsByGroupWalletIdAndUserId(Long groupWalletId, Long id);
 }

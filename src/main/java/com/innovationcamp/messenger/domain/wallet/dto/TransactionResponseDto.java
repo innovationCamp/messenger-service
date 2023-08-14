@@ -29,6 +29,7 @@ public class TransactionResponseDto {
         this.targetWallet = new WalletDto(transaction.getTargetWallet());
     }
 
+    @Getter
     private static class WalletDto {
         private String owner;
 

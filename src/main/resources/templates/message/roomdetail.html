@@ -43,8 +43,13 @@
 <script>
     //alert(document.title);
     // websocket & stomp initialize
-    var sock = new SockJS("/ws-stomp");
-    var ws = Stomp.over(sock);
+    // var sock = new SockJS("/ws-stomp");
+    // var ws = Stomp.over(sock);
+
+    var socket = new WebSocket("ws://localhost:8080/ws-stomp");
+
+    // Stomp 객체를 생성하고 연결
+    var ws = Stomp.over(socket);
     var reconnect = 0;
     // vue.js
     var vm = new Vue({
@@ -70,20 +75,36 @@
                 });
             },
             sendMessage: function() {
-                ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
+                ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', channelId:this.roomId, sender:this.sender, message:this.message}));
                 this.message = '';
             },
             recvMessage: function(recv) {
-                this.messages.unshift({"type":recv.type,"sender":recv.type=='ENTER'?'[알림]':recv.sender,"message":recv.message})
+                if (recv.type === 'ENTER'){
+                    this.messages.unshift({"id":recv.id,"type":recv.type,"sender":'[알림]',"message":recv.text})
+                } else if (recv.type === 'DELETE'){
+                    for (let i = 0; i < this.messages.length; i++) {
+                        if (this.messages[i].id === recv.channelContentId) {
+                            this.messages.splice(i, 1); // 해당 인덱스의 메시지를 제거
+                            break; // 루프 종료
+                        }
+                    }
+                } else if (recv.type === 'CALLOUT'){
+
+                }else {
+                    this.messages.unshift({"id": recv.id, "type": recv.type, "sender": recv.userName, "message": recv.text})
+                }
             },
             loadMessage: function (roomId){
-                axios.get("/api/test/"+ roomId+"/content").then(response => {
+                axios.get("/api/channel/"+ roomId+"/content").then(response => {
                     console.log(response.data);
                     response.data.forEach(messageDto => {
-                        this.messages.unshift({
-                            "sender":messageDto.username,
-                            "message":messageDto.text
-                        });
+                        if (messageDto.type === 'ENTER') {
+                            this.messages.unshift({"id": messageDto.id, "type": messageDto.type, "sender": '[알림]', "message": messageDto.text})
+                        } else if (messageDto.type === 'CALLOUT'){
+
+                        } else {
+                            this.messages.unshift({"id": messageDto.id, "type": messageDto.type, "sender":messageDto.userName, "message":messageDto.text});
+                        }
                     });
                 });
             }

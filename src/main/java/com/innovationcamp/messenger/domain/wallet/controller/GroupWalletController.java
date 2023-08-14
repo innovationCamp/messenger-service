@@ -26,8 +26,9 @@ public class GroupWalletController {
     }
 
     @GetMapping("/{groupWalletId}")
-    public GroupWallet getGroupWalletById(@PathVariable Long groupWalletId) {
-        return groupWalletService.getGroupWalletById(groupWalletId);
+    public GroupWallet getGroupWalletById(@RequestAttribute User user,
+                                          @PathVariable Long groupWalletId) {
+        return groupWalletService.getGroupWalletById(user, groupWalletId);
     }
 
     @PostMapping("/{groupWalletId}")
@@ -41,8 +42,9 @@ public class GroupWalletController {
     }
 
     @GetMapping("/{groupWalletId}/transaction/all")
-    public List<TransactionResponseDto> getAllTransactionByGroupWallet(@PathVariable Long groupWalletId) {
-        return groupWalletService.getTransactionByGroupWallet(groupWalletId);
+    public List<TransactionResponseDto> getAllTransactionByGroupWallet(@RequestAttribute User user,
+                                                                       @PathVariable Long groupWalletId) {
+        return groupWalletService.getTransactionByGroupWallet(user, groupWalletId);
     }
 
     @GetMapping("/{groupWalletId}/participant/all")
@@ -51,7 +53,8 @@ public class GroupWalletController {
     }
 
     @GetMapping("/all/channel/{channelId}")
-    public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(@PathVariable Long channelId){
-        return groupWalletService.getAllGroupWalletByChannelId(channelId);
+    public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(@RequestAttribute User user,
+                                                                     @PathVariable Long channelId){
+        return groupWalletService.getAllGroupWalletByChannelId(user, channelId);
     }
 }
