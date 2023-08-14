@@ -32,4 +32,8 @@ public abstract class Wallet extends TimeStamped{
         this.password = password;
         this.user = user;
     }
+
+    public void update(Long balance) {
+        this.money = balance;
+    }
 }

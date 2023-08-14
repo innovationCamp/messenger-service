@@ -79,6 +79,9 @@ public class WalletService {
                 .targetWallet(wallet)
                 .build();
 
+        wallet.update(balanceAfterSend);
+        targetWallet.update(balanceAfterReceive);
+
         List<Transaction> transactionList = Arrays.asList(transactionSend, transactionReceive);
         transactionRepository.saveAll(transactionList);
         if (wallet instanceof GroupWallet groupWallet) {
