@@ -21,18 +21,26 @@ public class JwtInterceptor implements HandlerInterceptor {
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info(request.getMethod() + " : " + request.getServletPath());
+        // preHandle request 메서드와 servletPath를 로그로 확인하여 트러블슈팅
         String tokenValue = jwtUtil.getTokenFromCookie(request);
-        log.info("작동중 토큰 : " + tokenValue);
+        if (tokenValue == null) {
+            throw new IllegalArgumentException("토큰이 없습니다.");
+        }
+        log.info("토큰을 감지함 : " + tokenValue);
+        log.info("토큰 유효성 검사 시작");
         if (StringUtils.hasText(tokenValue)){
             tokenValue = jwtUtil.substringToken(tokenValue);
             if (!jwtUtil.validateToken(tokenValue)){
-                throw new IllegalArgumentException("검증되지 않은 토큰");
+                throw new IllegalArgumentException("토큰이 유효성 검사를 통과하지 못했습니다.");
             }
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-            User user = userRepository.findById(Long.valueOf(info.getSubject())).orElseThrow(()->new IllegalArgumentException("없는 유저입니다."));
+            User user = userRepository.findById(Long.valueOf(info.getSubject()))
+                    .orElseThrow(()->new IllegalArgumentException("토큰의 정보와 일치하는 유저가 없습니다."));
             request.setAttribute("user", user);
+            log.info("토큰을 통한 유저 정보 확인 완료");
             return true;
         }
-        return false;
+        throw new IllegalArgumentException("토큰 유효성 검사에서 문제가 발생했습니다.");
     }
 }

@@ -1,9 +1,12 @@
 package com.innovationcamp.messenger.domain.user.entity;
 
+import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,10 +43,4 @@ public class User {
         return (obj instanceof User user) && this.id.equals(user.getId()) && this.email.equals(user.getEmail())
                 && this.username.equals(user.getUsername()) && this.password.equals(user.getPassword());
     }
-
-    /*
-    @OneToOne
-    @JoinColumn(name = "wallet_id")
-    private Wallet wallet;
-     */
 }

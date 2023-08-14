@@ -36,33 +36,14 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Transactional
     @Override
-    public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto createChannelRequestDto) {
-
-        if(createChannelRequestDto == null) {
-            createChannelRequestDto = new CreateChannelRequestDto(
-                    user.getUsername()+"의 채널",
-                    null,
-                    user.getUsername()+"의 채널입니다.",
-                    false);
-        }
-
-        Boolean isPrivate = createChannelRequestDto.getIsPrivate();
-        String password = createChannelRequestDto.getChannelPassword();
-        if(isPrivate){
-            if(password==null){
-                throw new IllegalArgumentException("비밀 채널을 생성하려면 비밀번호가 필요합니다.");
-            }
-        }
-        if(password!=null) {
-            password = channelPasswordEncoder.encode(createChannelRequestDto.getChannelPassword());
-        }
-
+    public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto requestDto
+    ) {
         Channel channel = Channel.builder()
-                .channelName(createChannelRequestDto.getChannelName())
-                .channelCreateUserName(user.getUsername())
-                .channelPassword(password)
-                .channelDescription(createChannelRequestDto.getChannelDescription())
-                .isPrivate(isPrivate)
+                .channelName(requestDto.getChannelName())
+                .channelCreateUser(user)
+                .channelPassword(channelPasswordEncoder.encode(requestDto.getChannelPassword()))
+                .channelDescription(requestDto.getChannelDescription())
+                .isPrivate(requestDto.getIsPrivate())
                 .build();
         channelRepository.save(channel);
 
@@ -73,19 +54,32 @@ public class ChannelServiceImpl implements ChannelService {
                 .build();
         userChannelRepository.save(userChannel);
 
-        return new CreateChannelResponseDto(channel.getId(),
-                userChannel.getUser().getUsername(),
-                channel.getChannelName(),
-                channel.getChannelDescription(),
-                channel.getIsPrivate());
+        return new CreateChannelResponseDto(channel);
     }
+
     @Override
     public GetChannelResponseDto getChannel(Long id) {
         Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
 
-        return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUserName(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
+        return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUser().getUsername(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
     }
+
+    // search channel by channel name
+    public List<GetChannelResponseDto> searchChannel(String channelName) {
+        List<Channel> channels = channelRepository.findAllByChannelNameContainingIgnoreCase(channelName);
+        List<GetChannelResponseDto> dtoList = channels.stream()
+                .map(channel -> new GetChannelResponseDto(
+                        channel.getId()
+                        , channel.getChannelCreateUser().getUsername()
+                        , channel.getChannelName()
+                        , channel.getChannelDescription()
+                        , channel.getCreatedAt()))
+                .collect(Collectors.toList());
+        return dtoList;
+    }
+
+
     @Override
     public List<GetAllChannelUserInResponseDto> getAllChannelUserIn(User user) {
 
@@ -192,7 +186,7 @@ public class ChannelServiceImpl implements ChannelService {
     private void checkChannelAdmin(Channel channel, User user) {
         Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
 
-        if(userChannel.isEmpty() || !userChannel.get().isAdmin()) {
+        if (userChannel.isEmpty() || !userChannel.get().isAdmin()) {
             throw new IllegalArgumentException("You are not admin of this channel");
         }
     }
@@ -201,9 +195,19 @@ public class ChannelServiceImpl implements ChannelService {
     private void checkUserInChannel(Channel channel, User user) {
         Optional<UserChannel> userChannel = userChannelRepository.findByUserAndChannel(user, channel);
 
-        if(userChannel.isEmpty()) {
+        if (userChannel.isEmpty()) {
             throw new IllegalArgumentException("You are not in this channel");
         }
     }
 
+    public ParticipantChannelDto participantByChannelId(Long channelId, User user) {
+        Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
+        if (userChannelRepository.findByUserAndChannel(user, channel).isPresent()) throw new IllegalArgumentException("이미 참여 중인 채널입니다.");
+        UserChannel userChannel = UserChannel.builder()
+                .channel(channel)
+                .user(user)
+                .isAdmin(false)
+                .build();
+        return new ParticipantChannelDto(userChannel);
+    }
 }
