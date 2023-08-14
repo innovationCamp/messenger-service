@@ -8,9 +8,6 @@ import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepository;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
-import com.innovationcamp.messenger.domain.message.dto.ChannelContentsResponseDto;
-import com.innovationcamp.messenger.domain.message.dto.MessageResponseDto;
-import com.innovationcamp.messenger.domain.message.entity.Message;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -126,7 +123,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public List<ChannelContentsResponseDto> getChannelContents(Long channelId, User user) {
+    public List<GetChannelContentsResponseDto> getChannelContents(Long channelId, User user) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
 
@@ -134,26 +131,19 @@ public class ChannelServiceImpl implements ChannelService {
 
         List<ChannelContent> channelContents = channelContentRepository.findByChannel(channel);
 
-        List<ChannelContentsResponseDto> dtoList = channelContents.stream()
+        List<GetChannelContentsResponseDto> dtoList = channelContents.stream()
                 .map(channelContent -> {
                     User channelContentUser = channelContent.getUser();
                     ChannelContent calloutContent = channelContent.getCalloutContent();
                     // NullPointException 방지
                     Long calloutContentId = calloutContent != null ? calloutContent.getId() : null;
-                    if (channelContent instanceof Message){
-                        Message message = (Message) channelContent;
-                        return MessageResponseDto.builder()
-                                .id(message.getId())
-                                .username(message.getUser().getUsername())
-                                .channelId(message.getChannel().getId())
-                                .callOutId(calloutContentId)
-                                .createdAt(message.getCreatedAt())
-                                .notReadCount(message.getNotReadCount())
-                                .text(message.getText())
-                                .type(message.getType()).build();
-                    } else {
-                        return null;
-                    }
+                    return new GetChannelContentsResponseDto(
+                            channelContent.getId(),
+                            channelContentUser.getUsername(),
+                            channelContentUser.getEmail(),
+                            calloutContentId,
+                            channelContent.getCreatedAt(),
+                            channelContent.getNotReadCount());
                 })
                 .collect(Collectors.toList());
 
@@ -218,7 +208,6 @@ public class ChannelServiceImpl implements ChannelService {
                 .user(user)
                 .isAdmin(false)
                 .build();
-        userChannelRepository.save(userChannel);
-        return new ParticipantChannelDto(userChannel);
+        return new ParticipantChannelDto(userChannelRepository.save(userChannel));
     }
 }
