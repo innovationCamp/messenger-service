@@ -77,7 +77,7 @@ public class WalletService {
         Transaction transactionReceive = Transaction.builder()
                 .transferType(TransferTypeEnum.RECEIVE)
                 .amount(requestDto.getAmount())
-                .balanceBefore(wallet.getMoney())
+                .balanceBefore(targetWallet.getMoney())
                 .balanceAfter(balanceAfterReceive)
                 .wallet(targetWallet)
                 .targetWallet(wallet)
