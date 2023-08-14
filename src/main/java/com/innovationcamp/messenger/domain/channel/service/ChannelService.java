@@ -12,7 +12,7 @@ public interface ChannelService {
     List<GetAllChannelUserInResponseDto> getAllChannelUserIn(User user);
     UpdateChannelResponseDto updateChannel(Long id, UpdateChannelRequestDto updateChannelRequestDto, User user);
     void deleteChannel(Long channelId, User user);
-    List<ChannelContentsResponseDto> getChannelContents(Long channelId, User user);
+    List<GetChannelContentsResponseDto> getChannelContents(Long channelId, User user);
     void addUserToChannel(Long channelId, Long otherUserId, User user);
     void kickUserFromChannel(Long channelId, Long otherUserId, User user);
     ParticipantChannelDto participantByChannelId(Long channelId, User user);
