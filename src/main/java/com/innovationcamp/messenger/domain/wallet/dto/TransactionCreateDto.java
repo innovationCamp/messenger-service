@@ -11,5 +11,6 @@ public class TransactionCreateDto {
     private Long walletId;
     private Long targetWalletId;
     private Long amount;
+    private String password;
     private LocalDateTime reservationTime;
 }
