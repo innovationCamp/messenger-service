@@ -2,6 +2,7 @@ package com.innovationcamp.messenger.domain.wallet.service;
 
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
+import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
@@ -34,6 +35,8 @@ public class GroupWalletService {
     private TransactionRepository transactionRepository;
     @NonNull
     private ChannelRepository channelRepository;
+    @NonNull
+    private UserChannelRepository userChannelRepository;
 
     private final Long money = 0L;
 
@@ -41,9 +44,15 @@ public class GroupWalletService {
         return groupWalletRepository.findById(groupWalletId).orElseThrow(() -> new IllegalArgumentException("없는 Group Wallet 입니다."));
     }
 
+    private void validateUserChannel(Long channelId, Long userId){
+        if (!userChannelRepository.existsByChannelIdAndUserId(channelId, userId))
+            throw new IllegalArgumentException("채널의 구성원이 아닙니다.");
+    }
+
     @Transactional
     public GroupWallet createGroupWallet(User user, GroupWalletCreateDto requestDto) {
         Channel channel = channelRepository.findById(requestDto.getChannelId()).orElseThrow(() -> new IllegalArgumentException("없는 채널입니다."));
+        validateUserChannel(requestDto.getChannelId(), user.getId());
         GroupWallet groupWallet = GroupWallet.builder()
                 .money(money)
                 .user(user)
@@ -59,7 +68,8 @@ public class GroupWalletService {
         return groupWallet;
     }
 
-    public GroupWallet getGroupWalletById(Long groupWalletId) {
+    public GroupWallet getGroupWalletById(User user, Long groupWalletId) {
+        validateUserChannel(groupWalletId, user.getId());
         return findGroupWalletById(groupWalletId);
     }
 
@@ -71,7 +81,10 @@ public class GroupWalletService {
         return groupWallet;
     }
 
-    public List<TransactionResponseDto> getTransactionByGroupWallet(Long groupWalletId) {
+    public List<TransactionResponseDto> getTransactionByGroupWallet(User user, Long groupWalletId) {
+        if(!userGroupWalletRepository.existsByGroupWalletIdAndUserId(groupWalletId, user.getId())){
+            throw new IllegalArgumentException("참가하지 않은 Group 통장입니다.");
+        }
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
         List<Transaction> transactionList = transactionRepository.findAllByWallet(groupWallet);
         return transactionList.stream().map(TransactionResponseDto::new).collect(Collectors.toList());
@@ -85,6 +98,7 @@ public class GroupWalletService {
 
     public GroupWallet participantGroupWalletById(User user, Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
+        validateUserChannel(groupWallet.getChannel().getId(), user.getId());
         UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet).orElse(null);
         if (userGroupWallet != null) throw new IllegalArgumentException("이미 참여한 Group 통장입니다.");
         //일단 권한 USER
@@ -93,8 +107,9 @@ public class GroupWalletService {
         return groupWallet;
     }
 
-    public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(Long channelId) {
+    public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(User user, Long channelId) {
         Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
+        validateUserChannel(channelId, user.getId());
         return groupWalletRepository.findAllByChannel(channel).stream().map(GroupWalletResponseDto::new).collect(Collectors.toList());
     }
 }
