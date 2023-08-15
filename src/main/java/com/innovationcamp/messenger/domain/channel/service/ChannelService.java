@@ -59,7 +59,13 @@ public class ChannelService {
         Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
 
-        return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUser().getUsername(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
+        return new GetChannelResponseDto(channel.getId(),
+                channel.getChannelName(),
+                channel.getChannelCreateUser().getUsername(),
+                channel.getChannelDescription(),
+                channel.getCreatedAt(),
+                channel.getIsPrivate(),
+                channelRepository.countUserInChannel(channel.getId()));
     }
 
     public SignUpChannelResponseDto signUpChannel(Long channelId, String channelpw, User user) {
@@ -85,12 +91,13 @@ public class ChannelService {
     public List<GetChannelResponseDto> searchChannel(String channelName) {
         List<Channel> channels = channelRepository.findAllByChannelNameContainingIgnoreCase(channelName);
         List<GetChannelResponseDto> dtoList = channels.stream()
-                .map(channel -> new GetChannelResponseDto(
-                        channel.getId()
-                        , channel.getChannelCreateUser().getUsername()
-                        , channel.getChannelName()
-                        , channel.getChannelDescription()
-                        , channel.getCreatedAt()))
+                .map(channel -> new GetChannelResponseDto(channel.getId(),
+                        channel.getChannelCreateUser().getUsername(),
+                        channel.getChannelName(),
+                        channel.getChannelDescription(),
+                        channel.getCreatedAt(),
+                        channel.getIsPrivate(),
+                        channelRepository.countUserInChannel(channel.getId())))
                 .collect(Collectors.toList());
         return dtoList;
     }

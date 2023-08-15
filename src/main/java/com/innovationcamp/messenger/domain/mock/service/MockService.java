@@ -5,7 +5,7 @@ import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
-import com.innovationcamp.messenger.domain.message.dto.MessageResponseDto;
+import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import com.innovationcamp.messenger.domain.message.entity.Message;
 import com.innovationcamp.messenger.domain.message.repository.MessageRepository;
 import com.innovationcamp.messenger.domain.mock.dto.CreateMockChannelResponseDto;
@@ -41,8 +41,7 @@ public class MockService {
             Boolean isPrivate,
             Long howManyChannel,
             Long howManyUserInChannel,
-            Long howManyContentPerUser)
-    {
+            Long howManyContentPerUser) {
 
         List<CreateMockChannelResponseDto> dtoList = new ArrayList<>();
         List<User> mockUserList = new ArrayList<>();
@@ -67,7 +66,7 @@ public class MockService {
                     .build();
             channelRepository.save(channel);
 
-            // 생성한 채널에 유저를 등록하고 메세지 등록
+            // 생성한 채널에 유저를 등록하고 각 유저마다 TALK 메세지 등록
             for (User user : mockUserList) {
                 // 첫번째 유저라면 관리자로 등록
                 if (user.getId().equals(mockUserList.get(0).getId())) {
@@ -77,31 +76,32 @@ public class MockService {
                             .isAdmin(true)
                             .build();
                     userChannelRepository.save(userChannel);
+                } else {
+                    UserChannel userChannel = UserChannel.builder()
+                            .user(user)
+                            .channel(channel)
+                            .isAdmin(false)
+                            .build();
+                    userChannelRepository.save(userChannel);
                 }
 
-                UserChannel userChannel = UserChannel.builder()
-                        .user(user)
-                        .channel(channel)
-                        .isAdmin(false)
-                        .build();
-                userChannelRepository.save(userChannel);
-
-                // 유저의 메세지 생성
+                // 유저별 TALK 메세지 등록
                 for (int j = 0; j < howManyContentPerUser; j++) {
                     Message message = Message.builder()
                             .user(user)
                             .channel(channel)
                             .notReadCount(null)
                             .message("Mock Message")
-                            .type(null)
+                            .type(MessageRequestDto.MessageType.TALK) // ENTER, TALK, CALLOUT
                             .build();
 
                     messageRepository.save(message);
                 }
 
             }
+            Long userCount = channelRepository.countUserInChannel(channel.getId());
 
-            dtoList.add(new CreateMockChannelResponseDto(channel));
+            dtoList.add(new CreateMockChannelResponseDto(channel, userCount));
         }
 
         return dtoList;
