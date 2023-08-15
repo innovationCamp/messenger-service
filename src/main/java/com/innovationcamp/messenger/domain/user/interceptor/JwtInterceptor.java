@@ -24,8 +24,8 @@ public class JwtInterceptor implements HandlerInterceptor {
         log.info(request.getMethod() + " : " + request.getServletPath());
         // preHandle request 메서드와 servletPath를 로그로 확인하여 트러블슈팅
         String tokenValue = jwtUtil.getTokenFromCookie(request);
-        log.info("토큰 : " + tokenValue);
         if (StringUtils.hasText(tokenValue)){
+            log.info("토큰 : " + tokenValue);
             tokenValue = jwtUtil.substringToken(tokenValue);
             if (!jwtUtil.validateToken(tokenValue)){
                 throw new IllegalArgumentException("토큰이 유효성 검사를 통과하지 못했습니다.");
