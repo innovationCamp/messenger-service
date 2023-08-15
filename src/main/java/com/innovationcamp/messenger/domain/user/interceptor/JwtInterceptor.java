@@ -24,11 +24,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         log.info(request.getMethod() + " : " + request.getServletPath());
         // preHandle request 메서드와 servletPath를 로그로 확인하여 트러블슈팅
         String tokenValue = jwtUtil.getTokenFromCookie(request);
-        if (tokenValue == null) {
-            throw new IllegalArgumentException("토큰이 없습니다.");
-        }
-        log.info("토큰을 감지함 : " + tokenValue);
-        log.info("토큰 유효성 검사 시작");
+        log.info("토큰 : " + tokenValue);
         if (StringUtils.hasText(tokenValue)){
             tokenValue = jwtUtil.substringToken(tokenValue);
             if (!jwtUtil.validateToken(tokenValue)){
@@ -40,7 +36,6 @@ public class JwtInterceptor implements HandlerInterceptor {
             request.setAttribute("user", user);
             log.info("토큰을 통한 유저 정보 확인 완료");
             return true;
-        }
-        throw new IllegalArgumentException("토큰 유효성 검사에서 문제가 발생했습니다.");
+        } else throw new IllegalArgumentException("토큰이 없습니다.");
     }
 }

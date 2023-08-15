@@ -67,7 +67,7 @@ public class ChannelController {
             비밀 채널인 경우 비밀번호를 검사하고 그렇지 않은 경우 비밀번호와 상관 없이 가입됩니다.
             """)
     @PostMapping("/{channelId}/signup")
-    public ResponseEntity<SignUpChannelResponseDto> singUpChannel(@PathVariable Long channelId,
+    public ResponseEntity<SignUpChannelResponseDto> signUpChannel(@PathVariable Long channelId,
                                                                  @RequestParam(required = false) String channelPassword,
                                                                  @RequestAttribute User user) {
         SignUpChannelResponseDto dto = channelService.signUpChannel(channelId, channelPassword, user);
