@@ -60,7 +60,11 @@ public class ChannelController {
     @Operation(summary = "채널 id를 사용하여 특정 채널에 가입", description = """
             사용자가 해당 채널에 가입합니다. 가입 성공 시 사용자는 해당 채널에 속하게 됩니다.
             
-            관리자 권한으로는 가입할 수 없습니다. (아직 채널에 관리자를 추가하는 기능은 없고 채널 생성한 사람만 관리자입니다.)
+            관리자 권한으로는 가입할 수 없습니다. 단, 자신이 생성한 채널에는 이미 관리자로 가입되어 있습니다.
+               
+            아직 채널에 관리자를 추가하는 기능은 없고 채널 생성한 사람만 관리자입니다.
+            
+            비밀 채널인 경우 비밀번호를 검사하고 그렇지 않은 경우 비밀번호와 상관 없이 가입됩니다.
             """)
     @PostMapping("/{channelId}/signup")
     public ResponseEntity<SignUpChannelResponseDto> singUpChannel(@PathVariable Long channelId,

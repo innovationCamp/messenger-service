@@ -22,7 +22,7 @@ public class ChannelContentController {
     @Operation(summary = "GET ALL ChannelContent", description = """
             ChannelContent를 가져오려면 사용자가 해당 채널에 이미 속해있어야 합니다.
             """)
-    @GetMapping("/{channelId}/content")
+    @GetMapping("/{channelId}")
     public ResponseEntity<List<GetChannelContentResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
         List<GetChannelContentResponseDto> dtolist = channelContentService.getChannelContents(channelId, user);
         return ResponseEntity.ok(dtolist);
