@@ -5,7 +5,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageRequestDto {
-    // 메시지 타입 : 입장, 채팅
+    // 메시지 타입 : 입장, 채팅, CALL OUT
+    // 프론트에서 정해주는 값입니다.
     public enum MessageType {
         ENTER, TALK, CALLOUT
     }

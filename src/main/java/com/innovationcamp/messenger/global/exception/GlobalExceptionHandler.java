@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
     // General handler for exceptions to reduce code duplication
     private ResponseEntity<ExceptionResponseDto> createResponse(HttpStatus status, Exception e) {
-        log.error("Exception handled: ", e);  // Logging the entire exception stack trace
+        log.error("정의된 예외 발생: ", e);  // Logging the entire exception stack trace
         ExceptionResponseDto responseDto = new ExceptionResponseDto(status, e.getClass().getSimpleName(), e.getMessage());
         return ResponseEntity.status(status).body(responseDto);
     }
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        log.error("Exception handled: ", e);  // Logging the entire exception stack trace
+        log.error("GlobalExceptionHandler: ", e);  // Logging the entire exception stack trace
         ExceptionResponseDto responseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(), message, detailedErrorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }

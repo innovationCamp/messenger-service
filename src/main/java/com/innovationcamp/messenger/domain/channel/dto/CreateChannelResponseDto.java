@@ -12,17 +12,6 @@ public class CreateChannelResponseDto {
     private final String channelName;
     private final String channelDescription;
     private final Boolean isPrivate;
-    public CreateChannelResponseDto(Long channelId,
-                                    String channelCreateUsername,
-                                    String channelName,
-                                    String channelDescription,
-                                    Boolean isPrivate) {
-        this.channelId = channelId;
-        this.channelCreateUsername = channelCreateUsername;
-        this.channelName = channelName;
-        this.channelDescription = channelDescription;
-        this.isPrivate = isPrivate;
-    }
 
     public CreateChannelResponseDto(Channel channel){
         this.channelId = channel.getId();

@@ -1,23 +1,20 @@
 package com.innovationcamp.messenger.domain.channel.dto;
 
-import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
-import com.innovationcamp.messenger.domain.user.entity.User;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
-public class ParticipantChannelDto {
+public class SignUpChannelResponseDto {
     Long channelId;
+    String channelName;
     String userName;
     String userEmail;
-    boolean admin;
 
-    public ParticipantChannelDto(UserChannel userChannel){
+    public SignUpChannelResponseDto(UserChannel userChannel){
         this.channelId = userChannel.getChannel().getId();
+        this.channelName = userChannel.getChannel().getChannelName();
         this.userName = userChannel.getUser().getUsername();
         this.userEmail = userChannel.getUser().getEmail();
-        this.admin = userChannel.isAdmin();
     }
 }
+
