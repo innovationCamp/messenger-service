@@ -23,7 +23,7 @@ public class MockController {
     private final MockService mockService;
 
     @Operation(summary = "mock데이터 생성", description = """
-            원하는 만큼의 mock 채널을 생성, 각 채널에 mock user를 등록, 각 mock user가 mock content를 등록
+            원하는 만큼의 mock 채널을 생성, 각 채널에 mock user를 등록, 각 mock user가 mock content를 등록합니다.
             
             isPrivate으로 비밀 채널 여부를 설정할 수 있습니다. 기본값은 false입니다.
             

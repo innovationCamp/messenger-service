@@ -22,8 +22,13 @@ public class JwtInterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(new JwtInterceptor(jwtUtil, userRepository))
                 .addPathPatterns("/**")
                 //order 기본값이 0 이라서 지정 안 해도 될 것 같습니다.
-                .excludePathPatterns("/api/user/signup", "/api/user/login", "/api/test/login",
-                        "/swagger-ui/**", "/webjars/**", "/error",
-                        "/v3/api-docs/**", "/swagger-resources/**", "/v3/api-docs.yaml");
+                .excludePathPatterns(
+                        "/api/user/signup",
+                        "/api/user/login",
+                        "/api/test/login",
+                        "/api/mock/**",
+                        "/error",
+                        "/swagger-ui/**", "/webjars/**", "/v3/api-docs/**", "/swagger-resources/**", "/v3/api-docs.yaml");
+
     }
 }
