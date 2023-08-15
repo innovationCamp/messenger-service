@@ -55,7 +55,6 @@ public class ChannelService {
         return new CreateChannelResponseDto(channel);
     }
 
-
     public GetChannelResponseDto getChannel(Long id) {
         Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
@@ -96,8 +95,6 @@ public class ChannelService {
         return dtoList;
     }
 
-
-
     public List<GetAllChannelUserInResponseDto> getAllChannelUserIn(User user) {
 
         List<UserChannel> userChannels = userChannelRepository.findByUser(user);
@@ -137,7 +134,6 @@ public class ChannelService {
         channelRepository.deleteById(channelId);
     }
 
-
     public void addUserToChannel(Long channelId, Long otherUserId, User user) {
 
         Channel channel = channelRepository.findById(channelId)
@@ -156,7 +152,6 @@ public class ChannelService {
 
         userChannelRepository.save(otherUserAddedChannel);
     }
-
 
     public void kickUserFromChannel(Long channelId, Long otherUserId, User user) {
         Channel channel = channelRepository.findById(channelId)

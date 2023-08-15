@@ -29,6 +29,12 @@ public class User {
         this.password = password;
     }
 
+    public void mockUser(String encodedPassword) {
+        this.email = "mockMail"+this.id;
+        this.username = "mockName"+this.id;
+        this.password = encodedPassword;
+    }
+
     public void update(String email, String username, String password) {
         this.email = email;
         this.username = username;
