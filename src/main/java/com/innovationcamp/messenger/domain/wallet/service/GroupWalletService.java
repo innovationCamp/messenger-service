@@ -76,6 +76,11 @@ public class GroupWalletService {
     @Transactional
     public String  deleteGroupWalletById(User user, Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
+        UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet)
+                .orElseThrow(() -> new IllegalArgumentException("groupWallet 에 참여하지 않은 user 입니다."));
+        if (!userGroupWallet.getUserAuthority().equals(UserAuthorityEnum.ADMIN))
+            throw new IllegalArgumentException("groupWallet 에 권한이 없는 user 입니다.");
+
         userGroupWalletRepository.deleteByGroupWallet(groupWallet);
         groupWalletRepository.delete(groupWallet);
         return "그룹통장이 해지되었습니다.";
