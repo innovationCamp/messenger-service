@@ -68,9 +68,9 @@ public class ChannelController {
             """)
     @PostMapping("/{channelId}/signup")
     public ResponseEntity<SignUpChannelResponseDto> singUpChannel(@PathVariable Long channelId,
-                                                                 @RequestBody SignUpChannelRequestDto body,
+                                                                 @RequestParam(required = false) String channelPassword,
                                                                  @RequestAttribute User user) {
-        SignUpChannelResponseDto dto = channelService.signUpChannel(channelId, body, user);
+        SignUpChannelResponseDto dto = channelService.signUpChannel(channelId, channelPassword, user);
         return ResponseEntity.ok(dto);
     }
 

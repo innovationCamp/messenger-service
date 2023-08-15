@@ -63,11 +63,12 @@ public class ChannelService {
         return new GetChannelResponseDto(channel.getId(), channel.getChannelCreateUser().getUsername(), channel.getChannelName(), channel.getChannelDescription(), channel.getCreatedAt());
     }
 
-    public SignUpChannelResponseDto signUpChannel(Long channelId, SignUpChannelRequestDto requestDto, User user) {
+    public SignUpChannelResponseDto signUpChannel(Long channelId, String channelpw, User user) {
         Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
         if (userChannelRepository.findByUserAndChannel(user, channel).isPresent()) throw new IllegalArgumentException("이미 가입한 채널입니다.");
         if(channel.getIsPrivate()){
-            if(!pwEncoder.checkPassword(requestDto.getChannelPassword(), channel.getChannelPassword())){
+            if(channelpw == null) throw new IllegalArgumentException("해당 채널은 비밀 채널입니다. 비밀번호를 입력해주세요.");
+            if(!pwEncoder.checkPassword(channelpw, channel.getChannelPassword())){
                 throw new IllegalArgumentException("비밀 채널에 입장하기 위한 비밀번호가 일치하지 않습니다.");
             }
         }
