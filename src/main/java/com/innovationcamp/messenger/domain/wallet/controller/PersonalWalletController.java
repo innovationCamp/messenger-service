@@ -3,6 +3,7 @@ package com.innovationcamp.messenger.domain.wallet.controller;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletCreateDto;
+import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.PersonalWallet;
 import com.innovationcamp.messenger.domain.wallet.service.PersonalWalletService;
@@ -20,17 +21,17 @@ public class PersonalWalletController {
     private PersonalWalletService walletPersonalService;
 
     @GetMapping("")
-    public PersonalWallet getPersonalWallet(@RequestAttribute User user) {
+    public PersonalWalletResponseDto getPersonalWallet(@RequestAttribute User user) {
         return walletPersonalService.getPersonalWallet(user);
     }
 
     @PostMapping("")
-    public PersonalWallet createPersonalWallet(@RequestAttribute User user, @RequestBody PersonalWalletCreateDto requestDto) {
+    public PersonalWalletResponseDto createPersonalWallet(@RequestAttribute User user, @RequestBody PersonalWalletCreateDto requestDto) {
         return walletPersonalService.createPersonalWallet(user, requestDto);
     }
 
     @DeleteMapping("")
-    public PersonalWallet deletePersonalWallet(@RequestAttribute User user) {
+    public String deletePersonalWallet(@RequestAttribute User user) {
         return walletPersonalService.deletePersonalWallet(user);
     }
 

@@ -50,7 +50,7 @@ public class GroupWalletService {
     }
 
     @Transactional
-    public GroupWallet createGroupWallet(User user, GroupWalletCreateDto requestDto) {
+    public GroupWalletResponseDto createGroupWallet(User user, GroupWalletCreateDto requestDto) {
         Channel channel = channelRepository.findById(requestDto.getChannelId()).orElseThrow(() -> new IllegalArgumentException("없는 채널입니다."));
         validateUserChannel(requestDto.getChannelId(), user.getId());
         GroupWallet groupWallet = GroupWallet.builder()
@@ -65,20 +65,20 @@ public class GroupWalletService {
 
         UserGroupWallet userGroupWallet = new UserGroupWallet(UserAuthorityEnum.ADMIN, user, groupWallet);
         userGroupWalletRepository.save(userGroupWallet);
-        return groupWallet;
+        return new GroupWalletResponseDto(groupWallet);
     }
 
-    public GroupWallet getGroupWalletById(User user, Long groupWalletId) {
+    public GroupWalletResponseDto getGroupWalletById(User user, Long groupWalletId) {
         validateUserChannel(groupWalletId, user.getId());
-        return findGroupWalletById(groupWalletId);
+        return new GroupWalletResponseDto(findGroupWalletById(groupWalletId));
     }
 
     @Transactional
-    public GroupWallet deleteGroupWalletById(Long groupWalletId) {
+    public String  deleteGroupWalletById(User user, Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
         userGroupWalletRepository.deleteByGroupWallet(groupWallet);
         groupWalletRepository.delete(groupWallet);
-        return groupWallet;
+        return "그룹통장이 해지되었습니다.";
     }
 
     public List<TransactionResponseDto> getTransactionByGroupWallet(User user, Long groupWalletId) {
@@ -96,7 +96,7 @@ public class GroupWalletService {
         return userGroupWalletList.stream().map(w -> new WalletUserResponseDto(w.getUser(), w.getUserAuthority())).collect(Collectors.toList());
     }
 
-    public GroupWallet participantGroupWalletById(User user, Long groupWalletId) {
+    public GroupWalletResponseDto participantGroupWalletById(User user, Long groupWalletId) {
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
         validateUserChannel(groupWallet.getChannel().getId(), user.getId());
         UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet).orElse(null);
@@ -104,7 +104,7 @@ public class GroupWalletService {
         //일단 권한 USER
         userGroupWallet = new UserGroupWallet(UserAuthorityEnum.USER, user, groupWallet);
         userGroupWalletRepository.save(userGroupWallet);
-        return groupWallet;
+        return new GroupWalletResponseDto(groupWallet);
     }
 
     public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(User user, Long channelId) {

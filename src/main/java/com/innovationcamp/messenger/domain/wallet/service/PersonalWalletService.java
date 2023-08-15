@@ -4,6 +4,7 @@ import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
 import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletCreateDto;
+import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
 import com.innovationcamp.messenger.domain.wallet.entity.UserGroupWallet;
 import com.innovationcamp.messenger.domain.wallet.entity.PersonalWallet;
@@ -37,22 +38,22 @@ public class PersonalWalletService {
         return personalWalletRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("Wallet 을 개설하지 않은 유저입니다."));
     }
 
-    public PersonalWallet getPersonalWallet(User user) {
-        return findPersonalWalletByUser(user);
+    public PersonalWalletResponseDto getPersonalWallet(User user) {
+        return new PersonalWalletResponseDto(findPersonalWalletByUser(user));
     }
 
-    public PersonalWallet createPersonalWallet(User user, PersonalWalletCreateDto requestDto) {
+    public PersonalWalletResponseDto createPersonalWallet(User user, PersonalWalletCreateDto requestDto) {
         if (personalWalletRepository.existsByUser(user)){
             throw new IllegalArgumentException("이미 Wallet 을 개설한 유저입니다.");
         }
         PersonalWallet personalWallet = new PersonalWallet(money, walletPasswordEncoder.encode(requestDto.getPassword()), user);
-        return personalWalletRepository.save(personalWallet);
+        return new PersonalWalletResponseDto(personalWalletRepository.save(personalWallet));
     }
 
-    public PersonalWallet deletePersonalWallet(User user) {
+    public String  deletePersonalWallet(User user) {
         PersonalWallet personalWallet = findPersonalWalletByUser(user);
         personalWalletRepository.delete(personalWallet);
-        return personalWallet;
+        return "개인통장이 해지되었습니다.";
     }
 
     public List<TransactionResponseDto> getAllTransactionByPersonalWallet(User user) {
