@@ -47,6 +47,8 @@ public class Reservation extends TimeStamped {
                        LocalDateTime reservationTime,
                        ReservationCreateDto.ReservationType reservationType,
                        ReservationStateEnum reservationState){
+        this.wallet = wallet;
+        this.targetWallet = targetWallet;
         this.amount = amount;
         this.reservationTime = reservationTime;
         this.reservationType = reservationType;
