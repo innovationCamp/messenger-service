@@ -13,8 +13,6 @@ public class TransactionResponseDto {
     private Long amount;
     private Long balanceBefore;
     private Long balanceAfter;
-    private LocalDateTime reservationTime;
-    private String reservationState;
     private WalletDto wallet;
     private WalletDto targetWallet;
 
@@ -23,8 +21,6 @@ public class TransactionResponseDto {
         this.amount = transaction.getAmount();
         this.balanceBefore = transaction.getBalanceBefore();
         this.balanceAfter = transaction.getBalanceAfter();
-        this.reservationTime = transaction.getReservationTime();
-        this.reservationState = transaction.getReservationState();
         this.wallet = new WalletDto(transaction.getWallet());
         this.targetWallet = new WalletDto(transaction.getTargetWallet());
     }

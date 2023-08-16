@@ -44,7 +44,7 @@ public class MessageService {
                 .orElseThrow(() -> new EntityNotFoundException("없는 채널 입니다."));
 
         // 전체 유저 -1
-        Long notReadCount = userChannelRepository.countIdByChannelId(requestDto.getChannelId()) - 1L;
+        Long notReadCount = userChannelRepository.countByChannelId(requestDto.getChannelId()) - 1L;
 
         Message message = Message.builder()
                 .user(user)
