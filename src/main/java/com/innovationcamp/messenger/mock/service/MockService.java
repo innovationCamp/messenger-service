@@ -1,4 +1,4 @@
-package com.innovationcamp.messenger.domain.mock.service;
+package com.innovationcamp.messenger.mock.service;
 
 import com.innovationcamp.messenger.domain.channel.config.ChannelPasswordEncoder;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
@@ -8,7 +8,7 @@ import com.innovationcamp.messenger.domain.channel.repository.UserChannelReposit
 import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import com.innovationcamp.messenger.domain.message.entity.Message;
 import com.innovationcamp.messenger.domain.message.repository.MessageRepository;
-import com.innovationcamp.messenger.domain.mock.dto.CreateMockChannelResponseDto;
+import com.innovationcamp.messenger.mock.dto.CreateMockChannelResponseDto;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;

@@ -1,9 +1,8 @@
-package com.innovationcamp.messenger.domain.mock.dto;
+package com.innovationcamp.messenger.mock.dto;
 
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

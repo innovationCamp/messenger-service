@@ -1,7 +1,7 @@
-package com.innovationcamp.messenger.domain.mock.controller;
+package com.innovationcamp.messenger.mock.controller;
 
-import com.innovationcamp.messenger.domain.mock.dto.CreateMockChannelResponseDto;
-import com.innovationcamp.messenger.domain.mock.service.MockService;
+import com.innovationcamp.messenger.mock.dto.CreateMockChannelResponseDto;
+import com.innovationcamp.messenger.mock.service.MockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
