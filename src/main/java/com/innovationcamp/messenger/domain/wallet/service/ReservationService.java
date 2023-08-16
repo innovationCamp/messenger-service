@@ -52,6 +52,7 @@ public class ReservationService {
                         .reservationTime(reservationTime)
                         .reservationType(reservation.getReservationType())
                         .reservationState(ReservationStateEnum.RESERVATION)
+                        .user(reservation.getUser())
                         .build();
                 reservationRepository.save(nextReservation);
             }
