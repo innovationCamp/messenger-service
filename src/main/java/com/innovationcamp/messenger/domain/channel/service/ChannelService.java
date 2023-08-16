@@ -33,7 +33,7 @@ public class ChannelService {
     @Transactional
     public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto requestDto
     ) {
-        if(requestDto.getIsPrivate() == null){
+        if (requestDto.getIsPrivate() == null) {
             requestDto.setIsPrivate(false);
         }
         Channel channel = Channel.builder()
@@ -55,7 +55,10 @@ public class ChannelService {
         return new CreateChannelResponseDto(channel);
     }
 
-    public GetChannelResponseDto getChannel(Long id) {
+    public GetChannelResponseDto getChannel(Long id, User user) {
+        userChannelRepository.findByUserAndChannelId(user, id)
+                .orElseThrow(() -> new EntityNotFoundException("참여하지 않은 채널입니다."));
+
         Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
 
@@ -70,10 +73,11 @@ public class ChannelService {
 
     public SignUpChannelResponseDto signUpChannel(Long channelId, String channelpw, User user) {
         Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
-        if (userChannelRepository.findByUserAndChannel(user, channel).isPresent()) throw new IllegalArgumentException("이미 가입한 채널입니다.");
-        if(channel.getIsPrivate()){
-            if(channelpw == null) throw new IllegalArgumentException("해당 채널은 비밀 채널입니다. 비밀번호를 입력해주세요.");
-            if(!pwEncoder.checkPassword(channelpw, channel.getChannelPassword())){
+        if (userChannelRepository.findByUserAndChannel(user, channel).isPresent())
+            throw new IllegalArgumentException("이미 가입한 채널입니다.");
+        if (channel.getIsPrivate()) {
+            if (channelpw == null) throw new IllegalArgumentException("해당 채널은 비밀 채널입니다. 비밀번호를 입력해주세요.");
+            if (!pwEncoder.checkPassword(channelpw, channel.getChannelPassword())) {
                 throw new IllegalArgumentException("비밀 채널에 입장하기 위한 비밀번호가 일치하지 않습니다.");
             }
         }
