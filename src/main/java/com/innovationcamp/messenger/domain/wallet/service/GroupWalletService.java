@@ -49,6 +49,12 @@ public class GroupWalletService {
             throw new IllegalArgumentException("채널의 구성원이 아닙니다.");
     }
 
+    private void validateUserGroupWallet(Long groupWalletId, Long userId){
+        if(!userGroupWalletRepository.existsByGroupWalletIdAndUserId(groupWalletId, userId)){
+            throw new IllegalArgumentException("그룹통장의 구성원이 아닙니다.");
+        }
+    }
+
     @Transactional
     public GroupWalletResponseDto createGroupWallet(User user, GroupWalletCreateDto requestDto) {
         Channel channel = channelRepository.findById(requestDto.getChannelId()).orElseThrow(() -> new IllegalArgumentException("없는 채널입니다."));
@@ -69,7 +75,7 @@ public class GroupWalletService {
     }
 
     public GroupWalletResponseDto getGroupWalletById(User user, Long groupWalletId) {
-        validateUserChannel(groupWalletId, user.getId());
+        validateUserGroupWallet(groupWalletId, user.getId());
         return new GroupWalletResponseDto(findGroupWalletById(groupWalletId));
     }
 
@@ -87,9 +93,7 @@ public class GroupWalletService {
     }
 
     public List<TransactionResponseDto> getTransactionByGroupWallet(User user, Long groupWalletId) {
-        if(!userGroupWalletRepository.existsByGroupWalletIdAndUserId(groupWalletId, user.getId())){
-            throw new IllegalArgumentException("참가하지 않은 Group 통장입니다.");
-        }
+        validateUserGroupWallet(groupWalletId, user.getId());
         GroupWallet groupWallet = findGroupWalletById(groupWalletId);
         List<Transaction> transactionList = transactionRepository.findAllByWallet(groupWallet);
         return transactionList.stream().map(TransactionResponseDto::new).collect(Collectors.toList());
