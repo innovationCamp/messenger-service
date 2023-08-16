@@ -1,7 +1,9 @@
 package com.innovationcamp.messenger.domain.wallet.dto;
 
 import com.innovationcamp.messenger.domain.wallet.entity.PersonalWallet;
+import lombok.Getter;
 
+@Getter
 public class PersonalWalletResponseDto {
     private Long walletId;
     private Long money;
