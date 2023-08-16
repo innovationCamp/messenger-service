@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Schema(description = "ChannelContent 조회 response Dto")
-public class GetChannelContentsResponseDto {
+public class GetChannelContentResponseDto {
     private final Long id;
     private final String userEmail;
     private final String userName;
@@ -17,12 +17,12 @@ public class GetChannelContentsResponseDto {
     private final Long notReadCount;
 
 
-    public GetChannelContentsResponseDto(Long id,
-                                         String userEmail,
-                                         String userName,
-                                         Long callOutContentId,
-                                         LocalDateTime createdAt,
-                                         Long notReadCount) {
+    public GetChannelContentResponseDto(Long id,
+                                        String userEmail,
+                                        String userName,
+                                        Long callOutContentId,
+                                        LocalDateTime createdAt,
+                                        Long notReadCount) {
         this.id = id;
         this.userEmail = userEmail;
         this.userName = userName;

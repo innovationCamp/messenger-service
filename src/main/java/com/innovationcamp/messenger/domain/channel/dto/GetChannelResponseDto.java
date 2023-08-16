@@ -9,16 +9,26 @@ import java.time.LocalDateTime;
 @Schema(description = "채널 한 개의 정보 조회 response Dto")
 public class GetChannelResponseDto {
     private final Long channelId;
-    private final String channelCreateUserName;
     private final String channelName;
+    private final String channelCreateUserName;
+    private final Long userCount;
+    private final Boolean isPrivate;
     private final String channelDescription;
     private final LocalDateTime createdAt;
 
-    public GetChannelResponseDto(Long channelId, String channelCreateUserName, String channelName, String channelDescription, LocalDateTime createdAt) {
+    public GetChannelResponseDto(Long channelId,
+                                 String channelName,
+                                 String channelCreateUserName,
+                                 String channelDescription,
+                                 LocalDateTime createdAt,
+                                 Boolean isPrivate,
+                                 Long userCount) {
         this.channelId = channelId;
-        this.channelCreateUserName = channelCreateUserName;
         this.channelName = channelName;
+        this.channelCreateUserName = channelCreateUserName;
         this.channelDescription = channelDescription;
         this.createdAt = createdAt;
+        this.isPrivate = isPrivate;
+        this.userCount = userCount;
     }
 }
