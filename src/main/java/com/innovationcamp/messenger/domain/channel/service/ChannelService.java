@@ -33,8 +33,7 @@ public class ChannelService {
     @Transactional
     public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto requestDto
     ) {
-        Boolean isPrivate = requestDto.getIsPrivate();
-        if(isPrivate == null){
+        if(requestDto.getIsPrivate() == null){
             requestDto.setIsPrivate(false);
         }
         Channel channel = Channel.builder()
