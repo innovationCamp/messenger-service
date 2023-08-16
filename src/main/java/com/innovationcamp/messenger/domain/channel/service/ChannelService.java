@@ -34,7 +34,7 @@ public class ChannelService {
     public CreateChannelResponseDto createChannel(User user, CreateChannelRequestDto requestDto
     ) {
         Boolean isPrivate = requestDto.getIsPrivate();
-        if(isPrivate == null || !isPrivate){
+        if(isPrivate == null){
             requestDto.setIsPrivate(false);
         }
         Channel channel = Channel.builder()
