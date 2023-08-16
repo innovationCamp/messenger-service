@@ -112,7 +112,10 @@ public class WalletService {
         int second = 0; // 고정 값으로 0
 
         LocalDateTime reservationTime = LocalDateTime.of(requestDto.getYear(), requestDto.getMonth(), requestDto.getDay(), randomHour, randomMinute, second);
-
+        // 당일예약 불가
+        if (reservationTime.isBefore(LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0))) {
+            throw new IllegalArgumentException("예약은 다음날부터 가능합니다.");
+        }
         return reservationTime;
     }
 
@@ -166,6 +169,7 @@ public class WalletService {
                 .balanceAfter(balanceAfterReceive)
                 .wallet(targetWallet)
                 .targetWallet(wallet)
+                .isReservation(true)
                 .build();
 
         wallet.update(balanceAfterSend);
@@ -173,9 +177,9 @@ public class WalletService {
 
         List<Transaction> transactionList = Arrays.asList(transactionSend, transactionReceive);
         transactionRepository.saveAll(transactionList);
-        /* 일단 빼고 구현
+
         if (wallet instanceof GroupWallet groupWallet) {
-            GroupSpendDetail groupSpendDetail = new GroupSpendDetail(transactionSend, groupWallet, user);
+            GroupSpendDetail groupSpendDetail = new GroupSpendDetail(transactionSend, groupWallet, reservation.getUser());
             groupSpendDetailRepository.save(groupSpendDetail);
         }
 

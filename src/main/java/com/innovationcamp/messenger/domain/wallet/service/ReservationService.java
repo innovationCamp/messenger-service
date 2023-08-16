@@ -6,8 +6,10 @@ import com.innovationcamp.messenger.domain.wallet.entity.ReservationStateEnum;
 import com.innovationcamp.messenger.domain.wallet.repository.ReservationRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,11 +36,14 @@ public class ReservationService {
             if (reservation.getReservationType().equals(ReservationCreateDto.ReservationType.MONTHLY)){
                 LocalDateTime reservationTime = reservation.getReservationTime().plusMonths(1);
                 Reservation nextReservation = Reservation.builder()
+                        .wallet(reservation.getWallet())
+                        .targetWallet(reservation.getTargetWallet())
                         .amount(reservation.getAmount())
                         .reservationTime(reservationTime)
                         .reservationType(reservation.getReservationType())
                         .reservationState(ReservationStateEnum.RESERVATION)
                         .build();
+                reservationRepository.save(nextReservation);
             }
         }
     }
