@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.wallet.entity;
 
+import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.dto.ReservationCreateDto;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -40,6 +41,14 @@ public class Reservation extends TimeStamped {
     @JoinColumn(name = "target_wallet_id")
     private Wallet targetWallet;
 
+    @OneToOne
+    @JoinColumn(name = "transaction_id")
+    private Transaction transaction;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     public Reservation(Wallet wallet,
                        Wallet targetWallet,
@@ -55,7 +64,11 @@ public class Reservation extends TimeStamped {
         this.reservationState = reservationState;
     }
 
-    public void updateStatus(ReservationStateEnum reservationStateEnum) {
+    public void updateState(ReservationStateEnum reservationStateEnum) {
         this.reservationState = reservationStateEnum;
+    }
+
+    public void updateTransaction(Transaction transactionSend) {
+        this.transaction = transactionSend;
     }
 }

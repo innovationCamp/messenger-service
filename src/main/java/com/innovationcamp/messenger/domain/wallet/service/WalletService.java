@@ -179,7 +179,8 @@ public class WalletService {
             GroupSpendDetail groupSpendDetail = new GroupSpendDetail(transactionSend, groupWallet, user);
             groupSpendDetailRepository.save(groupSpendDetail);
         }
-         */
+
+        reservation.updateTransaction(transactionSend);
         return true;
     }
 }
