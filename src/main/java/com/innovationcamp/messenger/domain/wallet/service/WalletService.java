@@ -36,19 +36,22 @@ public class WalletService {
     @NonNull
     private ReservationRepository reservationRepository;
 
-    private void validateBeforeTransaction(User user, Wallet wallet, TransactionCreateDto requestDto) {
-        if (!walletPasswordEncoder.checkPassword(requestDto.getPassword(), wallet.getPassword())) throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+    private void validateUser(User user, Wallet wallet) {
         if (user.equals(wallet.getUser())) {
-            if (wallet.getMoney() < requestDto.getAmount()) throw new IllegalArgumentException("잔액이 부족합니다.");
             return;
         } else if (wallet instanceof GroupWallet groupWallet) {
             UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet).orElseThrow(() -> new IllegalArgumentException("groupWallet 에 참여하지 않은 user 입니다."));
             if (!userGroupWallet.getUserAuthority().equals(UserAuthorityEnum.ADMIN))
                 throw new IllegalArgumentException("groupWallet 에 권한이 없는 user 입니다.");
-            if (groupWallet.getMoney() < requestDto.getAmount()) throw new IllegalArgumentException("잔액이 부족합니다.");
             return;
         }
         throw new IllegalArgumentException("부적절한 송금입니다.");
+    }
+    private void checkBalance(Long amount, Wallet wallet){
+        if (wallet.getMoney() < amount) throw new IllegalArgumentException("잔액이 부족합니다.");
+    }
+    private void checkPassword(String password, Wallet wallet){
+        if (!walletPasswordEncoder.checkPassword(password, wallet.getPassword())) throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }
 
     /*
@@ -67,9 +70,9 @@ public class WalletService {
     @Transactional
     public TransactionResponseDto createTransaction(User user, final TransactionCreateDto requestDto) {
         final Wallet wallet = walletRepository.findById(requestDto.getWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 Wallet 입니다."));
-        validateBeforeTransaction(user, wallet, requestDto);
-        if (requestDto.getReservationTime() != null) throw new NullPointerException("현재 예약 송금 기능 미구현");
-
+        validateUser(user, wallet);
+        checkPassword(requestDto.getPassword(), wallet);
+        checkBalance(requestDto.getAmount(), wallet);
         final Wallet targetWallet = walletRepository.findById(requestDto.getTargetWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 TargetWallet 입니다."));
         final Long balanceAfterSend = wallet.getMoney() - requestDto.getAmount();
         Transaction transactionSend = Transaction.builder()
@@ -120,12 +123,8 @@ public class WalletService {
 
     public ReservationResponseDto createReservation(User user, ReservationCreateDto requestDto) {
         final Wallet wallet = walletRepository.findById(requestDto.getWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 Wallet 입니다."));
-        if (!walletPasswordEncoder.checkPassword(requestDto.getPassword(), wallet.getPassword())) throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        if (wallet instanceof GroupWallet groupWallet) {
-            UserGroupWallet userGroupWallet = userGroupWalletRepository.findByUserAndGroupWallet(user, groupWallet).orElseThrow(() -> new IllegalArgumentException("groupWallet 에 참여하지 않은 user 입니다."));
-            if (!userGroupWallet.getUserAuthority().equals(UserAuthorityEnum.ADMIN))
-                throw new IllegalArgumentException("groupWallet 에 권한이 없는 user 입니다.");
-        }
+        validateUser(user, wallet);
+        checkPassword(requestDto.getPassword(), wallet);
         final Wallet targetWallet = walletRepository.findById(requestDto.getTargetWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 TargetWallet 입니다."));
         LocalDateTime reservationTime = createReservationTime(requestDto);
         Reservation reservation = Reservation.builder()
@@ -146,9 +145,8 @@ public class WalletService {
         final Wallet wallet = reservation.getWallet();
         final Wallet targetWallet = reservation.getTargetWallet();
 
+        checkBalance(reservation.getAmount(), wallet);
         final Long balanceAfterSend = wallet.getMoney() - reservation.getAmount();
-        if(balanceAfterSend<0)
-            return false;
 
         Transaction transactionSend = Transaction.builder()
                 .transferType(TransferTypeEnum.SEND)
