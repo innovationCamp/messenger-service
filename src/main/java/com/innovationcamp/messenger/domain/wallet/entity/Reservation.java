@@ -55,13 +55,15 @@ public class Reservation extends TimeStamped {
                        Long amount,
                        LocalDateTime reservationTime,
                        ReservationCreateDto.ReservationType reservationType,
-                       ReservationStateEnum reservationState){
+                       ReservationStateEnum reservationState,
+                       User user){
         this.wallet = wallet;
         this.targetWallet = targetWallet;
         this.amount = amount;
         this.reservationTime = reservationTime;
         this.reservationType = reservationType;
         this.reservationState = reservationState;
+        this.user = user;
     }
 
     public void updateState(ReservationStateEnum reservationStateEnum) {

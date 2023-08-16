@@ -135,6 +135,7 @@ public class WalletService {
                 .reservationTime(reservationTime)
                 .reservationType(requestDto.getType())
                 .reservationState(ReservationStateEnum.RESERVATION)
+                .user(user)
                 .build();
         reservationRepository.save(reservation);
         return new ReservationResponseDto(reservation);

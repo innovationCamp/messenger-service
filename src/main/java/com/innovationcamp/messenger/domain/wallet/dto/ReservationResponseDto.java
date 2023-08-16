@@ -15,6 +15,7 @@ public class ReservationResponseDto {
     private LocalDateTime reservationTime;
     private ReservationCreateDto.ReservationType reservationType; // 예약 타입
     private ReservationStateEnum reservationState;
+    private String username;
 
     public ReservationResponseDto(Reservation reservation){
         this.id = reservation.getId();
@@ -24,5 +25,6 @@ public class ReservationResponseDto {
         this.reservationTime = reservation.getReservationTime();
         this.reservationType = reservation.getReservationType();
         this.reservationState = reservation.getReservationState();
+        this.username = reservation.getUser().getUsername();
     }
 }
