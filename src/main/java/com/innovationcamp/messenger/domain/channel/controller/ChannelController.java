@@ -40,13 +40,10 @@ public class ChannelController {
         return ResponseEntity.ok(dtoList);
     }
 
-    @Operation(summary = "채널 id를 사용하여 특정 채널의 정보 조회", description = """
-            특정 채널의 정보( content, password 제외 )를 얻을 수 있습니다. 현재 사용자 정보는 사용하지 않습니다.
-
-            getChannel(@PathVariable Long channelId)""")
+    @Operation(summary = "사용자가 속한 채널 중 채널 id를 사용하여 단일 조회")
     @GetMapping("/{channelId}")
-    public ResponseEntity<GetChannelResponseDto> getChannel(@PathVariable Long channelId) {
-        GetChannelResponseDto dto = channelService.getChannel(channelId);
+    public ResponseEntity<GetChannelResponseDto> getChannel(@PathVariable Long channelId, @RequestAttribute User user) {
+        GetChannelResponseDto dto = channelService.getChannel(channelId, user);
         return ResponseEntity.ok(dto);
     }
 

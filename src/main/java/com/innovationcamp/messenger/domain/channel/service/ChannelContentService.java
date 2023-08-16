@@ -1,12 +1,14 @@
 package com.innovationcamp.messenger.domain.channel.service;
 
 import com.innovationcamp.messenger.domain.channel.dto.GetChannelContentResponseDto;
+import com.innovationcamp.messenger.domain.channel.dto.MessageContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.entity.UserChannel;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepository;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
+import com.innovationcamp.messenger.domain.message.entity.Message;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,6 @@ public class ChannelContentService {
     @NonNull
     private final UserChannelRepository userChannelRepo;
 
-
     public List<GetChannelContentResponseDto> getChannelContents(Long channelId, User user) {
         Channel channel = channelRepo.findById(channelId)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
@@ -35,24 +36,10 @@ public class ChannelContentService {
         checkUserInChannel(channel, user);
 
         List<ChannelContent> channelContents = channelContentRepo.findByChannel(channel);
-
-        List<GetChannelContentResponseDto> dtoList = channelContents.stream()
-                .map(channelContent -> {
-                    User channelContentUser = channelContent.getUser();
-                    ChannelContent calloutContent = channelContent.getCalloutContent();
-                    // NullPointException 방지
-                    Long calloutContentId = calloutContent != null ? calloutContent.getId() : null;
-                    return new GetChannelContentResponseDto(
-                            channelContent.getId(),
-                            channelContentUser.getUsername(),
-                            channelContentUser.getEmail(),
-                            calloutContentId,
-                            channelContent.getCreatedAt(),
-                            channelContent.getNotReadCount());
-                })
-                .collect(Collectors.toList());
-
-        return dtoList;
+        return channelContents.stream().map(channelContent -> {
+            if (channelContent instanceof Message message) return new MessageContentResponseDto(message);
+            else return new GetChannelContentResponseDto(channelContent);
+        }).collect(Collectors.toList());
     }
 
     // 사용자가 채널에 속해 있는지 확인
