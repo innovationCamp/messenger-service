@@ -1,6 +1,8 @@
 package com.innovationcamp.messenger.domain.channel.dto;
 
 
+import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
+import com.innovationcamp.messenger.domain.message.entity.Message;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -16,19 +18,22 @@ public class GetChannelContentResponseDto {
     private final LocalDateTime createdAt;
     private final Long notReadCount;
 
+    public GetChannelContentResponseDto(ChannelContent channelContent) {
+        this.id = channelContent.getId();
+        this.userEmail = channelContent.getUser().getEmail();
+        this.userName = channelContent.getUser().getUsername();
+        this.callOutContentId = channelContent.getCalloutContent() != null ? channelContent.getCalloutContent().getId() : null;
+        this.createdAt = channelContent.getCreatedAt();
+        this.notReadCount = channelContent.getNotReadCount();
+    }
 
-    public GetChannelContentResponseDto(Long id,
-                                        String userEmail,
-                                        String userName,
-                                        Long callOutContentId,
-                                        LocalDateTime createdAt,
-                                        Long notReadCount) {
-        this.id = id;
-        this.userEmail = userEmail;
-        this.userName = userName;
-        this.callOutContentId = callOutContentId;
-        this.createdAt = createdAt;
-        this.notReadCount = notReadCount;
+    public GetChannelContentResponseDto(Message message) {
+        this.id = message.getId();
+        this.userEmail = message.getUser().getEmail();
+        this.userName = message.getUser().getUsername();
+        this.callOutContentId = message.getCalloutContent() != null ? message.getCalloutContent().getId() : null;
+        this.createdAt = message.getCreatedAt();
+        this.notReadCount = message.getNotReadCount();
     }
 
 }
