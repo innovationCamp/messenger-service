@@ -1,11 +1,7 @@
 package com.innovationcamp.messenger.domain.wallet.controller;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
-import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
-import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletCreateDto;
-import com.innovationcamp.messenger.domain.wallet.dto.PersonalWalletResponseDto;
-import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
-import com.innovationcamp.messenger.domain.wallet.entity.PersonalWallet;
+import com.innovationcamp.messenger.domain.wallet.dto.*;
 import com.innovationcamp.messenger.domain.wallet.service.PersonalWalletService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +39,10 @@ public class PersonalWalletController {
     @GetMapping("/group/all")
     public List<GroupWalletResponseDto> getAllGroupWalletByUser(@RequestAttribute User user) {
         return walletPersonalService.getAllGroupWalletByUser(user);
+    }
+
+    @GetMapping("/reservation")
+    public List<ReservationResponseDto> getAllReservationByPersonalWallet(@RequestAttribute User user){
+        return walletPersonalService.getAllReservationByPersonalWallet(user);
     }
 }

@@ -5,15 +5,15 @@ import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.config.WalletPasswordEncoder;
-import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
-import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
-import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
-import com.innovationcamp.messenger.domain.wallet.dto.WalletUserResponseDto;
-import com.innovationcamp.messenger.domain.wallet.entity.UserAuthorityEnum;
+import com.innovationcamp.messenger.domain.wallet.dto.*;
 import com.innovationcamp.messenger.domain.wallet.entity.GroupWallet;
-import com.innovationcamp.messenger.domain.wallet.entity.UserGroupWallet;
 import com.innovationcamp.messenger.domain.wallet.entity.Transaction;
-import com.innovationcamp.messenger.domain.wallet.repository.*;
+import com.innovationcamp.messenger.domain.wallet.entity.UserAuthorityEnum;
+import com.innovationcamp.messenger.domain.wallet.entity.UserGroupWallet;
+import com.innovationcamp.messenger.domain.wallet.repository.GroupWalletRepository;
+import com.innovationcamp.messenger.domain.wallet.repository.ReservationRepository;
+import com.innovationcamp.messenger.domain.wallet.repository.TransactionRepository;
+import com.innovationcamp.messenger.domain.wallet.repository.UserGroupWalletRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +37,8 @@ public class GroupWalletService {
     private ChannelRepository channelRepository;
     @NonNull
     private UserChannelRepository userChannelRepository;
+    @NonNull
+    private ReservationRepository reservationRepository;
 
     private final Long money = 0L;
 
@@ -120,5 +122,11 @@ public class GroupWalletService {
         Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
         validateUserChannel(channelId, user.getId());
         return groupWalletRepository.findAllByChannel(channel).stream().map(GroupWalletResponseDto::new).collect(Collectors.toList());
+    }
+
+    public List<ReservationResponseDto> getAllReservationByGroupWallet(User user, Long groupWalletId) {
+        GroupWallet groupWallet = findGroupWalletById(groupWalletId);
+        validateUserGroupWallet(groupWalletId, user.getId());
+        return reservationRepository.findAllByWalletId(groupWallet.getId()).stream().map(ReservationResponseDto::new).toList();
     }
 }

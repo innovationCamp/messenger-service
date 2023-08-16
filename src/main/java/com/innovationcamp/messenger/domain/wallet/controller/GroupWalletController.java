@@ -1,11 +1,7 @@
 package com.innovationcamp.messenger.domain.wallet.controller;
 
 import com.innovationcamp.messenger.domain.user.entity.User;
-import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletCreateDto;
-import com.innovationcamp.messenger.domain.wallet.dto.GroupWalletResponseDto;
-import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
-import com.innovationcamp.messenger.domain.wallet.dto.WalletUserResponseDto;
-import com.innovationcamp.messenger.domain.wallet.entity.GroupWallet;
+import com.innovationcamp.messenger.domain.wallet.dto.*;
 import com.innovationcamp.messenger.domain.wallet.service.GroupWalletService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +53,11 @@ public class GroupWalletController {
     public List<GroupWalletResponseDto> getAllGroupWalletByChannelId(@RequestAttribute User user,
                                                                      @PathVariable Long channelId){
         return groupWalletService.getAllGroupWalletByChannelId(user, channelId);
+    }
+
+    @GetMapping("/{groupWalletId}/reservation")
+    public List<ReservationResponseDto> getAllReservationByGroupWallet(@RequestAttribute User user,
+                                                                       @PathVariable Long groupWalletId){
+        return groupWalletService.getAllReservationByGroupWallet(user, groupWalletId);
     }
 }

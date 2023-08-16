@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     List<Reservation> findAllByReservationTimeBetween(LocalDateTime startTime, LocalDateTime endTime);
+    List<Reservation> findAllByWalletId(Long id);
 }
