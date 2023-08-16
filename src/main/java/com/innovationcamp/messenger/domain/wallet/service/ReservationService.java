@@ -16,22 +16,32 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService {
     @NonNull
     private final WalletService walletService;
     @NonNull
     private final ReservationRepository reservationRepository;
 
-    @Scheduled(cron = "0 0 10-14 * * ?", zone = "Asia/Seoul")
+//    @Scheduled(cron = "0 0/5 10-14 * * ?", zone = "Asia/Seoul")
+    // 테스트 : 1분 간격 실행
+    @Scheduled(cron = "0 0/1 * * * ?", zone = "Asia/Seoul")
+    @Transactional
     public void reservation(){
         LocalDateTime startTime = LocalDateTime.now();
-        LocalDateTime endTime = startTime.plusHours(1);
+//        LocalDateTime endTime = startTime.plusMinutes(5);
+        // 테스트 : 1분 간격 조회
+        LocalDateTime endTime = startTime.plusMinutes(1);
+
+        log.info("예약송금 실행 : " + startTime + " ~ " + endTime);
         List<Reservation> reservations = reservationRepository.findAllByReservationTimeBetween(startTime, endTime);
         for (Reservation reservation : reservations) {
-            if(walletService.reservationTransaction(reservation)){
-                reservation.updateStatus(ReservationStateEnum.SUCCESS);
-            }else {
-                reservation.updateStatus(ReservationStateEnum.FAILED);
+            if (reservation.getReservationState().equals(ReservationStateEnum.RESERVATION)) {
+                if (walletService.reservationTransaction(reservation)) {
+                    reservation.updateState(ReservationStateEnum.SUCCESS);
+                } else {
+                    reservation.updateState(ReservationStateEnum.FAILED);
+                }
             }
             if (reservation.getReservationType().equals(ReservationCreateDto.ReservationType.MONTHLY)){
                 LocalDateTime reservationTime = reservation.getReservationTime().plusMonths(1);

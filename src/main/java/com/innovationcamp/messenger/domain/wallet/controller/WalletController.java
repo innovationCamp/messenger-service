@@ -5,7 +5,6 @@ import com.innovationcamp.messenger.domain.wallet.dto.ReservationCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.ReservationResponseDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionCreateDto;
 import com.innovationcamp.messenger.domain.wallet.dto.TransactionResponseDto;
-import com.innovationcamp.messenger.domain.wallet.entity.Reservation;
 import com.innovationcamp.messenger.domain.wallet.service.WalletService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

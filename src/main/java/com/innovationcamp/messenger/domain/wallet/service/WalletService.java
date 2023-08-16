@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static com.innovationcamp.messenger.domain.wallet.entity.UserAuthorityEnum.Authority.user;
-
 @Service
 @RequiredArgsConstructor
 public class WalletService {
@@ -129,7 +127,9 @@ public class WalletService {
         validateUser(user, wallet);
         checkPassword(requestDto.getPassword(), wallet);
         final Wallet targetWallet = walletRepository.findById(requestDto.getTargetWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 TargetWallet 입니다."));
-        LocalDateTime reservationTime = createReservationTime(requestDto);
+//        LocalDateTime reservationTime = createReservationTime(requestDto);
+        // 테스트 : 1분후로 예약
+        LocalDateTime reservationTime = LocalDateTime.now().plusMinutes(1);
         Reservation reservation = Reservation.builder()
                 .wallet(wallet)
                 .targetWallet(targetWallet)
