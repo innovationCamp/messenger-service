@@ -13,6 +13,7 @@ import com.innovationcamp.messenger.domain.wallet.repository.UserGroupWalletRepo
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,5 +71,11 @@ public class PersonalWalletService {
     public List<ReservationResponseDto> getAllReservationByPersonalWallet(User user) {
         PersonalWallet wallet = findPersonalWalletByUser(user);
         return reservationRepository.findAllByWalletId(wallet.getId()).stream().map(ReservationResponseDto::new).toList();
+    }
+    @Transactional
+    public PersonalWalletResponseDto createMoney(User user, Long amount) {
+        PersonalWallet wallet = findPersonalWalletByUser(user);
+        wallet.update(wallet.getMoney()+amount);
+        return new PersonalWalletResponseDto(wallet);
     }
 }

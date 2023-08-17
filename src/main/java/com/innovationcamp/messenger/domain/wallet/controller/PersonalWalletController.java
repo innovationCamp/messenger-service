@@ -3,11 +3,13 @@ package com.innovationcamp.messenger.domain.wallet.controller;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.wallet.dto.*;
 import com.innovationcamp.messenger.domain.wallet.service.PersonalWalletService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -44,5 +46,14 @@ public class PersonalWalletController {
     @GetMapping("/reservation")
     public List<ReservationResponseDto> getAllReservationByPersonalWallet(@RequestAttribute User user){
         return walletPersonalService.getAllReservationByPersonalWallet(user);
+    }
+
+    @Operation(summary = "개인통장에 입금하기",
+            description = "Wallet 관련 테스트를 위해 원하는 금액만큼 입금 할 수 있게 구현했습니다.")
+    @PostMapping("/money")
+    public PersonalWalletResponseDto createMoney(@RequestAttribute User user,
+                                                 @RequestBody Map<String, Long> requestMap){
+        Long amount = requestMap.get("amount");
+        return walletPersonalService.createMoney(user, amount);
     }
 }
