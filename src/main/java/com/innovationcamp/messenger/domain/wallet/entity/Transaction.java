@@ -31,10 +31,7 @@ public class Transaction extends TimeStamped {
     private Long balanceAfter;
 
     @Column
-    private LocalDateTime reservationTime;
-
-    @Column
-    private String reservationState;
+    private boolean isReservation;
 
     @ManyToOne
     @JoinColumn(name = "wallet_id")
@@ -46,13 +43,12 @@ public class Transaction extends TimeStamped {
 
     @Builder
     public Transaction(final TransferTypeEnum transferType, final Long amount, final Long balanceBefore, final Long balanceAfter,
-                       final LocalDateTime reservationTime, final String reservationState, final Wallet wallet, final Wallet targetWallet) {
+                       final boolean isReservation, final Wallet wallet, final Wallet targetWallet) {
         this.transferType = transferType;
         this.amount = amount;
         this.balanceBefore = balanceBefore;
         this.balanceAfter = balanceAfter;
-        this.reservationTime = reservationTime;
-        this.reservationState = reservationState;
+        this.isReservation = isReservation;
         this.wallet = wallet;
         this.targetWallet = targetWallet;
     }
