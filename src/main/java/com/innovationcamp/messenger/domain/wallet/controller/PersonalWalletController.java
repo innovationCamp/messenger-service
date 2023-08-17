@@ -52,8 +52,7 @@ public class PersonalWalletController {
             description = "Wallet 관련 테스트를 위해 원하는 금액만큼 입금 할 수 있게 구현했습니다.")
     @PostMapping("/money")
     public PersonalWalletResponseDto createMoney(@RequestAttribute User user,
-                                                 @RequestBody Map<String, Long> requestMap){
-        Long amount = requestMap.get("amount");
-        return walletPersonalService.createMoney(user, amount);
+                                                 @RequestBody PersonalWalletCreateMoneyDto requestDto){
+        return walletPersonalService.createMoney(user, requestDto.getAmount());
     }
 }
