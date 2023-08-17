@@ -18,6 +18,13 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v3
+      - name: Code Review
+        uses: anc95/ChatGPT-CodeReview@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGUAGE: Korean
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
