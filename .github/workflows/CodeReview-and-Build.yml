@@ -6,7 +6,8 @@ on:
     branches:
       - develop
     types: [opened, synchronize]
-# opened: 새로운 풀 리퀘스트가 열릴 때,  synchronize: 풀 리퀘스트가 변경되었을 때 (새로운 커밋이 푸시되었을 때)
+# opened: 새로운 풀 리퀘스트가 열릴 때
+# synchronize: 풀 리퀘스트가 변경되었을 때 (새로운 커밋이 푸시되었을 때)
 
 permissions:
   contents: write
