@@ -2,7 +2,6 @@
 대용량 트래픽을 처리할 수 있는 MSA기반 회비 관리 메신저 서비스
 
 [__API__](https://github.com/innovationCamp/swagger/blob/master/swagger.yaml)
-CHANGE MADE
 localhost:8080 swagger URL 
 
 http://localhost:8080/swagger-ui/index.html
