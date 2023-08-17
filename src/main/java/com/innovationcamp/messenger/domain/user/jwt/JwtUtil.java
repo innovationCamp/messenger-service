@@ -44,7 +44,9 @@ public class JwtUtil {
     }
 
     public String substringToken(String token) {
-        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) { return token.substring(7);}
+        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
+            return token.substring(BEARER_PREFIX.length());
+        }
         throw new NullPointerException("유효한 토큰이 아닙니다");
     }
 
@@ -55,8 +57,9 @@ public class JwtUtil {
             Cookie cookie = new Cookie(ACCESS_HEADER, token);
             cookie.setPath("/");
             cookie.setHttpOnly(true);
-            cookie.setMaxAge((int)ACCESS_TOKEN_TIME/1000);
-            res.addCookie(cookie);
+            cookie.setMaxAge((int) ACCESS_TOKEN_TIME / 1000);
+            res.setHeader(cookie.getName(), cookie.getValue());
+//            res.addCookie(cookie);
 
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
@@ -65,7 +68,7 @@ public class JwtUtil {
 
     public String getTokenFromRequest(HttpServletRequest req) {
         String token = req.getHeader(ACCESS_HEADER);
-        if(token != null) {
+        if (token != null) {
             try {
                 return URLDecoder.decode(token, "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -90,6 +93,15 @@ public class JwtUtil {
                         }
                     }
                 }
+            }
+        }
+
+        String token = req.getHeader(ACCESS_HEADER);
+        if (token != null) {
+            try {
+                return URLDecoder.decode(token, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
             }
         }
         return null;
@@ -122,7 +134,8 @@ public class JwtUtil {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-        } return false;
+        }
+        return false;
     }
 
     // 토큰에서 사용자 정보 가져오기
