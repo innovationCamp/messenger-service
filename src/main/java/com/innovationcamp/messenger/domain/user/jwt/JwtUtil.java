@@ -44,7 +44,7 @@ public class JwtUtil {
     }
 
     public String substringToken(String token) {
-        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) { return token.substring(7);}
+        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) { return token.substring(BEARER_PREFIX.length());}
         throw new NullPointerException("유효한 토큰이 아닙니다");
     }
 
@@ -56,7 +56,8 @@ public class JwtUtil {
             cookie.setPath("/");
             cookie.setHttpOnly(true);
             cookie.setMaxAge((int)ACCESS_TOKEN_TIME/1000);
-            res.addCookie(cookie);
+            res.setHeader(cookie.getName(), cookie.getValue());
+//            res.addCookie(cookie);
 
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
