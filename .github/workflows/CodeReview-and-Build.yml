@@ -1,4 +1,4 @@
-name: Build Gradle project
+name: Code Review and Build
 
 on:
   pull_request:
@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v3
+
       - name: Code Review
         uses: anc95/ChatGPT-CodeReview@main
         env:
