@@ -31,6 +31,7 @@ public class JwtInterceptorConfig implements WebMvcConfigurer {
                         "/api/test/login",
                         "/api/mock/**",
                         "/error",
+                        "/actuator/**",
                         "/swagger-ui/**", "/webjars/**", "/v3/api-docs/**", "/swagger-resources/**", "/v3/api-docs.yaml");
 
     }
