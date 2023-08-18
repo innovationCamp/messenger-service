@@ -14,12 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -108,48 +105,22 @@ public class WalletService {
         return new TransactionResponseDto(transactionSend);
     }
 
-    public LocalDateTime createReservationTime(ReservationCreateDto requestDto) {
-        int randomHour = generateRandomNumberInRange(10, 14); // 10부터 14까지 랜덤 시간
-        int randomMinute = generateRandomNumberInRange(0, 59); // 0부터 59까지 랜덤 분
-        int second = 0; // 고정 값으로 0
-        LocalTime randomTime = LocalTime.of(randomHour, randomMinute, second);
-
-        LocalDate reservationDate = requestDto.getDate();
-
-        LocalDateTime reservationTime = reservationDate.atTime(randomTime);
-        // 당일예약 불가
-        if (reservationTime.isBefore(LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0))) {
-            throw new IllegalArgumentException("예약은 다음날부터 가능합니다.");
-        }
-        return reservationTime;
-    }
-
-    private int generateRandomNumberInRange(int min, int max) {
-        Random random = new Random();
-        return random.nextInt(max - min + 1) + min;
-    }
-
     public ReservationResponseDto createReservation(User user, ReservationCreateDto requestDto) {
         final Wallet wallet = walletRepository.findById(requestDto.getWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 Wallet 입니다."));
         validateUser(user, wallet);
         checkPassword(requestDto.getPassword(), wallet);
         final Wallet targetWallet = walletRepository.findById(requestDto.getTargetWalletId()).orElseThrow(() -> new IllegalArgumentException("부적절한 TargetWallet 입니다."));
-//        LocalDateTime reservationTime = createReservationTime(requestDto);
-        // 테스트 : 1분후로 예약
-        LocalDateTime reservationTime = LocalDateTime.now().plusMinutes(1);
-        // 테스트 : dateType
-        LocalDate testDate = requestDto.getDate();
-        log.info("시간설정 전 : " + testDate);
-        LocalTime testTime = LocalTime.now().plusMinutes(1);
 
-        LocalDateTime testDateTime = testDate.atTime(testTime);
-        log.info("시간설정 후 : " + testDateTime);
-        log.info("현재 설정 : " + reservationTime);
+        LocalDateTime reservationTime = requestDto.getReservationTime();
+
+        if (reservationTime.isBefore(LocalDateTime.now().plusSeconds(30))) {
+            throw new IllegalArgumentException("예약은 1분 뒤부터 가능합니다.");
+        }
         Reservation reservation = Reservation.builder()
                 .wallet(wallet)
                 .targetWallet(targetWallet)
                 .amount(requestDto.getAmount())
-                .reservationTime(testDateTime)
+                .reservationTime(reservationTime)
                 .reservationType(requestDto.getType())
                 .reservationState(ReservationStateEnum.RESERVATION)
                 .user(user)

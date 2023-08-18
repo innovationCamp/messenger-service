@@ -1,10 +1,8 @@
 package com.innovationcamp.messenger.domain.wallet.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 public class ReservationCreateDto {
@@ -16,5 +14,5 @@ public class ReservationCreateDto {
     private Long targetWalletId;
     private Long amount;
     private String password;
-    private LocalDate date;
+    private LocalDateTime reservationTime;
 }
