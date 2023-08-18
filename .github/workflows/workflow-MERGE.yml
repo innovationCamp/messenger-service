@@ -1,6 +1,5 @@
-name: Build and Update Swagger
-# develop 브랜치에 머지되면 Swagger 문서를 업데이트하는 workflow
-
+name: Build Gradle project
+# PR 완료 후 MERGE시 빌드 후 도커 이미지 생성, 배포, swagger 업데이트
 on:
   push:
     branches:
@@ -15,7 +14,6 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v3
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -31,6 +29,35 @@ jobs:
         run: chmod +x gradlew
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
+
+      # Docker image 생성 및 dockerhub에 push
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: khchoo/team12-docker-hub
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ${{ secrets.ORG_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.ORG_DOCKERHUB_PW }}
+
+      # 서버에서 Docker compose 실행 (docker-compose.yml 파일이 서버에 있어야 함)
+      # HOST_DEV = 퍼블릭 IPv4 DNS , USERNAME = ubuntu, KEY = pem 키 전체
+      - name: EC2 Docker Run
+        uses: appleboy/ssh-action@master # https://github.com/appleboy/ssh-action
+        with:
+          host: ${{ secrets.ORG_EC2_ADDRESS }}
+          username: ${{ secrets.ORG_EC2_USERNAME }}
+          key: ${{ secrets.ORG_EC2_PEMKEY }}
+          port: 22
+          script: |
+            sudo usermod -aG docker $USER
+            newgrp docker
+            sudo docker image prune -f
+            sudo docker-compose down
+            sudo docker-compose pull
+            sudo docker-compose up -d
+
 
       - name: Start App
         run: |
@@ -48,3 +75,5 @@ jobs:
           git add api-docs.yaml
           git commit -m "Updated api-docs.yaml" || echo "No changes to commit"
           git push origin HEAD:documentation --force
+
+          
