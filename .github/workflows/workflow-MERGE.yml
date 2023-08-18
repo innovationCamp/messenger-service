@@ -53,12 +53,13 @@ jobs:
           script: |
             sudo usermod -aG docker $USER
             sudo docker image prune -f
+            sudo docker ps
+            sudo docker images
             sudo docker-compose down
             sudo docker rmi $(docker images -a -q)
             sudo docker ps
             sudo docker images
             sudo docker-compose up -d
-
 
       - name: Start App
         run: |
