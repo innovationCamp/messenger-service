@@ -10,16 +10,20 @@ import com.innovationcamp.messenger.domain.wallet.entity.*;
 import com.innovationcamp.messenger.domain.wallet.repository.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WalletService {
     @NonNull
     private WalletRepository<Wallet> walletRepository;
@@ -108,8 +112,11 @@ public class WalletService {
         int randomHour = generateRandomNumberInRange(10, 14); // 10부터 14까지 랜덤 시간
         int randomMinute = generateRandomNumberInRange(0, 59); // 0부터 59까지 랜덤 분
         int second = 0; // 고정 값으로 0
+        LocalTime randomTime = LocalTime.of(randomHour, randomMinute, second);
 
-        LocalDateTime reservationTime = LocalDateTime.of(requestDto.getYear(), requestDto.getMonth(), requestDto.getDay(), randomHour, randomMinute, second);
+        LocalDate reservationDate = requestDto.getDate();
+
+        LocalDateTime reservationTime = reservationDate.atTime(randomTime);
         // 당일예약 불가
         if (reservationTime.isBefore(LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0))) {
             throw new IllegalArgumentException("예약은 다음날부터 가능합니다.");
@@ -130,11 +137,19 @@ public class WalletService {
 //        LocalDateTime reservationTime = createReservationTime(requestDto);
         // 테스트 : 1분후로 예약
         LocalDateTime reservationTime = LocalDateTime.now().plusMinutes(1);
+        // 테스트 : dateType
+        LocalDate testDate = requestDto.getDate();
+        log.info("시간설정 전 : " + testDate);
+        LocalTime testTime = LocalTime.now().plusMinutes(1);
+
+        LocalDateTime testDateTime = testDate.atTime(testTime);
+        log.info("시간설정 후 : " + testDateTime);
+        log.info("현재 설정 : " + reservationTime);
         Reservation reservation = Reservation.builder()
                 .wallet(wallet)
                 .targetWallet(targetWallet)
                 .amount(requestDto.getAmount())
-                .reservationTime(reservationTime)
+                .reservationTime(testDateTime)
                 .reservationType(requestDto.getType())
                 .reservationState(ReservationStateEnum.RESERVATION)
                 .user(user)
