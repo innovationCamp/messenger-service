@@ -3,6 +3,8 @@
 
 [__API__](https://github.com/innovationCamp/swagger/blob/master/swagger.yaml)
 
+배포 테스트중...
+
 localhost:8080 swagger URL 
 
 http://localhost:8080/swagger-ui/index.html
