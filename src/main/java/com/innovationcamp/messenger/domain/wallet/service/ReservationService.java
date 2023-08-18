@@ -23,18 +23,16 @@ public class ReservationService {
     @NonNull
     private final ReservationRepository reservationRepository;
 
-//    @Scheduled(cron = "0 0/5 10-14 * * ?", zone = "Asia/Seoul")
-    // 테스트 : 1분 간격 실행
+    // 1분 간격 실행
     @Scheduled(cron = "0 0/1 * * * ?", zone = "Asia/Seoul")
     @Transactional
     public void reservation(){
-        LocalDateTime startTime = LocalDateTime.now();
-//        LocalDateTime endTime = startTime.plusMinutes(5);
-        // 테스트 : 1분 간격 조회
+        LocalDateTime startTime = LocalDateTime.now().withSecond(0).withNano(0);
+        // 1분 간격 조회
         LocalDateTime endTime = startTime.plusMinutes(1);
 
         log.info("예약송금 실행 : " + startTime + " ~ " + endTime);
-        List<Reservation> reservations = reservationRepository.findAllByReservationTimeBetween(startTime, endTime);
+        List<Reservation> reservations = reservationRepository.findAllByReservationTimeBetween(startTime, endTime); // 이상 ~ 이하
         for (Reservation reservation : reservations) {
             if (reservation.getReservationState().equals(ReservationStateEnum.RESERVATION)) {
                 if (walletService.reservationTransaction(reservation)) {
