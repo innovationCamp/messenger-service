@@ -3,7 +3,7 @@
 
 [__API__](https://github.com/innovationCamp/swagger/blob/master/swagger.yaml)
 
-배포 테스트중...
+ubuntu default 중복 문제 테스트중
 
 localhost:8080 swagger URL 
 
