@@ -1,4 +1,5 @@
-FROM openjdk:17-jdk-alpine
+# Use the Zulu 17 JDK as the base image
+FROM azul/zulu-openjdk:17
 EXPOSE 8080
 
 # Copy the jar file into the image
