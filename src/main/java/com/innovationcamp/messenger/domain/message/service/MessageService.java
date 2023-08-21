@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.message.service;
 
+import com.innovationcamp.messenger.domain.channel.dto.MessageContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.entity.Channel;
 import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepository;
@@ -33,12 +34,12 @@ public class MessageService {
     @NonNull
     private final UserChannelRepository userChannelRepository;
 
-    public MessageResponseDto createMessage(MessageRequestDto requestDto) {
+    public MessageContentResponseDto createMessage(MessageRequestDto requestDto) {
         // 채팅방 입장시, 토큰 검증을 하고 사용자 이름을 반환함
         // 이후 메세지 보낼때는 검증없이 사용자 이름으로 보냄
         // 현재는 연관관계설정을 위해 사용자 이름으로 user를 찾아서 넣어줌
         // 이후 NoSQL로 넘어가면 이 과정 없이 이름으로 넣을예정
-        User user = userRepository.findByUsername(requestDto.getSender())
+        User user = userRepository.findById(requestDto.getSenderId())
                 .orElseThrow(() -> new EntityNotFoundException("없는 유저 입니다."));
         Channel channel = channelRepository.findById(requestDto.getChannelId())
                 .orElseThrow(() -> new EntityNotFoundException("없는 채널 입니다."));
@@ -46,44 +47,27 @@ public class MessageService {
         // 전체 유저 -1
         Long notReadCount = userChannelRepository.countByChannelId(requestDto.getChannelId()) - 1L;
 
-        Message message = Message.builder()
-                .user(user)
-                .channel(channel)
-                .notReadCount(notReadCount)
-                .message(requestDto.getMessage())
-                .type(requestDto.getType())
-                .build();
-
-        Long calloutContentId = null;
-
-        if(requestDto.getType().equals(MessageRequestDto.MessageType.CALLOUT)){
-            calloutContentId = requestDto.getCallOutId();
-
-            ChannelContent callOutContent = channelContentRepository.findById(calloutContentId)
-                    .orElseThrow(()-> new EntityNotFoundException("없는 메세지입니다."));
-
-            message = Message.builder()
+        Message.MessageBuilder messageBuilder = Message.builder();
+        Message message;
+        if (requestDto.getCallOutId() != null) {
+            ChannelContent callOutContent = channelContentRepository.findById(requestDto.getCallOutId())
+                    .orElseThrow(() -> new EntityNotFoundException("없는 메세지입니다."));
+            message = messageBuilder
                     .user(user)
                     .channel(channel)
                     .notReadCount(notReadCount)
                     .callOutContent(callOutContent)
                     .message(requestDto.getMessage())
-                    .type(requestDto.getType())
+                    .build();
+        } else {
+            message = messageBuilder
+                    .user(user)
+                    .channel(channel)
+                    .notReadCount(notReadCount)
+                    .message(requestDto.getMessage())
                     .build();
         }
-
-        messageRepository.save(message);
-
-        return MessageResponseDto.builder()
-                .id(message.getId())
-                .username(message.getUser().getUsername())
-                .channelId(message.getChannel().getId())
-                .callOutId(calloutContentId)
-                .createdAt(message.getCreatedAt())
-                .notReadCount(notReadCount)
-                .text(message.getText())
-                .type(message.getType())
-                .build();
+        return new MessageContentResponseDto(messageRepository.save(message));
     }
 
     public DeleteMessageResponseDto deleteMessage(DeleteMessageRequestDto requestDto) {

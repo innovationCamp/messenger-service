@@ -1,11 +1,8 @@
 package com.innovationcamp.messenger.domain.message.controller;
 
-import com.innovationcamp.messenger.domain.message.dto.DeleteMessageRequestDto;
-import com.innovationcamp.messenger.domain.message.dto.DeleteMessageResponseDto;
-import com.innovationcamp.messenger.domain.message.dto.MessageResponseDto;
+import com.innovationcamp.messenger.domain.channel.dto.MessageContentResponseDto;
+import com.innovationcamp.messenger.domain.message.dto.*;
 import com.innovationcamp.messenger.domain.message.service.MessageService;
-import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
-import com.innovationcamp.messenger.domain.user.entity.User;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -27,9 +24,9 @@ public class MessageController {
     @Async // 비동기적 처리
     public void message(MessageRequestDto requestDto) {
         if (MessageRequestDto.MessageType.ENTER.equals(requestDto.getType())) {
-            requestDto.setMessage(requestDto.getSender() + "님이 입장하셨습니다.");
+            requestDto.setMessage(requestDto.getSenderName() + "님이 입장하셨습니다.");
         }
-        MessageResponseDto responseDto = messageService.createMessage(requestDto);
+        MessageContentResponseDto responseDto = messageService.createMessage(requestDto);
         messagingTemplate.convertAndSend("/sub/chat/room/" + responseDto.getChannelId(), responseDto);
     }
 
