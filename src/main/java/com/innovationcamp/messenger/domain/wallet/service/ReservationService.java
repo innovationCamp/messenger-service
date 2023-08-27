@@ -24,7 +24,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     // 1분 간격 실행
-    @Scheduled(cron = "0 0/1 * * * ?", zone = "Asia/Seoul")
+//    @Scheduled(cron = "0 0/1 * * * ?", zone = "Asia/Seoul")
     @Transactional
     public void reservation(){
         LocalDateTime startTime = LocalDateTime.now().withSecond(0).withNano(0);
