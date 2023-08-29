@@ -7,3 +7,6 @@ spring.jpa.properties.hibernate.show_sql=
 spring.jpa.properties.hibernate.format_sql=
 spring.jpa.properties.hibernate.use_sql_comments=
 jwt.secret.key=
+
+spring.data.mongodb.uri=
+spring.data.mongodb.database=
