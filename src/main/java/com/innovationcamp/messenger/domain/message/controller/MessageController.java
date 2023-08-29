@@ -32,7 +32,7 @@ public class MessageController {
 //    @NonNull
 //    private final Producer producer;
     @NonNull
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, MessageRequestDto> kafkaTemplate;
 
 //    @MessageMapping("/chat/message")
 //    @Async // 비동기적 처리
@@ -63,11 +63,11 @@ public class MessageController {
     public void produceMessageWithKey(MessageRequestDto requestDto) {
         String key = requestDto.getChannelId().toString();
 
-        CompletableFuture<SendResult<String, Object>> future =
+        CompletableFuture<SendResult<String, MessageRequestDto>> future =
                 kafkaTemplate.send(TOPIC_WITH_KEY, key, requestDto);
         listenFuture(future);
     }
-    @KafkaListener(topics = "${kafka.topic-with-key}", groupId = KafkaConstants.SEND_GROUP_ID)
+    @KafkaListener(topics = "${kafka.topic-with-key}", containerFactory = "sendKafkaListenerContainerFactory")
     public void sendMessage(MessageRequestDto message) {
         /* 수신된 메시지 전송 로직을 구현
          message 변수에 수신된 메시지 데이터가 들어 있음
@@ -76,16 +76,14 @@ public class MessageController {
     }
 
 
-    @KafkaListener(topics = "${kafka.topic-with-key}", groupId = KafkaConstants.SAVE_GROUP_ID)
+    @KafkaListener(topics = "${kafka.topic-with-key}", containerFactory = "saveKafkaListenerContainerFactory")
     public void saveMessage(MessageRequestDto message) {
-        // ConsumerConfig에 KafkaConstants.SAVE_GROUP_ID이 등록 안되어있어서 작동 안할듯?
-        /* 수신된 메시지 저장 로직을 구현
-          */
+//        수신된 메시지 저장 로직을 구현
         log.info("저장 작동중" + message);
     }
 
     // 비동기 처리를 위함
-    private void listenFuture(CompletableFuture<SendResult<String, Object>> future) {
+    private void listenFuture(CompletableFuture<SendResult<String, MessageRequestDto>> future) {
         future.whenComplete((result, ex) -> {
             if (ex == null) {
                 log.info("메세지 전송 성공 topic: {}, offset: {}, partition: {}", result.getRecordMetadata().topic(), result.getRecordMetadata().offset(), result.getRecordMetadata().partition());

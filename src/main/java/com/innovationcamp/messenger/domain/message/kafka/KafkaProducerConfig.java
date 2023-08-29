@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.message.kafka;
 
+import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ public class KafkaProducerConfig {
      * properties나 yaml으로 설정할 수도 있고, 아래처럼 @Bean으로 설정해줄 수도 있음
      */
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, MessageRequestDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigurations());
     }
 
@@ -38,7 +39,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, MessageRequestDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

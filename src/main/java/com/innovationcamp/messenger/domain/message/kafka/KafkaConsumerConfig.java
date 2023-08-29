@@ -1,5 +1,6 @@
 package com.innovationcamp.messenger.domain.message.kafka;
 
+import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,27 +23,27 @@ public class KafkaConsumerConfig {
      * AUTO_OFFSET_RESET_CONFIG에는 latest(가장 최근에 생성된 메시지를 offset reset), earliest(가장 오래된 메시지를), none의 값을 입력할 수 있음
      */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> sendKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, MessageRequestDto> sendKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, MessageRequestDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(sendConsumerFactory());
         return factory;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> saveKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, MessageRequestDto> saveKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, MessageRequestDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(saveConsumerFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, Object> sendConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(sendConsumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(Object.class));
+    public ConsumerFactory<String, MessageRequestDto> sendConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(sendConsumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(MessageRequestDto.class));
     }
 
     @Bean
-    public ConsumerFactory<String, Object> saveConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(saveConsumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(Object.class));
+    public ConsumerFactory<String, MessageRequestDto> saveConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(saveConsumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(MessageRequestDto.class));
     }
 
     @Bean
