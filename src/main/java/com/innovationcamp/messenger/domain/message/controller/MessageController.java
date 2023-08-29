@@ -4,7 +4,6 @@ import com.innovationcamp.messenger.domain.message.dto.DeleteMessageRequestDto;
 import com.innovationcamp.messenger.domain.message.dto.DeleteMessageResponseDto;
 import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import com.innovationcamp.messenger.domain.message.kafka.KafkaConstants;
-import com.innovationcamp.messenger.domain.message.kafka.Producer;
 import com.innovationcamp.messenger.domain.message.service.MessageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +29,8 @@ public class MessageController {
     private final MessageService messageService;
     @NonNull
     private final SimpMessageSendingOperations messagingTemplate;
-    @NonNull
-    private final Producer producer;
+//    @NonNull
+//    private final Producer producer;
     @NonNull
     private final KafkaTemplate<String, Object> kafkaTemplate;
 

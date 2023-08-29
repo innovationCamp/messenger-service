@@ -22,22 +22,45 @@ public class KafkaConsumerConfig {
      * AUTO_OFFSET_RESET_CONFIG에는 latest(가장 최근에 생성된 메시지를 offset reset), earliest(가장 오래된 메시지를), none의 값을 입력할 수 있음
      */
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, Object> sendKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(sendConsumerFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(Object.class));
+    public ConcurrentKafkaListenerContainerFactory<String, Object> saveKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(saveConsumerFactory());
+        return factory;
     }
 
     @Bean
-    public Map<String, Object> consumerConfigurations() {
+    public ConsumerFactory<String, Object> sendConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(sendConsumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(Object.class));
+    }
+
+    @Bean
+    public ConsumerFactory<String, Object> saveConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(saveConsumerConfigurations(), new StringDeserializer(), new JsonDeserializer<>(Object.class));
+    }
+
+    @Bean
+    public Map<String, Object> sendConsumerConfigurations() {
         Map<String, Object> configurations = new HashMap<>();
         configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_BROKER);
         configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, KafkaConstants.SEND_GROUP_ID);
+        configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return configurations;
+    }
+
+    @Bean
+    public Map<String, Object> saveConsumerConfigurations() {
+        Map<String, Object> configurations = new HashMap<>();
+        configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_BROKER);
+        configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, KafkaConstants.SAVE_GROUP_ID);
         configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configurations.put(org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");

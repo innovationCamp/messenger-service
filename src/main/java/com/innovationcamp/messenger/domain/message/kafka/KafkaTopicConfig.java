@@ -24,14 +24,12 @@ public class KafkaTopicConfig {
     private NewTopic defaultTopic() {
         return TopicBuilder.name(DEFAULT_TOPIC)
                 .partitions(2)
-                .replicas(2)
                 .build();
     }
 
     private NewTopic topicWithKey() {
         return TopicBuilder.name(TOPIC_WITH_KEY)
                 .partitions(2)
-                .replicas(2)
                 .build();
     }
 
