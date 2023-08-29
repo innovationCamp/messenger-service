@@ -39,7 +39,7 @@ public class MessageService {
         // 이후 메세지 보낼때는 검증없이 사용자 이름으로 보냄
         // 현재는 연관관계설정을 위해 사용자 이름으로 user를 찾아서 넣어줌
         // 이후 NoSQL로 넘어가면 이 과정 없이 이름으로 넣을예정
-        User user = userRepository.findById(1L)
+        User user = userRepository.findById(requestDto.getSenderId())
                 .orElseThrow(() -> new EntityNotFoundException("없는 유저 입니다."));
         Channel channel = channelRepository.findById(requestDto.getChannelId())
                 .orElseThrow(() -> new EntityNotFoundException("없는 채널 입니다."));
@@ -83,20 +83,5 @@ public class MessageService {
                 .channelId(requestDto.getChannelId())
                 .channelContentId(requestDto.getChannelContentId())
                 .build();
-    }
-
-    public List<MessageResponseDto> getAllMessage(Long roomId) {
-        return null;
-
-//        return messageRepository.findAllByChannelId(roomId).stream()
-//                .map(MessageResponseDto::new)
-//                .toList();
-    }
-
-    public TestMessageRoomUserDto getRoomAndUserInfo(Long roomId, User user) {
-        Channel channel = channelRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("없는 채팅"));
-        boolean firstEntry = !userChannelRepository.existsByChannelIdAndUserId(channel.getId(), user.getId());
-        return new TestMessageRoomUserDto(channel, user.getUsername(),firstEntry);
     }
 }
