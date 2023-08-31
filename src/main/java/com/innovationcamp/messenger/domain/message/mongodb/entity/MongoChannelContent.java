@@ -14,9 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class MongoChannelContent {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String  id;
     private Long channelId;
     private Long userId;
     private String userName;

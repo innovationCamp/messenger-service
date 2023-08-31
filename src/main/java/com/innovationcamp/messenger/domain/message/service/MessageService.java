@@ -6,8 +6,13 @@ import com.innovationcamp.messenger.domain.channel.entity.ChannelContent;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelContentRepository;
 import com.innovationcamp.messenger.domain.channel.repository.ChannelRepository;
 import com.innovationcamp.messenger.domain.channel.repository.UserChannelRepository;
-import com.innovationcamp.messenger.domain.message.dto.*;
+import com.innovationcamp.messenger.domain.message.dto.DeleteMessageRequestDto;
+import com.innovationcamp.messenger.domain.message.dto.DeleteMessageResponseDto;
+import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
 import com.innovationcamp.messenger.domain.message.entity.Message;
+import com.innovationcamp.messenger.domain.message.mongodb.entity.MongoMessage;
+import com.innovationcamp.messenger.domain.message.mongodb.repository.MongoChannelContentRepository;
+import com.innovationcamp.messenger.domain.message.mongodb.repository.MongoMessageRepository;
 import com.innovationcamp.messenger.domain.message.repository.MessageRepository;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import com.innovationcamp.messenger.domain.user.repository.UserRepository;
@@ -16,8 +21,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -33,6 +36,10 @@ public class MessageService {
     private final UserRepository userRepository;
     @NonNull
     private final UserChannelRepository userChannelRepository;
+    @NonNull
+    private final MongoMessageRepository mongoMessageRepository;
+    @NonNull
+    private final MongoChannelContentRepository mongoChannelContentRepository;
 
     public MessageContentResponseDto createMessage(MessageRequestDto requestDto) {
         // 채팅방 입장시, 토큰 검증을 하고 사용자 이름을 반환함
@@ -83,5 +90,35 @@ public class MessageService {
                 .channelId(requestDto.getChannelId())
                 .channelContentId(requestDto.getChannelContentId())
                 .build();
+    }
+
+    public void saveMessage(MessageRequestDto requestDto){
+
+        // 전체 유저 -1
+        Long notReadCount = userChannelRepository.countByChannelId(requestDto.getChannelId()) - 1L;
+
+        MongoMessage.MongoMessageBuilder messageBuilder = MongoMessage.builder();
+        MongoMessage message;
+        if (requestDto.getCallOutId() != null) {
+//            MongoChannelContent callOutContent = mongoChannelContentRepository.findById(requestDto.getCallOutId())
+//                    .orElseThrow(() -> new EntityNotFoundException("없는 메세지입니다."));
+            message = messageBuilder
+                    .channelId(requestDto.getChannelId())
+                    .userId(requestDto.getSenderId())
+                    .userName(requestDto.getSenderName())
+                    .message(requestDto.getMessage())
+                    .notReadCount(notReadCount)
+                    .calloutContentId(requestDto.getCallOutId())
+                    .build();
+        } else {
+            message = messageBuilder
+                    .channelId(requestDto.getChannelId())
+                    .userId(requestDto.getSenderId())
+                    .userName(requestDto.getSenderName())
+                    .message(requestDto.getMessage())
+                    .notReadCount(notReadCount)
+                    .build();
+        }
+        mongoMessageRepository.save(message);
     }
 }

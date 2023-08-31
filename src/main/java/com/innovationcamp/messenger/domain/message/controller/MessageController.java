@@ -3,7 +3,6 @@ package com.innovationcamp.messenger.domain.message.controller;
 import com.innovationcamp.messenger.domain.message.dto.DeleteMessageRequestDto;
 import com.innovationcamp.messenger.domain.message.dto.DeleteMessageResponseDto;
 import com.innovationcamp.messenger.domain.message.dto.MessageRequestDto;
-import com.innovationcamp.messenger.domain.message.kafka.KafkaConstants;
 import com.innovationcamp.messenger.domain.message.service.MessageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +78,7 @@ public class MessageController {
     @KafkaListener(topics = "${kafka.topic-with-key}", containerFactory = "saveKafkaListenerContainerFactory")
     public void saveMessage(MessageRequestDto message) {
 //        수신된 메시지 저장 로직을 구현
+        messageService.saveMessage(message);
         log.info("저장 작동중" + message);
     }
 
