@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Schema(description = "MongoChannelContent 조회 response Dto")
 public class GetMongoChannelContentResponseDto {
-    private final String  id;
+    private final Long id;
     private final Long userId;
 //    private final String userEmail;
     private final String userName;
@@ -21,7 +21,7 @@ public class GetMongoChannelContentResponseDto {
     private final Long notReadCount;
 
     public GetMongoChannelContentResponseDto(MongoChannelContent channelContent) {
-        this.id = channelContent.getId();
+        this.id = channelContent.getOffsetId();
         this.userId = channelContent.getUserId();
 //        this.userEmail = channelContent.getUser().getEmail();
         this.userName = channelContent.getUserName();
@@ -32,7 +32,7 @@ public class GetMongoChannelContentResponseDto {
     }
 
     public GetMongoChannelContentResponseDto(MongoMessage message) {
-        this.id = message.getId();
+        this.id = message.getOffsetId();
         this.userId = message.getUserId();
 //        this.userEmail = message.getUser().getEmail();
         this.userName = message.getUserName();

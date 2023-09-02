@@ -1,12 +1,13 @@
 package com.innovationcamp.messenger.domain.message.dto;
 
 import com.innovationcamp.messenger.domain.message.entity.Message;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 public class MessageResponseDto {
     private Long id;
     private Long userId;
@@ -29,5 +30,16 @@ public class MessageResponseDto {
         this.createdAt = message.getCreatedAt();
         this.notReadCount = message.getNotReadCount();
         this.text = message.getText();
+    }
+
+    public MessageResponseDto(MessageRequestDto message){
+        this.userId = message.getSenderId();
+//        this.userEmail = message.getEmail();
+        this.userName = message.getSenderName();
+        this.channelId = message.getChannelId();
+        this.callOutContentId = message.getCallOutId() != null ? message.getCallOutId() : null;
+        this.createdAt = message.getCreatedAt();
+//        this.notReadCount = message.getNotReadCount();
+        this.text = message.getMessage();
     }
 }

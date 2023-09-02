@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public abstract class MongoChannelContent {
     @Id
     private String id;
+    private Long offsetId;
     private Long channelId;
     private Long userId;
     private String userName;
@@ -24,7 +25,8 @@ public abstract class MongoChannelContent {
     private Long notReadCount;
     private LocalDateTime createdAt;
 
-    public MongoChannelContent(Long channelId, Long userId, String userName, Long calloutContentId, Long notReadCount, LocalDateTime createdAt){
+    public MongoChannelContent(Long offsetId, Long channelId, Long userId, String userName, Long calloutContentId, Long notReadCount, LocalDateTime createdAt){
+        this.offsetId = offsetId;
         this.channelId = channelId;
         this.userId = userId;
         this.userName = userName;

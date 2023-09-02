@@ -92,7 +92,7 @@ public class MessageService {
                 .build();
     }
 
-    public void saveMessage(MessageRequestDto requestDto){
+    public void saveMessage(MessageRequestDto requestDto, Long offset){
 
         // 전체 유저 -1
         Long notReadCount = userChannelRepository.countByChannelId(requestDto.getChannelId()) - 1L;
@@ -103,6 +103,7 @@ public class MessageService {
 //            MongoChannelContent callOutContent = mongoChannelContentRepository.findById(requestDto.getCallOutId())
 //                    .orElseThrow(() -> new EntityNotFoundException("없는 메세지입니다."));
             message = messageBuilder
+                    .offsetId(offset)
                     .channelId(requestDto.getChannelId())
                     .userId(requestDto.getSenderId())
                     .userName(requestDto.getSenderName())
@@ -113,6 +114,7 @@ public class MessageService {
                     .build();
         } else {
             message = messageBuilder
+                    .offsetId(offset)
                     .channelId(requestDto.getChannelId())
                     .userId(requestDto.getSenderId())
                     .userName(requestDto.getSenderName())
