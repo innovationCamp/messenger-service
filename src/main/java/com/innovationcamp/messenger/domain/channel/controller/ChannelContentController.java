@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.channel.controller;
 
 import com.innovationcamp.messenger.domain.channel.dto.GetChannelContentResponseDto;
+import com.innovationcamp.messenger.domain.channel.dto.GetMongoChannelContentResponseDto;
 import com.innovationcamp.messenger.domain.channel.service.ChannelContentService;
 import com.innovationcamp.messenger.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,12 +20,21 @@ import java.util.List;
 public class ChannelContentController {
     @NonNull    
     private final ChannelContentService channelContentService;
+//    @Operation(summary = "GET ALL ChannelContent", description = """
+//            ChannelContent를 가져오려면 사용자가 해당 채널에 이미 속해있어야 합니다.
+//            """)
+//    @GetMapping("/{channelId}")
+//    public ResponseEntity<List<GetChannelContentResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
+//        List<GetChannelContentResponseDto> dtolist = channelContentService.getChannelContents(channelId, user);
+//        return ResponseEntity.ok(dtolist);
+//    }
+
     @Operation(summary = "GET ALL ChannelContent", description = """
             ChannelContent를 가져오려면 사용자가 해당 채널에 이미 속해있어야 합니다.
             """)
     @GetMapping("/{channelId}")
-    public ResponseEntity<List<GetChannelContentResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
-        List<GetChannelContentResponseDto> dtolist = channelContentService.getChannelContents(channelId, user);
+    public ResponseEntity<List<GetMongoChannelContentResponseDto>> getChannelContents(@PathVariable Long channelId, @RequestAttribute User user) {
+        List<GetMongoChannelContentResponseDto> dtolist = channelContentService.getChannelContents(channelId, user);
         return ResponseEntity.ok(dtolist);
     }
 }
