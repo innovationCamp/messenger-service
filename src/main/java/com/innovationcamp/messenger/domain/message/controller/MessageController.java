@@ -78,12 +78,15 @@ public class MessageController {
     }
 
 
-    @KafkaListener(topics = "${kafka.topic-with-key}", containerFactory = "saveKafkaListenerContainerFactory")
-    public void saveMessage(MessageRequestDto message) {
-//        수신된 메시지 저장 로직을 구현
-        messageService.saveMessage(message);
-        log.info("저장 작동중" + message);
-    }
+//    @KafkaListener(topics = "${kafka.topic-with-key}", containerFactory = "saveKafkaListenerContainerFactory")
+//    public void saveMessage(ConsumerRecord<String, MessageRequestDto> record) {
+////        수신된 메시지 저장 로직을 구현
+//        MessageRequestDto message = record.value();
+//        String offset = String.valueOf(record.offset());
+////        record.timestamp(); // 소비된 시점의 timestamp
+//        messageService.saveMessage(message);
+//        log.info("저장 작동중" + message);
+//    }
 
     // 비동기 처리를 위함
     private void listenFuture(CompletableFuture<SendResult<String, MessageRequestDto>> future) {
@@ -94,5 +97,18 @@ public class MessageController {
                 log.error("메세지 전송 실패 : {}", ex.getMessage());
             }
         });
+    }
+
+    @PostMapping("/jmeter")
+    public void produceMessageJmeter(@RequestBody MessageRequestDto requestDto) {
+        log.info("Http + jmeter"+ requestDto);
+        LocalDateTime now = LocalDateTime.now();
+        requestDto.setCreatedAt(now);
+
+        String key = requestDto.getChannelId().toString();
+
+        CompletableFuture<SendResult<String, MessageRequestDto>> future =
+                kafkaTemplate.send(TOPIC_WITH_KEY, key, requestDto);
+//        listenFuture(future);
     }
 }
