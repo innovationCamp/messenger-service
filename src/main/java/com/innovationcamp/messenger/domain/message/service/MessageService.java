@@ -109,6 +109,7 @@ public class MessageService {
                     .message(requestDto.getMessage())
                     .notReadCount(notReadCount)
                     .calloutContentId(requestDto.getCallOutId())
+                    .createdAt(requestDto.getCreatedAt())
                     .build();
         } else {
             message = messageBuilder
@@ -117,6 +118,7 @@ public class MessageService {
                     .userName(requestDto.getSenderName())
                     .message(requestDto.getMessage())
                     .notReadCount(notReadCount)
+                    .createdAt(requestDto.getCreatedAt())
                     .build();
         }
         mongoMessageRepository.save(message);

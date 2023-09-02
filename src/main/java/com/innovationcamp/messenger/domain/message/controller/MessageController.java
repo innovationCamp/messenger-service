@@ -60,6 +60,9 @@ public class MessageController {
 
     @MessageMapping("/chat/message")
     public void produceMessageWithKey(MessageRequestDto requestDto) {
+        LocalDateTime now = LocalDateTime.now();
+        requestDto.setCreatedAt(now);
+
         String key = requestDto.getChannelId().toString();
 
         CompletableFuture<SendResult<String, MessageRequestDto>> future =
