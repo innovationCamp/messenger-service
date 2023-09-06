@@ -8,10 +8,15 @@ ubuntu default 중복 문제 테스트중
 localhost:8080 swagger URL 
 
 http://localhost:8080/swagger-ui/index.html
+
 http://localhost:8080/actuator
+
 프로메테우스
+
 http://localhost:9090 
+
 그라파나
+
 http://localhost:7070
 
 [__User Flow Chart__](https://www.figma.com/file/8ZfGH2pZ8q3Eft5VJIsjP2/%EC%9D%B4%EB%85%B8%EC%BA%A0%EC%B5%9C%EC%A2%85?type=whiteboard&node-id=0%3A1&t=hyIOBTylmqQslWvc-1)  
