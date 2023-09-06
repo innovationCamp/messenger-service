@@ -11,6 +11,8 @@ rule_files: # 규칙을 로딩하고 evaluation_interval 설정에 따라 정기
 # - "first.rules"
 # - "second.rules"
 
+
+
 # Here it's Prometheus itself. # 프로메테우스 자체에서 제공하는 메트릭 정보
 scrape_configs:
   # 작업 이름은이 구성에서 스크랩되는 모든 시계열에 레이블 'job = <job_name>'을 추가합니다.
