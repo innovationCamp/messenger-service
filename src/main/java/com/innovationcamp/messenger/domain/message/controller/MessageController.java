@@ -26,7 +26,9 @@ public class MessageController {
         if (MessageRequestDto.MessageType.ENTER.equals(requestDto.getType())) {
             requestDto.setMessage(requestDto.getSenderName() + "님이 입장하셨습니다.");
         }
-        MessageContentResponseDto responseDto = messageService.createMessage(requestDto);
+        LocalDateTime createdAt = LocalDateTime.now();
+        requestDto.setCreatedAt(createdAt);
+        MongoMessageContentResponseDto responseDto = messageService.saveMessage(requestDto);
         messagingTemplate.convertAndSend("/sub/chat/room/" + responseDto.getChannelId(), responseDto);
     }
 
@@ -36,7 +38,9 @@ public class MessageController {
         if (MessageRequestDto.MessageType.ENTER.equals(requestDto.getType())) {
             requestDto.setMessage(requestDto.getSenderName() + "님이 입장하셨습니다.");
         }
-        MessageContentResponseDto responseDto = messageService.createMessage(requestDto);
+        LocalDateTime createdAt = LocalDateTime.now();
+        requestDto.setCreatedAt(createdAt);
+        MongoMessageContentResponseDto responseDto = messageService.saveMessage(requestDto);
         messagingTemplate.convertAndSend("/sub/chat/room/" + responseDto.getChannelId(), responseDto);
     }
 
