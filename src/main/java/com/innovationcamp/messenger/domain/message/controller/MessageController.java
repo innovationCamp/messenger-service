@@ -1,6 +1,7 @@
 package com.innovationcamp.messenger.domain.message.controller;
 
 import com.innovationcamp.messenger.domain.channel.dto.MessageContentResponseDto;
+import com.innovationcamp.messenger.domain.channel.dto.MongoMessageContentResponseDto;
 import com.innovationcamp.messenger.domain.message.dto.*;
 import com.innovationcamp.messenger.domain.message.service.MessageService;
 import lombok.NonNull;
@@ -10,6 +11,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
