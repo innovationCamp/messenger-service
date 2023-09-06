@@ -6,6 +6,7 @@ global:
   external_labels: # 외부 시스템에 표시할 이 서버의 레이블
     monitor: 'messenger-monitor'
 
+
 rule_files: # 규칙을 로딩하고 evaluation_interval 설정에 따라 정기적으로 평가한다.
 # - "first.rules"
 # - "second.rules"
@@ -19,15 +20,24 @@ scrape_configs:
     # scheme의 기본값은 'http'입니다.
 
     static_configs:
-#      - targets: ["localhost:9090"]
-      - targets: ["${{ secrets.URL }}:9090"] #배포 퍼블릭 IPv4 주소
-
+      #      - targets: ["localhost:9090"]
+      - targets: [ "${{ secrets.URL }}:9090" ] #배포 퍼블릭 IPv4 주소
 
   - job_name: "monitoring"
     metrics_path: '/actuator/prometheus'  # 메트릭을 수집할 path 설정
     scrape_interval: 5s
     static_configs:
-#      - targets: ["host.docker.internal:8080"]   # Docker 컨테이너로 실행되는 애플리케이션에 대한 호스트 머신의 IP 주소
-#      즉 docker 컨테이너 에 해당 애플리케이션을 포함시켰을때 사용
-#      - targets: ["localhost:8080"] # 특정 컨테이너에서 실행 중인 애플리케이션을 호스트 머신
-      - targets: ["${{ secrets.URL }}:8080"] #배포 퍼블릭 IPv4 주소
+      #      - targets: ["host.docker.internal:8080"]   # Docker 컨테이너로 실행되는 애플리케이션에 대한 호스트 머신의 IP 주소
+      #      즉 docker 컨테이너 에 해당 애플리케이션을 포함시켰을때 사용
+      #      - targets: ["localhost:8080"] # 특정 컨테이너에서 실행 중인 애플리케이션을 호스트 머신
+      - targets: [ "${{ secrets.URL }}:8080" ] #배포 퍼블릭 IPv4 주소
+
+
+  - job_name: "test"
+    metrics_path: '/actuator/prometheus'  # 메트릭을 수집할 path 설정
+    scrape_interval: 5s
+    static_configs:
+      #      - targets: ["host.docker.internal:8080"]   # Docker 컨테이너로 실행되는 애플리케이션에 대한 호스트 머신의 IP 주소
+      #      즉 docker 컨테이너 에 해당 애플리케이션을 포함시켰을때 사용
+      - targets: ["localhost:8080"] # 특정 컨테이너에서 실행 중인 애플리케이션을 호스트 머신
+#      - targets: [ "${{ secrets.URL }}:8080" ] #배포 퍼블릭 IPv4 주소        
