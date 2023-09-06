@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/message")
 public class MessageController {
@@ -23,6 +23,16 @@ public class MessageController {
     @MessageMapping("/chat/message")
     @Async // 비동기적 처리
     public void message(MessageRequestDto requestDto) {
+        if (MessageRequestDto.MessageType.ENTER.equals(requestDto.getType())) {
+            requestDto.setMessage(requestDto.getSenderName() + "님이 입장하셨습니다.");
+        }
+        MessageContentResponseDto responseDto = messageService.createMessage(requestDto);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + responseDto.getChannelId(), responseDto);
+    }
+
+    @PostMapping("/jmeter")
+    @Async
+    public void jmeterMessage(@RequestBody MessageRequestDto requestDto){
         if (MessageRequestDto.MessageType.ENTER.equals(requestDto.getType())) {
             requestDto.setMessage(requestDto.getSenderName() + "님이 입장하셨습니다.");
         }
